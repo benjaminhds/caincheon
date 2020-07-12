@@ -1,0 +1,117 @@
+// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.kpdus.com/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   Const.java
+
+package kr.caincheon.church.common;
+
+
+public interface CommonSQL
+{
+	//
+	public static final String DB_NAME  = "newcaincheon";
+	public static final String DB_OWNER = "newcaincheon";
+	
+	//
+	public static final String SITE_ADMIN = "admin";
+	
+	// table access prefix name :: "+DB_PREFIX+"
+	public static final String DB_PREFIX = "newcaincheon.newcaincheon.";
+	
+	//
+	String SQL_ORG_DEPARTMENT = "SELECT ROW_NUMBER() OVER(ORDER BY XD.DEPART_IDX) RNUM, XO.LV1+XO.LV2 DEPART_CODE_1X "
+			+ " , XD.DEPART_IDX, XD.NAME, XD.ORG_IDX"
+			+ " , CASE WHEN XO.LV2='00'  AND XO.LV3='000' THEN '1'"
+			+ "        WHEN XO.LV2<>'00' AND XO.LV3='000' THEN '2'"
+			+ "		ELSE '3'"
+			+ "   END AS ORG_LEVEL"
+			+ " FROM "+DB_OWNER+".DEPARTMENT XD "
+			+ " LEFT OUTER JOIN "+DB_OWNER+".ORG_HIERARCHY XO ON XO.ORG_IDX=XD.ORG_IDX ";
+	
+	// 
+	String SQL_ORG_CHURCH = "SELECT ROW_NUMBER() OVER(ORDER BY XC.CHURCH_IDX) RNUM, XO.LV1+XO.LV2 CHURCH_CODE_1X "
+			+ " , XC.CHURCH_IDX, XC.NAME, XC.ORG_IDX"
+			+ " , CASE WHEN XO.LV2='00'  AND XO.LV3='000' THEN '1'"
+			+ "        WHEN XO.LV2<>'00' AND XO.LV3='000' THEN '2'"
+			+ "		ELSE '3'"
+			+ "   END AS ORG_LEVEL"
+			+ " FROM "+DB_OWNER+".CHURCH XC "
+			+ " LEFT OUTER JOIN "+DB_OWNER+".ORG_HIERARCHY XO ON XO.ORG_IDX=XD.ORG_IDX "
+			;
+	
+	
+	/** 달력조회 SQL - 특정년월을 가지고 replaceAll 해야 함(DIARY_SQL.replaceALL("yyyymm", "201709"))  */
+	String DIARY_SQL = " WITH T AS (  SELECT DATEADD(d, 0, 'yyyymm'+'01') DT  "
+    		+"  UNION ALL "
+    		+" SELECT DATEADD(D, 1, DT) DT "
+    		+"   FROM T "
+    		+"  WHERE DT + 1 < DATEADD(M, 1, 'yyyymm'+'01') "
+    		+" ) "
+    		+" SELECT [1] 일 "
+    		+"      , [2] 월 "
+    		+"      , [3] 화 "
+    		+"      , [4] 수 "
+    		+"      , [5] 목 "
+    		+"      , [6] 금 "
+    		+"      , [7] 토 "
+    		+"   FROM (SELECT DATEPART(D,  DT) D  "
+    		+"              , DATEPART(W,  DT) W  "
+    		+"              , DATEPART(WW, DT) WW "
+    		+"           FROM T "
+    		+"         ) A "
+    		+"  PIVOT( MIN(D) FOR W IN "
+    		+"         ([1], [2], [3], [4], [5], [6], [7]) ) A "
+    		;
+	
+	/** 기관의 소속사제 목록을 한 컬럼으로 조립하는 서브쿼리 - 사용예) String priests = ", "+PRIESTNAMES_DEPART_A.replace("{WHERE}", "WHERE DD.DEPART_IDX="+depart_idx)+" AS PRIESTNAMES "; */
+	String PRIESTNAMES_DEPART_A = " (SELECT STUFF( (SELECT ',' + X.NAME FROM ("
+			+ "SELECT ROW_NUMBER() OVER(ORDER BY P.ONUM ASC) RNUM, P.NAME+'('+P.CHRISTIAN_NAME+')' AS PRIESTNAME "
+			+ "FROM "+DB_OWNER+".DEPARTMENT DD "
+			+ "LEFT OUTER JOIN "+DB_OWNER+".ORG_DEPARTMENT_PRIEST_REL PR ON PR.ORG_IDX = DD.ORG_IDX "
+			+ "LEFT OUTER JOIN "+DB_OWNER+".PRIEST P ON P.P_IDX = PR.P_IDX "
+			+ " {WHERE} " // 대체할 것 : "WHERE DD.DEPART_IDX = 14052"
+			+ ") X FOR XML PATH('') ),1,1,'')) "//AS PRIESTNAMES "
+			;
+	
+	/** 기관의 소속사제 목록을 한 컬럼으로 조립하는 서브쿼리 - 사용예) String priests = ", "+PRIESTNAMES_DEPART_B.replace("{WHERE}", "WHERE DD.DEPART_IDX="+depart_idx)+" AS PRIESTNAMES "; */
+	String PRIESTNAMES_DEPART_B = " (SELECT STUFF( (SELECT ',' + X.PRIESTNAME FROM ("
+			+ "SELECT ROW_NUMBER() OVER(ORDER BY P.ONUM ASC) RNUM, P.NAME+'('+P.CHRISTIAN_NAME+')' AS PRIESTNAME "
+			+ "FROM "+DB_OWNER+".DEPARTMENT DD "
+			+ "LEFT OUTER JOIN "+DB_OWNER+".ORG_DEPARTMENT_PRIEST_REL PR ON PR.ORG_IDX = DD.ORG_IDX "
+			+ "LEFT OUTER JOIN "+DB_OWNER+".PRIEST P ON P.P_IDX = PR.P_IDX "
+			+ " {WHERE} " // 대체할 것 : "WHERE DD.DEPART_IDX = 14052"
+			+ ") X FOR XML PATH('') ),1,1,'')) "//AS PRIESTNAMES "
+			;
+	
+	/** 성당의 소속사제 목록을 한 컬럼으로 조립하는 서브쿼리 - 사용예) String priests = ", "+PRIESTNAMES_CHURCH_A.replace("{WHERE}", "WHERE CC.CHURCH_IDX="+church_idx)+" AS PRIESTNAMES "; */
+	String PRIESTNAMES_CHURCH_A = " (SELECT STUFF( (SELECT ',' + X.NAME FROM ("
+			+ "SELECT ROW_NUMBER() OVER(ORDER BY P.ONUM ASC) RNUM, P.NAME+'('+P.CHRISTIAN_NAME+')' AS PRIESTNAME "
+			+ "FROM "+DB_OWNER+".CHURCH CC "
+			+ "LEFT OUTER JOIN "+DB_OWNER+".ORG_DEPARTMENT_PRIEST_REL PR ON PR.ORG_IDX = CC.ORG_IDX "
+			+ "LEFT OUTER JOIN "+DB_OWNER+".PRIEST P ON P.P_IDX = PR.P_IDX "
+			+ "{WHERE} " // 대체할 것 : "WHERE CC.CHURCH_IDX = 14052"
+			+ ") X FOR XML PATH('') ),1,1,'')) "//AS PRIESTNAMES "
+			;
+	
+	/** 성당의 소속사제 목록을 한 컬럼으로 조립하는 서브쿼리 - 사용예) String priests = ", "+PRIESTNAMES_CHURCH_B.replace("{WHERE}", "WHERE CC.CHURCH_IDX="+church_idx)+" AS PRIESTNAMES "; */
+	String PRIESTNAMES_CHURCH_B = " (SELECT STUFF( (SELECT ',' + X.PRIESTNAME FROM ("
+			+ "SELECT ROW_NUMBER() OVER(ORDER BY P.ONUM ASC) RNUM, P.NAME+'('+P.CHRISTIAN_NAME+')' AS PRIESTNAME "
+			+ "FROM "+DB_OWNER+".CHURCH CC "
+			+ "LEFT OUTER JOIN "+DB_OWNER+".ORG_DEPARTMENT_PRIEST_REL PR ON PR.ORG_IDX = CC.ORG_IDX "
+			+ "LEFT OUTER JOIN "+DB_OWNER+".PRIEST P ON P.P_IDX = PR.P_IDX "
+			+ " {WHERE} " // 대체할 것 : "WHERE CC.CHURCH_IDX = 14052"
+			+ ") X FOR XML PATH('') ),1,1,'')) "//AS PRIESTNAMES "
+			;
+
+	/** 성당의 소속사제 목록을 한 컬럼으로 조립하는 서브쿼리 - 사용예) String priests = ", "+PRIESTNAMES_CHURCH_C.replace("{WHERE}", "WHERE CC.CHURCH_IDX="+church_idx)+" AS PRIESTNAMES "; */
+	String PRIESTNAMES_CHURCH_C = " (SELECT STUFF( (SELECT ',' + X.PRIESTNAME FROM ("
+			+ "SELECT ROW_NUMBER() OVER(ORDER BY P.ONUM ASC) RNUM, C.NAME + ' ' + P.NAME+'('+P.CHRISTIAN_NAME+')' AS PRIESTNAME "
+			+ "FROM "+DB_OWNER+".CHURCH CC "
+			+ "LEFT OUTER JOIN "+DB_OWNER+".ORG_DEPARTMENT_PRIEST_REL PR ON PR.ORG_IDX = CC.ORG_IDX "
+			+ "LEFT OUTER JOIN "+DB_OWNER+".PRIEST P ON P.P_IDX = PR.P_IDX "
+			+ "LEFT OUTER JOIN "+DB_OWNER+".CODE_INSTANCE  C ON C.CODE_INST = PR.P_POSITION AND  C.CODE='000003' "
+			+ " {WHERE} " // 대체할 것 : "WHERE CC.CHURCH_IDX = 14052"
+			+ ") X FOR XML PATH('') ),1,1,'')) "//AS PRIESTNAMES "
+			;
+	
+}

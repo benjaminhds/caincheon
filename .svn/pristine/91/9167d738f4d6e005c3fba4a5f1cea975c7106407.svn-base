@@ -1,0 +1,126 @@
+// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.kpdus.com/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   AdmPosController.java
+
+package kr.caincheon.church.controller;
+
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import kr.caincheon.church.common.*;
+import kr.caincheon.church.service.AdmPosService;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+public class AdmPosController extends CommonController
+{
+
+	private final Logger _logger = Logger.getLogger(getClass());
+	
+	@Resource(name="admPosService")
+    private AdmPosService admPosService;
+
+	@RequestMapping(value = "/admin/org/pos_list.do")
+    public ModelAndView posList(HttpServletRequest request)
+        throws CommonException
+    {
+        ModelAndView mv = new ModelAndView("/admin/org/pos_list");
+        build(request);
+        _logger.info((new StringBuilder(" ===> [method=")).append(request.getMethod()).append("] _params ? ").append(_params.toString()).toString());
+        String searchGubun1 = UtilString.pnull(_params.get("searchGubun1"));
+        String searchGubun2 = UtilString.pnull(_params.get("searchGubun2"));
+        String searchText = UtilString.pnull(_params.get("searchText"));
+        LinkedHashMap schTextGubunMap1 = new LinkedHashMap();
+        if(searchGubun1.equals("1"))
+            schTextGubunMap1.put("1", "selected");
+        else
+            schTextGubunMap1.put("1", "");
+        if(searchGubun1.equals("2"))
+            schTextGubunMap1.put("2", "selected");
+        else
+            schTextGubunMap1.put("2", "");
+        LinkedHashMap schTextGubunMap2 = new LinkedHashMap();
+        if(searchGubun2.equals("name"))
+            schTextGubunMap2.put("name1", "selected");
+        else
+            schTextGubunMap2.put("name", "");
+        if(searchGubun2.equals("2baptismal_name"))
+            schTextGubunMap2.put("baptismal_name", "selected");
+        else
+            schTextGubunMap2.put("baptismal_name", "");
+        if(UtilString.pnull(_params.get("pageNo")).equals(""))
+            _params.put("pageNo", "1");
+        
+        java.util.List posList = admPosService.posList(_params);
+        int totalCount = admPosService.posListCount(_params);
+        Paging paging = new Paging();
+        paging.setPageNo(Integer.parseInt(UtilString.pnull(_params.get("pageNo"), "1")));
+        paging.setPageSize(10);
+        paging.setTotalCount(totalCount);
+        mv.addObject("searchText", searchText);
+        mv.addObject("schTextGubunMap1", schTextGubunMap1);
+        mv.addObject("schTextGubunMap2", schTextGubunMap2);
+        mv.addObject("posList", posList);
+        mv.addObject("paging", paging);
+        
+        D(_logger, Thread.currentThread().getStackTrace(), mv.toString());
+        D(_logger, Thread.currentThread().getStackTrace(), mv.getModelMap().toString());
+        
+        return mv;
+    }
+
+	@RequestMapping(value = "/admin/org/pos_manage.do")
+    public ModelAndView admOrgInsert(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException, CommonException
+    {
+        ModelAndView mv = new ModelAndView("/admin/org/pos_list");
+        build(request);
+        _logger.info((new StringBuilder(" ===> [method=")).append(request.getMethod()).append("] _params ? ").append(_params.toString()).toString());
+        if(UtilString.pnull(_params.get("pageNo")).equals(""))
+            _params.put("pageNo", "1");
+        String strReturn = admPosService.admPosManage(_params);
+        if(strReturn.substring(0, 3).equals("ERR"))
+        {
+            mv.addObject("CDD", "FAIL");
+            mv.addObject("MSG", (new StringBuilder("\uC800\uC7A5 \uBBF8\uC644\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4.[")).append(strReturn).append("]").toString());
+        } else
+        {
+            mv.addObject("CDD", "SUCC");
+            mv.addObject("MSG", strReturn);
+        }
+        return mv;
+    }
+
+	@RequestMapping(value = "/admin/org/pos_delete.do")
+    public ModelAndView admOrgManage(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException, CommonException
+    {
+        ModelAndView mv = new ModelAndView("/admin/org/pos_list");
+        build(request);
+        _logger.info((new StringBuilder(" ===> [method=")).append(request.getMethod()).append("] _params ? ").append(_params.toString()).toString());
+        if(UtilString.pnull(_params.get("pageNo")).equals(""))
+            _params.put("pageNo", "1");
+        String strReturn = admPosService.admPosManage(_params);
+        if(strReturn.equals("DELOK"))
+        {
+            mv.addObject("CDD", "SUCC");
+            mv.addObject("MSG", strReturn);
+        } else
+        {
+            mv.addObject("CDD", "FAIL");
+            mv.addObject("MSG", (new StringBuilder("\uC0AD\uC81C \uBBF8\uC644\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4.[")).append(strReturn).append("]").toString());
+        }
+        return mv;
+    }
+
+    
+}

@@ -1,0 +1,176 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<!-- 모든 dao 를 여기서 등록해 줘야 함 -->
+	<bean id="homeDao" class="kr.caincheon.church.dao.HomeDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="mainDao" class="kr.caincheon.church.dao.MainDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="newsDao" class="kr.caincheon.church.dao.NewsDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="templeDao" class="kr.caincheon.church.dao.TempleDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="priestDao" class="kr.caincheon.church.dao.PriestDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+   <bean id="movDao" class="kr.caincheon.church.dao.MovDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+   <bean id="albDao" class="kr.caincheon.church.dao.AlbDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+   <bean id="gyoguIntroDao" class="kr.caincheon.church.dao.GyoguIntroDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+
+	<bean id="mgzDao" class="kr.caincheon.church.dao.MgzDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+
+   <bean id="msgDao" class="kr.caincheon.church.dao.MsgDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+   <bean id="parDao" class="kr.caincheon.church.dao.ParDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+
+   <bean id="supportDao" class="kr.caincheon.church.dao.SupportDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+   <bean id="departmentDao" class="kr.caincheon.church.dao.DepartmentDaoImple">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+   <bean id="memberDao" class="kr.caincheon.church.dao.MemberDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+
+   <bean id="admMemberDao" class="kr.caincheon.church.dao.AdmMemberDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+
+   <bean id="commonUtilDao" class="kr.caincheon.church.dao.CommonUtilDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+
+   <bean id="inqDao" class="kr.caincheon.church.dao.InqDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   <bean id="euchaDao" class="kr.caincheon.church.dao.EuchaDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   <bean id="docDao" class="kr.caincheon.church.dao.DocDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   <bean id="marryDao" class="kr.caincheon.church.dao.MarryDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+   <bean id="emailDao" class="kr.caincheon.church.dao.EmailDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+   <bean id="popupDao" class="kr.caincheon.church.dao.PopupDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+   <bean id="bannerDao" class="kr.caincheon.church.dao.BannerDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+   <bean id="dgroupDao" class="kr.caincheon.church.dao.DgroupDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+   <bean id="departdcDao" class="kr.caincheon.church.dao.DepartdcDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+   <bean id="historyDao" class="kr.caincheon.church.dao.HistoryDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+
+   <bean id="faqDao" class="kr.caincheon.church.dao.FaqDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+
+   <bean id="admOrgDao" class="kr.caincheon.church.dao.AdmOrgDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+
+   <bean id="admPosDao" class="kr.caincheon.church.dao.AdmPosDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+   <bean id="schDao" class="kr.caincheon.church.dao.SchDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+   <bean id="admParDao" class="kr.caincheon.church.dao.AdmParDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   <bean id="admNewsDao" class="kr.caincheon.church.dao.AdmNewsDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   <bean id="admBonNoticeDao" class="kr.caincheon.church.dao.AdmBonNoticeDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+   <bean id="engageDao" class="kr.caincheon.church.dao.EngageDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+	<bean id="admChurchDao" class="kr.caincheon.church.dao.AdmChurchDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+	<bean id="admGongsoDao" class="kr.caincheon.church.dao.AdmGongsoDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+	<bean id="holidayFileDao" class="kr.caincheon.church.dao.HolidayFileDaoImpl">
+      <property name="dataSource" ref="dataSource" />
+   </bean>
+
+
+	<!--  bjm -->
+	<bean id="codeDao" class="kr.caincheon.church.admin.dao.CodeDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="orgHierarchyDao" class="kr.caincheon.church.admin.dao.OrgHierarchyDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="boardCategoryDao" class="kr.caincheon.church.admin.dao.BoardCategoryDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="nBoardDao" class="kr.caincheon.church.admin.dao.NBoardDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="orgDepartmentPriestRelDao" class="kr.caincheon.church.admin.dao.OrgDepartmentPriestRelDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="canaMarryGuideDao" class="kr.caincheon.church.community.dao.CanaMarryGuideDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="fatherCalDao" class="kr.caincheon.church.father.service.FatherCalDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+</beans>

@@ -1,0 +1,804 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>천주교 인천교구 Admin</title>
+    <link href="/admin/_common/css/sub.css" rel="stylesheet">
+    <link href="/admin/_common/css/sub2.css" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+    <link href="/admin/_common/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- MetisMenu CSS -->
+    <link href="/admin/_common/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/admin/_common/dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/admin/_common/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	<!-- footer script -->
+	<!-- jQuery -->
+	<link href="/admin/_common/vendor/jquery/jquery-ui.css" rel="stylesheet">
+    <script src="/admin/_common/vendor/jquery/jquery.min.js"></script>
+    <script src="/admin/_common/vendor/jquery/jquery-ui.min.js"></script>
+    
+   	<!-- Bootstrap Core JavaScript -->
+    <script src="/admin/_common/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="/admin/_common/vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="/admin/_common/dist/js/sb-admin-2.js"></script>
+	<!-- /.footer script -->
+	
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+	<script type="text/javascript">
+	var doChangeURI = function(fullURL) {
+
+		$.ajax({
+			type: 'GET',
+			url: fullURL,
+			async: false,
+			dataType: "text",
+			contentType:"application/x-www-form-urlencoded; charset=UTF-8",
+			success: function(data) {
+				$('body').html(data);
+			},
+			error: function(request, status, error) {
+				alert(error);
+			}
+		});
+	};
+	</script>
+</head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<script type="text/javascript">
+function viewList() {
+	document.form01.action = '/admin/board/doctrine_list.do';
+	//document.getElementById('idx').value=idx;
+	document.form01.submit();
+	return false;
+}
+
+function insert_contents() {
+	document.form01.action = '/admin/board/doctrine_insert.do';
+	document.form01.submit();
+	return false;
+}
+
+function modify_contents() {
+	//alert('modify_contents');
+	document.form01.action = '/admin/board/doctrine_modify.do';
+	//document.getElementById('idx').value=idx;
+	document.form01.submit();
+	return false;
+}
+
+function delete_contents() {
+	alert('delete_contents');
+	document.form01.action = '/admin/board/doctrine_delete.do';
+	//document.getElementById('inq_no').value=no;
+	document.form01.submit();
+	return false;
+}
+
+function setApprove(radio, value) {
+	if ( radio.checked == true ) {
+		if(value == "Y") {
+			document.form01.approveYn[1].checked = false;
+		}
+		else if(value=="N") {
+			document.form01.approveYn[0].checked = false;
+		}		
+		document.getElementById('approve_yn').value=value;
+	}
+	return false;
+}
+
+function setMember(radio, value) {
+	if ( radio.checked == true ) {
+		if(value == "1") {
+			document.form01.memberType[1].checked = false;
+		}
+		else if(value=="2") {
+			document.form01.memberType[0].checked = false;
+		}		
+		document.getElementById('member_type').value=value;
+	}
+	return false;
+}
+
+function setSex(radio, value) {
+	if ( radio.checked == true ) {
+		if(value == "1") {
+			document.form01.sexType[1].checked = false;
+		}
+		else if(value=="2") {
+			document.form01.sexType[0].checked = false;
+		}		
+		document.getElementById('sex').value=value;
+	}
+	return false;
+}
+
+function setBirth(radio, value) {
+	if ( radio.checked == true ) {
+		if(value == "1") {
+			document.form01.birthType[1].checked = false;
+		}
+		else if(value=="2") {
+			document.form01.birthType[0].checked = false;
+		}		
+		document.getElementById('birth_type').value=value;
+	}
+	return false;
+}
+
+function uploadPhoto(fileObj) {
+	//enctype="multipart/form-data"
+	var filePath = fileObj.value;
+	var fileName = filePath.substring(filePath.lastIndexOf("\\")+1);
+	var fileKind = fileName.split(".")[1];
+	
+	alert("filePath=" + filePath);
+	alert("fileName=" + fileName);
+	alert("fileKind=" + fileKind);
+	
+	var form = $('form01')[0];
+    var formData = new FormData(form);
+    formData.append("photo", $("#photo")[0].files[0]);
+    $.ajax({
+        url: '/admin/board/uploadOk.jsp',
+                processData: false,
+                contentType: false,
+                data: formData,
+                type: 'POST',
+                success: function(result){
+                    alert("업로드 성공!!");
+                }
+        });
+}
+
+window.onload = function() {
+	//alert("loading completed");
+	//CKEDITOR.replace( 'contents' );
+}
+</script>
+<script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
+<body>
+<div id="wrapper">
+    <!-- Navigation -->
+    
+
+
+		<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/admin/main.jsp">천주교 인천교구 관리자 v1.0</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <!-- 
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-envelope fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-messages">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <strong>John Smith</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                                </div>
+                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <strong>John Smith</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                                </div>
+                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <strong>John Smith</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                                </div>
+                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>Read All Messages</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    -->
+                    <!-- /.dropdown-messages -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+	                <!-- 
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-tasks fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-tasks">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 1</strong>
+                                        <span class="pull-right text-muted">40% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                                            <span class="sr-only">40% Complete (success)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 2</strong>
+                                        <span class="pull-right text-muted">20% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+                                            <span class="sr-only">20% Complete</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 3</strong>
+                                        <span class="pull-right text-muted">60% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                                            <span class="sr-only">60% Complete (warning)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 4</strong>
+                                        <span class="pull-right text-muted">80% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+                                            <span class="sr-only">80% Complete (danger)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>See All Tasks</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                     -->
+                    <!-- /.dropdown-tasks -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                	<!-- 
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-comment fa-fw"></i> New Comment
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                    <span class="pull-right text-muted small">12 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-tasks fa-fw"></i> New Task
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>See All Alerts</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    -->
+                    <!-- /.dropdown-alerts -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+					    
+					        <li>SUPER관리자</li>
+					    
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                		<!-- 
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        -->
+                        <li class="divider"></li>
+                        <li><a href="/admin/logout.jsp"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            
+	
+
+	<!-- ---------------------- -->
+	<!-- common_left_menu start -->
+<!-- 
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<form role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Search">
+			</div>
+		</form>
+		<ul class="nav menu">
+			<li ><a href="dashboard.jsp"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Dashboard</a></li>
+			<li ><a href="customeroverview.jsp"><svg class="glyph stroked calendar"><use xlink:href="#stroked-calendar"></use></svg> Customer</a></li>
+			<li ><a href="sales.jsp"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg> Sales Manage</a></li>
+			<li role="presentation" class="divider"></li>
+			<li><a href="#" onClick="return myLogout();"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> Login Page</a></li>
+		</ul>
+
+	</div>
+ -->
+<!--/.sidebar-->
+	<!-- common_left_menu end -->
+	<!-- -------------------- -->
+	
+	<div class="navbar-default sidebar" role="navigation">
+        <div class="sidebar-nav navbar-collapse">
+            <ul class="nav" id="side-menu">
+                <li>
+                    <a href="#"><i class="fa fa-sitemap fa-fw"></i> 조직코드관리</a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="/admin/org/org_list.do">임지코드관리</a></li>
+                        <li><a href="/admin/org/pos_codeList.do">직급코드관리</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-sitemap fa-fw"></i> 게시판관리</a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="/admin/board/par_list.do">교구장동정</a></li>
+                        <li><a href="/admin/board/news_list.do">교회/교구/공동체</a></li>
+                        <li><a href="/admin/board/chruch_notice.do">본당알림</a></li>
+                        <li><a href="/admin/board/cure_list.do">사목자료</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>앨범게시판관리</a>
+                    <ul class="nav nav-second-level">
+                    	<li><a href="/admin/">역대교구장앨범</a></li>
+			<li><a href="/admin/">교구앨범</a></li>
+			<li><a href="/admin/">본당앨범</a></li>
+			<li><a href="/admin/">교구영상</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>기타게시판 관리</a>
+                    <ul class="nav nav-second-level">
+			<li><a href="/admin/">교구장메시지</a></li>
+			<li><a href="/admin/">교구장일정</a></li>
+			<li><a href="/admin/">교구일정</a></li>
+			<li><a href="/admin/board/mgz_list.do">간행물관리</a></li>
+			<li><a href="/admin/board/faq_list.do">FAQ(교구법원)</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>정보관리</a>
+                    <ul class="nav nav-second-level">
+			<li><a href="/admin/board/history_list.do">역사관관리</a></li>
+			<li><a href="/admin/board/departdc_list.do">교구청</a></li>
+			<li><a href="/admin/board/dgroup_list.do">지구코드</a></li>
+			<li><a href="/admin/">본당</a></li>
+			<li><a href="/admin/board/org_list.do">수도회/기관단체</a></li>
+			<li><a href="/admin/board/priest_list.do">사제</a></li>
+			<li><a href="/admin/board/bef_priest_list.do">선종사제</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>접수관리</a>
+                    <ul class="nav nav-second-level">
+			<li><a href="/admin/board/doctrine_list.do">통신교리 신청관리</a></li>
+			<li><a href="/admin/board/marry_list.do">카나혼인강좌,약혼자주말 신청관리</a></li>
+			<li><a href="/admin/">성체분배권 신청관리</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>메인관리</a>
+                    <ul class="nav nav-second-level">
+			<li><a href="/admin/board/popup_list.do">팝업관리</a></li>
+			<li><a href="/admin/board/banner_list.do">배너관리</a></li>
+			<li><a href="/admin/">전례력/말씀 관리</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+				<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>관리자정보관리</a>
+                    <ul class="nav nav-second-level">
+						<li><a href="/admin/member/admmember_list.do">관리자정보</a></li>
+						<li><a href="/admin/">관리자권한그룹설정</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>회원서비스관리</a>
+                    <ul class="nav nav-second-level">
+			<li><a href="/admin/">회원관리</a></li>
+			<li><a href="/admin/board/inquire_list.do">나누고싶은이야기</a></li>
+			<li><a href="/admin/board/email_list.do">메일발송</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+        </div>
+        <!-- /.sidebar-collapse -->
+    </div>
+	
+            <!-- /.navbar-static-side -->
+        </nav>
+
+    <!-- Page Content -->
+	<div id="page-wrapper">
+	
+	
+		<h2>통신교리 등록</h2>
+	
+	
+	
+	  <form class="well" name="form01" action="/admin/board/doctrine_list.do">
+	  	<input type="hidden" name="approve_yn" id="approve_yn" value="N"/>
+	  	<input type="hidden" name="member_type" id="member_type" value="1"/>
+	  	<input type="hidden" name="sex" id="sex" value="1"/>
+	  	<input type="hidden" name="birth_type" id="birth_type" value="1"/>
+	  	
+	  	<div class="container-fluid">
+	  		<div class="row">
+	  			<div class="col-md-2" >
+	  				<label for="">승인구분</label>
+	  			</div>  		
+	      		<div class="col-md-10" >
+	      			
+			      		
+			        	
+			        	
+							<label class="radio-inline"><input type="radio" name="approveYn" id="approveYn1" value="Y" onClick="setApprove(this,'Y')">승인</label>
+			        		<label class="radio-inline"><input type="radio" name="approveYn" id="approveYn2" value="N" onClick="setApprove(this,'N')" checked="checked">미승인</label>
+			        		
+		       		
+	      		</div>   	      	
+	       	</div>
+	    </div>
+	    
+	    <div class="container-fluid">
+	    	<div class="row">
+	  			<div class="col-md-2" >
+	      			<label for="">신자구분</label>
+				</div>
+	         	<div class="col-md-10" >
+	      			
+			      		
+			        	
+			        	
+							<label class="radio-inline"><input type="radio" name="memberType" id="memberType1" value="1" onClick="setMember(this,'1')" checked="checked">예비신자</label>
+			        		<label class="radio-inline"><input type="radio" name="memberType" id="memberType2" value="2" onClick="setMember(this,'2')">재교육자</label>
+			        		
+	       			
+	       		</div>
+	       	</div>
+	    </div>
+	    
+	    <div class="container-fluid">
+	    	<div class="row">
+	    		<div class="col-md-2">
+	    			<label for="inputName">성명</label>
+	    		</div>
+	    		<div class="col-md-4">
+	    			<input class="form-control" type="text"  id="name" placeholder="" name="name" value="">		
+	    		</div>
+	    		<div class="col-md-2">
+	    			<label for="inputBaptismal">세례명</label>
+	    		</div>
+	    		<div class="col-md-4" >
+	    			<input class="form-control" type="text"  id="baptismal_name" placeholder="" name="baptismal_name" value="">		
+	    		</div>    	
+	    	</div>
+	    </div>
+	    
+	    <div class="container-fluid">
+	    	<div class="row">
+	    		<div class="col-md-2" >
+	    			<label for="inputName">성별</label>
+	    		</div>
+	    		<div class="col-md-4" >
+	    			
+			      		
+			        	
+			        	
+							<label class="radio-inline"><input type="radio" name="sexType" id="sexType1" value="1" onClick="setSex(this,'1')" checked="checked">남성</label>
+			        		<label class="radio-inline"><input type="radio" name="sexType" id="sexType2" value="2" onClick="setSex(this,'2')">여성</label>
+			        		
+	       					
+	    		</div>
+	    		<div class="col-md-2" >
+	    			<label for="inputBaptismal">직업</label>
+	    		</div>
+	    		<div class="col-md-4" >
+	    			<input type="text" class="form-control" id="job" placeholder="" name="job" value="">		
+	    		</div>    	
+	    	</div>
+	    </div>   
+	    
+	    <div class="container-fluid">
+	    	<div class="row">
+	    		<div class="col-md-2" >
+	    			<label for="inputName">소속본당</label>
+	    		</div>
+	    		<div class="col-md-4" >
+	    			<select class="form-control" id="church_idx" name="church_idx">
+				        <option>14001</option>
+				        <option>14002</option>
+				        <option>14003</option>
+				        <option>14004</option>
+	      			</select>		
+	    		</div>
+	    		<div class="col-md-6" >
+	    			예비신자께서는 영세 받을 성당, 현재다니고 있는 성당 혹은 주소지에서 
+	 				가장 가까운 성당의 이름을 선택하여 주시기 바랍니다.
+	    		</div>
+	    	</div>
+	    </div>   
+	    
+	    <div class="container-fluid">
+	    	<div class="row">
+	    		<div class="col-md-2" >
+	    			<label for="inputName">생년월일</label>
+	    		</div>
+	    		<div class="col-md-2" >
+	    			
+						
+						
+						
+							<label class="radio-inline"><input type="radio" name="brithType" id="brithType1" value="1" onClick="setBirth(this,'1')" checked="checked">양력</label>
+							<label class="radio-inline"><input type="radio" name="brithType" id="brithType2" value="2" onClick="setBirth(this,'2')">음력</label>
+							
+							
+	    		</div>
+	    		<div class="col-md-8" >
+	    			<div class="input-group date form_date col-md-5" data-date="2017-05-15" data-date-format="yyyy MM dd" data-link-field="birthday">
+	      				<input class="form-control" size="16" type="text" value="" readonly>
+		      			<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+	      			</div>
+		  			<input type="hidden" id="birthday" name=""birthday"" value="" /><br/>
+	    		</div>
+	    	</div>
+	    </div>
+	    
+	    <div class="container-fluid">
+	    	<div class="row">
+	    		<div class="col-md-2" >
+	    			<label for="inputName">휴대전화</label>
+	    		</div>
+	    		<div class="col-md-4" >
+	    			<input type="input" id="m_tel" name="m_tel" placeholder="" value="">		
+	    		</div>
+	    		<div class="col-md-2" >
+	    			<label for="inputBaptismal">직장전화</label>
+	    		</div>
+	    		<div class="col-md-4" >
+	    			<input type="input" id="o_tel" name="o_tel" placeholder="" value="">		
+	    		</div>    	
+	    	</div>
+	    </div>   
+	    
+	    <div class="container-fluid">
+	    	<div class="row">
+	    		<div class="col-md-2" >
+	    			<label for="inputName">이미지(사진)</label>
+	    		</div>
+	    		<div class="col-md-3" >
+	    			<input type="file" id="photo" name="photo" aria-describedby="fileHelp" onchange="uploadPhoto(this)">    			
+	    		</div>
+	    		<div class="col-md-1" >
+	    			
+	    		</div>
+	    		<div class="col-md-2" >
+	    			<label for="inputBaptismal">이메일</label>
+	    		</div>
+	    		<div class="col-md-4" >
+	    			<input type="input" id="email" name="email" placeholder="" value="">		
+	    		</div>    	
+	    	</div>
+	    </div>   
+	        
+	    <div class="container-fluid">
+	    	<div class="row">
+	    		<div class="col-md-2" >
+	    			<label for="inputName">주소</label>
+	    		</div>
+	    		<div class="col-md-4" >
+	    			<input type="text" class="form-control col-sm-1" id="postcode" placeholder="" name="postcode" value="">		
+	    		</div>
+	    		<div class="col-md-2" >
+	    			<button type="button" class="btn btn-default" >검색</button>
+	    		</div>    		    	
+	    	</div>
+	    </div>
+	    
+	    <div class="container-fluid">
+	    	<div class="row">
+	    		<div class="col-md-2" >
+	    			<label for="inputName"></label>
+	    		</div>
+	    		<div class="col-md-10" >
+	    			<input type="text" class="form-control col-sm-1" id="addr1" placeholder="" name="addr1" value="">		
+	    		</div>
+	    	</div>
+	    </div>
+	    
+	    <div class="container-fluid">
+	    	<div class="row">
+	    		<div class="col-md-2">
+	    			<label for="inputName">남기실 말씀</label>
+	    		</div>
+	    		<div class="col-md-10">
+	    			<textarea id="user_comment" name="user_comment" cols="80" rows="10"></textarea>		
+	    		</div>
+	    	</div>
+	    </div>   
+	        
+	</form>
+	<p>&nbsp;</p>
+	<button type="button" id="btnList"   class="btn btn-default pull-right" onclick="javascript:viewList();return false;">목록</button>
+	
+	
+		<button type="button" id="btnInsert" class="btn btn-default pull-right" onclick="javascript:insert_contents();return false;">등록</button>	
+	
+	
+	
+	
+	<script type="text/javascript">
+	$(document).ready(function() {
+	    $('.form_datetime').datetimepicker({
+	        language:  'ko',
+	        weekStart: 1,
+	        todayBtn:  1,
+			autoclose: 1,
+			todayHighlight: 1,
+			startView: 2,
+			forceParse: 0,
+	        showMeridian: 1
+	    });
+		$('.form_date').datetimepicker({
+	        language:  'ko',
+	        weekStart: 1,
+	        todayBtn:  1,
+			autoclose: 1,
+			todayHighlight: 1,
+			startView: 2,
+			minView: 2,
+			forceParse: 0
+	    });
+		$('.form_time').datetimepicker({
+	        language:  'ko',
+	        weekStart: 1,
+	        todayBtn:  1,
+			autoclose: 1,
+			todayHighlight: 1,
+			startView: 1,
+			minView: 0,
+			maxView: 1,
+			forceParse: 0
+	    });
+	});
+	</script>
+    </div>
+    <!-- /#page-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+</body>
+
+</html>

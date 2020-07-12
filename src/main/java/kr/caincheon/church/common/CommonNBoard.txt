@@ -1,0 +1,503 @@
+package kr.caincheon.church.common;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import kr.caincheon.church.common.base.CommonDao;
+import kr.caincheon.church.common.base.CommonException;
+import kr.caincheon.church.common.base.Const;
+import kr.caincheon.church.common.utils.ImageUtils;
+
+public abstract class CommonNBoard extends CommonDao {
+	
+	private final Logger _logger = Logger.getLogger(this.getClass());
+	
+	/*
+	 * 
+	 */
+	protected String getNBoardCategory(Map<String, Object> _params) throws CommonException {
+        
+        String query = "SELECT NAME FROM "+DB_OWNER+".NBOARD_CATEGORY WHERE B_IDX = "+pnull(_params.get("b_idx"));
+        Map<String, Object> m=null;
+		try {
+			m = super.executeQueryMap(query);
+		} catch (SQLException e) {
+			throw new CommonException(e.getMessage(), e).setSql(query);
+		}
+        return pnull(m , "NAME", null);
+    }
+	
+	/*
+	 * 
+	 */
+	protected String getCIdxsQuery(String b_idxs) throws CommonException {
+		// 쿼리성능 개선을 위해, 서브쿼리가 아닌 별도 쿼리로 변경
+		String b_idx_cause = " C_IDX IN (";
+		
+		List<Map<String, Object>> bidxs=null;
+		String query = "";
+		try {
+			query = "SELECT C_IDX FROM "+DB_OWNER+".NBOARD_CATEGORY WHERE B_IDX IN ("+b_idxs+") AND IS_USE='Y'";
+			bidxs = executeQueryList(query);
+		} catch (SQLException e) {
+			throw new CommonException(e.getMessage(), e).setSql(query);
+		}
+		for(int x = 0, x2 = bidxs.size() ; x < x2 ; x++) {
+			Map<String, Object> row = bidxs.get(x);
+			b_idx_cause = b_idx_cause + (x>0 ? ",":"") + pnull(row.get("C_IDX")) ;
+		}
+		b_idx_cause += ") ";
+		
+		return b_idx_cause;
+	}
+
+	/**
+	 * NBoard의 LIST 및 ContentsView 페이지 모두를 쿼리 할 수 있는 SQL로  b_idx & c_idx & bl_idx 를 사용 할 수 있다.
+	 * @param _params
+	 * @param isViewPage - if false, list page. if true, view page
+	 * @return String - SQL문장
+	 */
+	protected String getSQLSelectNBoard(Map<String, Object> _params, boolean isViewPage, int attachedFileCount) throws CommonException {
+    	
+		D(_logger, Thread.currentThread().getStackTrace(), "CommonNBoard.getSelectSQLNBoard() Called.[ATTACHED_FILE_COUNT="+attachedFileCount+"isViewPage:"+isViewPage+", params:"+_params+"]" );
+		
+		String query = "", strWhereList = "", strWhereView = "";
+    	
+    	String b_idx         = pnull(_params, "b_idx").trim(); // 게시판 코드
+    	String c_idx         = pnull(_params, "c_idx").trim(); // 게시판내 분류코드
+    	String bl_idx        = pnull(_params, "bl_idx").trim();// 게시글 ID
+    	
+    	String schTextGubun  = pnull(_params, "schTextGubun").trim();  // 구분
+    	String schText       = pnull(_params, "schText").trim();       // 검색키워드
+    	
+    	String church_idx    = pnull(_params, "church_idx");    // 교회목록
+    	String depart_idx    = pnull(_params, "depart_idx");    // 부서목록
+    	
+    	String is_view       = pnull(_params, "is_view", "").trim();
+    	String has_content   = pnull(_params, "HAS_CONTENT", ""); // CONTENT 컬럼을 포함해서 목록을 조회 포함할(true) 것인지 말것인지(false)  문자열로 controller or service에서 임의 파라메터를 추가한다.
+    	
+        // Check a front side session :: 게시판권한자는 모든글을 보고 수정해야 함.
+//        Map session_map = (Map)_params.get(SESSION_MAP);
+//        String GROUPGUBUN = pnull(session_map, "GROUPGUBUN");
+//        if(GROUPGUBUN.length() > 0 && pnull(session_map, "WRITEYN").equals("Y")) {
+//        	if (  ( "2".equals(GROUPGUBUN) || "3".equals(GROUPGUBUN) || "4".equals(GROUPGUBUN) )
+//                && pnull(session_map, "CHURCHIDX").length() > 0
+//                ) {
+//        		is_view = "Y";//is_view = "Y', 'N";
+//            } else {
+//            	is_view = "Y";
+//            }
+//        } else 
+//        	is_view = "Y";
+        
+    	String top_count = pnull(_params, "TOP_COUNT", "5"); // 상단고정 갯수 : 관리자는 100개, front는 5개
+    	if(isViewPage) top_count = "1";
+    	if(!isViewPage && top_count.length() == 0) throw new CommonException("상단 고정 갯수 파라메터 누락[Admin Side:100, Front Side:5]"); 
+    	
+    	// for list page
+        if(schText.length() > 0) {
+            if(schTextGubun.equalsIgnoreCase("all"))
+                strWhereList = " AND (TITLE LIKE '%"+schText+"%' OR CONTENT LIKE '%"+schText+"%') ";
+            else
+                strWhereList = " AND "+schTextGubun+" LIKE '%"+schText+"%' ";
+            
+            strWhereView = strWhereList;
+        }
+
+    	if( bl_idx.length() > 0 ) {
+    		strWhereList += " AND BL_IDX="+bl_idx+" ";
+    	}
+    	
+    	if( is_view.length() > 0 ) { 
+    		strWhereList += " AND IS_VIEW IN ('"+is_view+"') ";
+    		strWhereView += " AND IS_VIEW IN ('"+is_view+"') ";
+    	}
+        
+    	if(church_idx.length()>0) {
+    		strWhereList += " AND CHURCH_IDX IN ("+church_idx+") ";
+    	}
+        
+    	if(depart_idx.length()>0) {
+    		strWhereList += " AND DEPART_IDX IN ("+depart_idx+") ";
+    	}
+        
+        // for list page
+    	if(!isViewPage && b_idx.equalsIgnoreCase("ALL")) throw new CommonException("B_IDX가 ALL 은 Service에서 B_idx 그룹으로 변경해야 함.", "ERR-SYS-001");
+    	//if(c_idx.equalsIgnoreCase("ALL")) throw new CommonException("C_IDX가 ALL 은 Service에서 C_idx 그룹으로 변경해야 함.", "ERR-SYS-002");
+    	if(c_idx.equalsIgnoreCase("ALL")) {
+    		c_idx = "SELECT C_IDX FROM "+DB_OWNER+".NBOARD_CATEGORY WHERE B_IDX IN ("+b_idx+") AND IS_USE='Y'";
+    	}
+    	
+    	String b_idx_cuase = " 1=1 "; // TODO 사목자료 조회 : front-side 현업 확인 필요 -> 13, 21 은 포함되어야 하나 ? 이 부분은 일괄 데이터 변경 필요
+    	if ( b_idx.length() > 0 ) {
+			b_idx_cuase += " AND B_IDX IN ("+b_idx+") ";
+    	} else {
+    		throw new CommonException("NBOARD 필수 값인 b_idx or 분류코드가 없습니다.");
+    	}
+    	if(c_idx.length() > 0) {
+    		b_idx_cuase += " AND C_IDX IN ("+c_idx+") ";
+    	}
+
+    	
+    	// merge..
+    	strWhereList = b_idx_cuase+strWhereList;
+    	
+    	// 첨부 쿼리 : 5개까지.
+    	if(attachedFileCount > 5) 
+    		attachedFileCount = 5;
+    	else if(attachedFileCount < 0) 
+    		attachedFileCount=0;
+    	
+    	String attachedFileSQL = "SELECT BU_IDX FROM (SELECT ROW_NUMBER() OVER(ORDER BY BU_IDX DESC) RNUM, * FROM "+DB_OWNER+".NBOARD_UPLOAD WHERE BL_IDX=A1.BL_IDX) X WHERE RNUM"; 
+    	
+
+    	// for view page
+    	String selectFields = ", A1.BL_IDX, A1.C_IDX, A1.B_IDX, A1.TITLE, A1.USER_ID, A1.WRITER, A1.PWD, A1.EMAIL, A1.IS_VIEW, A1.IS_SECRET"
+    			+ ", A1.DEPART_IDX, D.NAME DEPART_NAME, A1.CHURCH_IDX, C.NAME CHURCH_NAME"
+    			+ ", A1.HIT, A1.IS_NOTICE, A1.DISPLAY_YN"
+    			+ ", A1.EVENT_DATE, A1.DOWN_LEVEL, CONVERT(CHAR(10),  A1.REGDATE, 120) REGDATE"
+    			//+ ", CONVERT(CHAR(10),  UPDDATE, 120) UPDDATE " 
+    			;
+    	
+    	if(isViewPage) {
+    		/* view page */
+    		String ttsql =  b_idx_cuase + strWhereView;
+    		selectFields += ", A1.CONTENT ";
+    		selectFields += ", (SELECT TOP 1 BL_IDX FROM "+DB_OWNER+".NBOARD WHERE "+ttsql+" AND BL_IDX>A1.BL_IDX AND IS_VIEW='Y' ORDER BY BL_IDX ASC) AS PRE_BL_IDX ";
+    		selectFields += ", (SELECT TOP 1 BL_IDX FROM "+DB_OWNER+".NBOARD WHERE "+ttsql+" AND BL_IDX<A1.BL_IDX AND IS_VIEW='Y' ORDER BY BL_IDX DESC) AS NEXT_BL_IDX ";
+    	} else if ("true".equalsIgnoreCase(has_content)) {
+    		selectFields += ", A1.CONTENT ";
+    	}
+    	
+    	// Query Combination
+    	query = "SELECT ROW_NUMBER() OVER(ORDER BY NOTICE_TYPE, REGDATE DESC, BL_IDX DESC ) RNUM, NOTICE_TYPE "
+    			+ selectFields 
+    			;
+		for(int i = 1 ; i < attachedFileCount+1 ; i++) {
+			query += ", (SELECT FILENAME    FROM "+DB_OWNER+".NBOARD_UPLOAD A3 WHERE A3.BU_IDX IN ("+attachedFileSQL+"="+i+") ) FILENAME" + i
+	    		   + ", (SELECT FILEPATH    FROM "+DB_OWNER+".NBOARD_UPLOAD A3 WHERE A3.BU_IDX IN ("+attachedFileSQL+"="+i+") ) FILEPATH" + i
+	    		   + ", (SELECT STRFILENAME FROM "+DB_OWNER+".NBOARD_UPLOAD A3 WHERE A3.BU_IDX IN ("+attachedFileSQL+"="+i+") ) STRFILENAME" + i
+	    			; 
+		}
+    	query += ", (SELECT COUNT(*)    FROM "+DB_OWNER+".NBOARD_UPLOAD A3 WHERE A1.BL_IDX=A3.BL_IDX AND IS_USE='Y') FILE_CNT"
+    			+ " FROM (";
+    	
+    	
+    	if(isViewPage) {
+    		/* view page */
+    		query += " SELECT CASE WHEN IS_NOTICE='Y' then '1' ELSE '2' END AS NOTICE_TYPE, * FROM "+DB_OWNER+".NBOARD WHERE BL_IDX='" + bl_idx+"' ";
+    	} else {
+    		/* list page */
+    	query += " SELECT TOP "+top_count+" '1' AS NOTICE_TYPE, A.* FROM (SELECT TOP "+top_count+" * FROM "+DB_OWNER+".NBOARD WHERE "+strWhereList+" AND IS_NOTICE='Y' ORDER BY BL_IDX DESC) A  "
+    			+ " UNION ALL  "
+    			+ " SELECT '2' AS NOTICE_TYPE, * FROM "+DB_OWNER+".NBOARD  WHERE "+strWhereList+" AND IS_NOTICE!='Y' AND "
+    			+ " BL_IDX NOT IN (SELECT TOP "+top_count+" BL_IDX FROM "+DB_OWNER+".NBOARD WHERE "+strWhereList+" AND IS_NOTICE='Y' "
+    			+ " ORDER BY BL_IDX DESC) ";
+    	}
+    	
+    	query += " ) A1 "
+    			+ " LEFT OUTER JOIN "+DB_OWNER+".CHURCH     C ON C.CHURCH_IDX = A1.CHURCH_IDX"
+    			+ " LEFT OUTER JOIN "+DB_OWNER+".DEPARTMENT D ON D.DEPART_IDX = A1.DEPART_IDX";
+    	
+    	return query ;
+    }
+	
+	/**
+	 * if return value is a false, then file not exist or path information is wrong.
+	 * @param _params
+	 * @return String - bu_idx
+	 * @throws SQLException
+	 */
+	protected String deleteUploadedFile(String bl_idx, String strfilename, String CONTEXT_ROOT_PATH) throws SQLException {
+		/*
+		 * 아래와 같이 2개 함수를 동시에 호출하게 된다.
+		 * 
+		 * deleteUploadedFile(bl_idx, CONTEXT_ROOT_PATH);
+		 * deleteUploadedFileDbRecord(bl_idx, strfilename, delFileName);
+		 */
+		String bu_idx = null;
+		D(_logger, Thread.currentThread().getStackTrace(), "EXE Query(1) old file delete option is on.");
+		
+        // file del
+        Map<String, Object> delMap = executeQueryMap( "SELECT BU_IDX, FILEPATH, STRFILENAME FROM "+DB_OWNER+".NBOARD_UPLOAD WHERE BL_IDX=" + bl_idx + " AND STRFILENAME='" + strfilename +"'" ) ;
+        if(delMap!=null && delMap.size() > 1 ) {
+        	bu_idx = pnull(delMap, "BU_IDX");
+        	String dFilepath = pnull(delMap, "STRFILENAME");
+        	boolean isDel = ImageUtils.deleteFileWithThumbnail(CONTEXT_ROOT_PATH, dFilepath);
+        	if(isDel) {
+        		D(_logger, Thread.currentThread().getStackTrace(), "EXE Query(1) File is deleted.[" + dFilepath +"]");
+        	} else {
+        		D(_logger, Thread.currentThread().getStackTrace(), "EXE Query(1) File is not exits.[" + dFilepath +"]");
+        	}
+        }
+        return bu_idx;
+	}
+	
+	/**
+	 * 
+	 */
+	protected int deleteUploadedFileDbRecord(String bl_idx, String strfilename) throws SQLException {
+		String query = "DELETE FROM "+DB_OWNER+".NBOARD_UPLOAD WHERE BL_IDX="+bl_idx+" AND STRFILENAME='"+strfilename+"'";
+		return executeUpdate(query);
+	}
+
+	/**
+	 * 
+	 */
+	protected int deleteUploadedFileDbRecord(String bu_idx) throws SQLException {
+		String query = "DELETE FROM "+DB_OWNER+".NBOARD_UPLOAD WHERE BU_IDX=" + bu_idx;
+		return executeUpdate(query);
+	}
+	
+
+	/**
+	 * 첨부파일(NBOARD_UPLOAD)을 등록한다.
+	 * @param _params
+	 * @param uploadedFiles
+	 * @param callerName
+	 * @return int - insert건수
+	 * @throws SQLException
+	 */
+	protected int executeInsertNBoardUploaded(Map _params, List uploadedFiles, int bl_idx, String callerName) throws SQLException {
+		int rtVal = 0;
+		if( uploadedFiles.size() > 0 ) {
+			LinkedHashMap<String, Object> lmap = null;
+			
+			String fileUploadedURI  = pnull(_params, "CONTEXT_URI_PATH");
+			String maxIdxSQL = " (SELECT ISNULL(MAX(BU_IDX), 0) + 1 FROM "+DB_OWNER+".NBOARD_UPLOAD) ";
+			String query = "INSERT INTO "+DB_OWNER+".NBOARD_UPLOAD /* CommonNBoard."+callerName+" */ "
+							+ "(BU_IDX, IS_USE, USERID, BL_IDX"
+							+ ", FILESIZE,FILEPATH,FILENAME,STRFILENAME"
+							+ ", FILETYPE)  VALUES ( "+maxIdxSQL+ ", ?, ?, "+bl_idx
+							+ ", ?, '"+fileUploadedURI+"', ?, ?"
+							+ ", NULL )";
+			
+			D(_logger, Thread.currentThread().getStackTrace(), "CommonNBarod Insert[attached files] Called.[params:"+_params+", uploadedFiles="+uploadedFiles+"]\n\tSQL : " + query );
+			for (int i = 0; i < uploadedFiles.size(); i++) {
+				Map tmp = (Map) uploadedFiles.get(i);
+				D(_logger, Thread.currentThread().getStackTrace(), "CommonNBarod Insert[attached files] Called.[Map tmp:"+tmp+", lmap="+lmap+"]" );
+				lmap = getLinkedHashMap( pnull(tmp, "IS_USE", "Y"), pnull(tmp, "USER_ID", SITE_ADMIN) 
+						               , pnull(tmp, "FILE_SIZE", "0"), pnull(tmp.get("ORIGINAL_FILE_NAME")), pnull(tmp.get("STORED_FILE_NAME"))
+						);
+				
+				rtVal += executeUpdatePreparedStatement(query, lmap);
+				lmap.clear();
+			}
+			lmap.clear();
+			lmap = null;
+		}
+		
+		return rtVal;
+	}
+	
+	/**
+	 * NBOARD에 글을 등록
+	 * @throws Exception 
+	 */
+	protected int executeInsertNBoard(Map _params, List uploadedFiles, String callerName) throws Exception {
+		
+		D(_logger, Thread.currentThread().getStackTrace(), "CommonNBarod Insert Called.[params:"+_params+", uploadedFiles="+uploadedFiles+"]" );
+		
+		int rtVal = 0;
+		
+		String is_view    = pnull(_params, "is_view", "Y");
+		String b_idx      = pnull(_params, "b_idx");
+		String c_idx      = pnull(_params, "c_idx");
+		String depart_idx = pnull(_params, "depart_idx");
+		String church_idx = pnull(_params, "church_idx");
+		String email      = pnull(_params, "email");
+		String is_secret  = pnull(_params, "is_secret", "N");
+		
+		// 작성자 , 일반사용자라면, MEM_ID로 저장되고, super admin 이면 ADM_MEM_ID로 저장된다.
+		Map _AdmMap = (Map)_params.get("__SESSION_MAP__");
+		String writerId = pnull(_AdmMap, Const.SESSION_KEY_MEM_ID, pnull(_AdmMap, Const.SESSION_KEY_ADM_MEM_ID));
+		String writerNm = pnull(_AdmMap, Const.SESSION_KEY_MEM_NM, pnull(_AdmMap, Const.SESSION_KEY_ADM_MEM_NM));
+		
+		// 소속
+		
+		
+		//
+		String query ="";
+		LinkedHashMap<String, Object> lmap = getLinkedHashMap(
+				//pnull(_params, "title"), pnull(_params, "contents"), pnull(_params, "user_id"), pnull(_params, "writer", "admin")
+				  pnull(_params, "title"), pnull(_params, "contents"), writerId, writerNm
+				, depart_idx, church_idx
+				, pnull(_params, "is_notice", "N")
+				, c_idx
+				, pnull(_params, "event_date"), pnull(_params, "down_level", "A")
+				);
+		// on the board
+		String maxIdxSQL = " SELECT ISNULL(MAX(BL_IDX), 0) + 1 AS BL_IDX FROM "+DB_OWNER+".NBOARD ";
+		int max_bl_idx = executeCount(maxIdxSQL, false);
+		//
+		while(true) {
+			query = "INSERT INTO "+DB_OWNER+".NBOARD /* CommonNBoard.executeInsertNBoard, From:"+callerName+" */ ("
+					+ "  bl_idx"
+					+ ", title, content, user_id, writer, pwd, regdate, upddate, email, is_view, is_secret"
+					+ ", depart_idx, church_idx"
+					+ ", hit, b_idx, is_notice"
+					+ ", c_idx"
+					+ ", event_date, down_level "
+					+ ")  VALUES ("
+					+ " "+ max_bl_idx 
+					+ ", ?, ?, ?, ?, '', GETDATE(), NULL, '"+email+"', '"+is_view+"',  '"+is_secret+"'"
+					+ ", ?, ?"
+					+ ", 0, "+b_idx+", ?"
+					+ ", ?"
+					+ ", ?, ?)";
+			try {
+				rtVal = executeUpdatePreparedStatement(query, lmap);
+				if(rtVal>0) 
+					break;
+			} catch (SQLException e) {
+				max_bl_idx++; // PK dup
+				E(_logger, Thread.currentThread().getStackTrace(), "Error SQL[FK:ll_idx"+max_bl_idx+"]: "+query );
+				e.printStackTrace();
+			}
+		}
+		D(_logger, Thread.currentThread().getStackTrace(), "CommonNBarod Insert Result : [insert : "+rtVal+", max_bl_idx="+max_bl_idx+"]" );
+		
+		// on the attached file
+		int rn = 0;
+		if(rtVal > 0 && uploadedFiles.size() > 0) {
+			// insert
+			rn += executeInsertNBoardUploaded(_params, uploadedFiles, max_bl_idx, callerName);
+		}
+		
+		D(_logger, Thread.currentThread().getStackTrace(), "CommonNBarod Insert Result : [uploaded Files:"+rn+"/"+uploadedFiles.size()+"]" );
+		
+		return rtVal;
+	}
+	
+
+	
+//	private int executeUpdateNBoard(Map _params, List uploadedFiles) throws SQLException {
+//		int rtVal = 0;
+//
+//		String is_view    = pnull(_params, "is_view");
+//		String b_idx      = pnull(_params, "b_idx");
+//		String c_idx      = pnull(_params, "c_idx");
+//		String depart_idx = pnull(_params, "depart_idx");
+//		String church_idx = pnull(_params, "church_idx");
+//		String email      = pnull(_params, "email");
+//		String is_secret  = pnull(_params, "is_secret", "N");
+//		
+//		//
+//		String query ="";
+//		LinkedHashMap<String, Object> lmap = getLinkedHashMap(
+//				  pnull(_params, "title"), pnull(_params, "contents"), pnull(_params, "user_id"), pnull(_params, "writer")
+//				, pnull(_params, "is_notice", "N"), pnull(_params, "event_date"), pnull(_params, "down_level", "A")
+//				, b_idx
+//				);
+//		query = "UPDATE "+DB_OWNER+".NBOARD SET "
+//				+ "  TITLE= ?, CONTENT = ?,  USER_ID = ?,  WRITER = ?"
+//				+ ", IS_NOTICE = ?, EVENT_DATE = ?, DOWN_LEVEL = ?"
+//				+ ", B_IDX = " + b_idx 
+//				+ ", UPDDATE = getdate()"
+//				+ ", IS_VIEW = '"+is_view+"' "
+//				+ ", IS_SECRET = '"+is_secret+"' "
+//				+ (email.length() == 0 ? "": ", EMAIL = '"+email+"' ")
+//				+ (church_idx.length() == 0 ? "": ", CHURCH_IDX = "+church_idx)
+//				+ (depart_idx.length() == 0 ? "": ", DEPART_IDX = "+depart_idx)
+//				+ ", C_IDX =(" + c_idx + ") "
+//				+ " WHERE BL_IDX = ? ";
+//		rtVal = executeUpdatePreparedStatement(query, lmap);
+//		
+//		// attach files update
+//		if(rtVal > 0) {
+//			String fileUploadedURI  = pnull(_params, "CONTEXT_URI_PATH"); 
+//			String fileUploadedPath = pnull(_params, "CONTEXT_ROOT_PATH");
+//		}
+//		
+//		
+//		return rtVal;
+//	}
+	
+	/**
+	 * 등록된 첨부 자료를 삭제한다.
+	 */
+	protected int deleteAttachedFilesNboardUpload(Map _params)  throws Exception {
+		int rn5 = 0;
+		//String uploadedFileURI  = pnull(_params, "CONTEXT_URI_PATH"); // "/upload/news/"
+		String uploadedFileRootPath = pnull(_params, "CONTEXT_ROOT_PATH", getSession(_params, "CONTEXT_ROOT"));// "d:/newcaincheon/webapps/upload/news/"
+
+		// files delete
+		try {
+			String bl_idx = pnull(_params, "bl_idx");
+			for(int i=1; i<6; i++) {
+				String strfilename = pnull(_params, "delFile"+i);
+				if (strfilename.length() > 0) {
+					String bu_idx = deleteUploadedFile(bl_idx, strfilename, uploadedFileRootPath);
+					rn5 += deleteUploadedFileDbRecord(bu_idx);
+					//rn5 = deleteUploadedFileDbRecord(bl_idx, strfilename);
+					D(_logger, Thread.currentThread().getStackTrace(), "delete file ["+ i +"]. is del a file : "+(bu_idx==null ? "not exists":bu_idx) );
+					D(_logger, Thread.currentThread().getStackTrace(), "delete db ["+ i +"]. result count rn : "+rn5 );
+				}
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+		return rn5;
+	}
+	
+	/**
+	 * 첨부 파일을 등록한다.
+	 */
+	protected int insertAttachedFilesNboardUpload(Map _params, List uploadedFiles, String registerId)  throws Exception {
+		
+		D(_logger, Thread.currentThread().getStackTrace(), "CommonNBoard Common Attached File List Insert .[uploaded file list:"+uploadedFiles+"]" );
+		
+		int rn4 = 0;
+		PreparedStatement preparedStatement = null;
+		String uploadedFileURI  = pnull(_params, "CONTEXT_URI_PATH"); // "/upload/news/"
+		//String uploadedFileRootPath = pnull(_params, "CONTEXT_ROOT_PATH");// "d:/newcaincheon/webapps/upload/news/"
+		
+		// file upload
+		try {
+			String query = "INSERT INTO "+DB_OWNER+".NBOARD_UPLOAD (bu_idx, filepath, filesize, is_use,userid,filename,bl_idx,filetype,strfilename"
+					+ ")  values("
+					+ " (select ISNULL(MAX(BU_IDX), 0) + 1 from "+DB_OWNER+".nboard_upload) "
+					+ ", ?,?,?,?,?,?,NULL,?) ";
+			
+			D(_logger, Thread.currentThread().getStackTrace(), "INSERT query :"+query );
+			D(_logger, Thread.currentThread().getStackTrace(), "INSERT query fileUploadedURI:"+uploadedFileURI );
+			
+			preparedStatement = getPreparedStatement(query);
+			for (int i = 0; i < uploadedFiles.size(); i++) {
+				Map tmp = (Map) uploadedFiles.get(i);
+				preparedStatement.setString(1, uploadedFileURI);
+				preparedStatement.setString(2, pnull(tmp.get("FILE_SIZE")));
+				preparedStatement.setString(3, pnull(tmp.get("IS_USE"), "Y"));
+				preparedStatement.setString(4, registerId);
+				preparedStatement.setString(5, pnull(tmp.get("ORIGINAL_FILE_NAME")));
+				preparedStatement.setString(6, pnull(_params, "bl_idx"));
+				preparedStatement.setString(7, pnull(tmp.get("STORED_FILE_NAME")));
+				int x = preparedStatement.executeUpdate();
+				rn4 += x;
+				D(_logger, Thread.currentThread().getStackTrace(), "Inserted NBOARD_UPLOAD result: 현재건수:"+x+ ", 누적건수:"+rn4 );
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			commit();
+		}
+		return rn4;
+	}
+	
+}
+

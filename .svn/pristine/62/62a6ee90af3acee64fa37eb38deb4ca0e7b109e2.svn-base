@@ -1,0 +1,95 @@
+// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.kpdus.com/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   PriestService.java
+
+package kr.caincheon.church.father.service;
+
+import java.sql.Connection;
+import java.util.List;
+import java.util.Map;
+
+import kr.caincheon.church.common.CommonDaoDTO;
+import kr.caincheon.church.common.CommonException;
+
+public interface PriestService
+{
+
+    public abstract CommonDaoDTO priestList(Map _params) throws Exception;
+
+    public abstract CommonDaoDTO priestContents(Map _params) throws Exception;
+
+    public abstract boolean priestMailSend(Map _params)
+        throws CommonException;
+
+    public abstract CommonDaoDTO holyList(Map _params) throws Exception;
+
+    public abstract Map holyContents(Map _params) throws Exception;
+
+    // 선종사제 관련
+    public abstract CommonDaoDTO befPriestList(Map _params) throws Exception;
+
+    public abstract CommonDaoDTO befPriestContents(Map _params) throws Exception;
+
+    public abstract boolean befPriestInsert(Map _params) throws Exception;
+
+    public abstract boolean befPriestModify(Map _params) throws Exception;
+
+    public abstract boolean befPriestDelete(Map _params) throws Exception;
+
+    
+    // 사제 관련
+    public abstract CommonDaoDTO admPriestList(Map _params) throws Exception;
+    
+    //public abstract int admPriestListCount(Map _params);
+
+    public abstract Map admPriestContents(Map _params) throws Exception;
+
+    public abstract List admPriestDCodeList(Map _params) throws Exception;
+
+    public abstract boolean admPriestInsert(Map _params) throws Exception;
+
+    public abstract boolean admPriestModify(Map _params) throws Exception;
+
+    public abstract boolean admPriestDelete(Map _params) throws Exception;
+
+    public abstract boolean admPriestDepartDelete(Map _params) throws Exception;
+
+//    public abstract List brialPlaceList(Map _params) throws Exception;
+
+    // 선종사제 묘소 등록
+    public abstract boolean befPriestTombInsert(Map _params) throws Exception;
+
+    // 선종사제 묘소 삭제
+    public abstract boolean befPriestTombDelete(Map _params) throws Exception;
+    
+    /*
+     * 발령정보 upsert 처리
+     */
+    public CommonDaoDTO upsertPreistAssign(Map _params) throws Exception;
+
+    /*
+     * 발령정보 delete 처리
+     */
+    public CommonDaoDTO deletePreistAssign(Map _params) throws Exception;
+    
+    /*
+     * 사제 발령 정보를 조회한다.
+     */
+    public List selectOrgDepartmentPriestRel(Map _params) throws Exception;
+    
+    // 통합검색 시작시 conneciton 생성하여 1개로만 검색을 하기 위함.
+    public Connection getConn();
+    // 통합검색이 종료시 객체를 닫는다.
+    public void closeConn();
+    
+    /*
+     * 통합검색 서비스 :: 사제 ( Called by UnifySearchServiceImpl)
+     */
+    public List unifySearchPriest(Map _params) throws Exception ;
+    
+    /*
+     * 통합검색 서비스 :: 선종사제 ( Called by UnifySearchServiceImpl)
+     */
+    public List unifySearchPriestOld(Map _params) throws Exception ;
+}

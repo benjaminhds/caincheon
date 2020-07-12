@@ -1,0 +1,357 @@
+// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.kpdus.com/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   BannerDaoImpl.java
+
+package kr.caincheon.church.dao;
+
+import java.io.PrintStream;
+import java.sql.*;
+import java.util.*;
+import javax.sql.DataSource;
+import kr.caincheon.church.common.*;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
+// Referenced classes of package kr.caincheon.church.dao:
+//            BannerDao
+
+
+@Repository("bannerDao")
+public class BannerDaoImpl extends CommonDao
+    implements BannerDao
+{
+
+
+    public List bannerList(Map _params)
+    {
+        String whereStr;
+        int startRnum;
+        int endRnum;
+        List result;
+        ResultSet rs;
+        _logger.debug(" .... This is a DAO ....");
+        System.out.println((new StringBuilder(" .... This is a DAO .... dataSource=")).append(dataSource).toString());
+        _logger.debug((new StringBuilder("_params=")).append(_params.toString()).toString());
+        String searchGubun = "";
+        String searchText = UtilString.pnull(_params.get("searchText"));
+        whereStr = "";
+        int pageNo = Integer.parseInt(UtilString.pnull(_params.get("pageNo"), "1"));
+        startRnum = (pageNo - 1) * 10 + 1;
+        endRnum = pageNo * 10;
+        if(searchText != null && searchText.length() > 0)
+        {
+            searchGubun = UtilString.pnull(_params.get("searchGubun"));
+            if(searchGubun.equals("title"))
+                whereStr = (new StringBuilder(" AND TITLE LIKE '%")).append(searchText).append("%'").toString();
+            else
+            if(searchGubun.equals("url"))
+                whereStr = (new StringBuilder(" AND URL LIKE '%")).append(searchText).append("%'").toString();
+        }
+        result = new ArrayList();
+        rs = null;
+        String query = "";
+        try
+        {
+            query = (new StringBuilder("SELECT * FROM  (SELECT ROW_NUMBER() OVER(ORDER BY OPEN_SEQ) RNUM, BANNER_NO, ID, NAME, POST_TYPE,  CONVERT(varchar(16),  POST_DATE_FROM, 120) POST_DATE_FROM, CONVERT(varchar(16),  POST_DATE_TO, 120) POST_DATE_TO,  IMG, URL, LINK_TYPE, OPEN_YN,  CASE WHEN OPEN_YN = 'Y' THEN '\uB178\uCD9C'  ELSE\t'\uBE44\uB178\uCD9C'  END AS OPEN_YN_TEXT,  OPEN_SEQ, TITLE, USE_YN,  CASE WHEN USE_YN = 'Y' THEN '\uC0AC\uC6A9'  ELSE\t'\uC911\uC9C0'  END AS USE_YN_TEXT,  CONVERT(varchar(10),  registDT, 120) registDT, CONVERT(varchar(10),  updateDT, 120) updateDT  FROM newcaincheon.newcaincheon.BANNER_BOX WHERE 1=1 ")).append(whereStr).append(" ) ROWS ").append(" WHERE RNUM BETWEEN ").append(startRnum).append(" AND ").append(endRnum).toString();
+            _logger.info((new StringBuilder("[BANNER LIST QUERY] = ")).append(query).toString());
+            rs = super.executeQuery(query);
+            result = ResultSetHandler.conversion(rs);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        } finally {
+        	freeResultSet(rs);
+        	free();
+    	}
+        _logger.info((new StringBuilder("[BANNER LIST QUERY RESULT] =")).append(result.toString()).toString());
+        return result;
+    }
+
+    public int bannerListCount(Map _params)
+    {
+        String whereStr;
+        int result;
+        ResultSet rs;
+        _logger.debug(" .... This is a DAO ....");
+        System.out.println((new StringBuilder(" .... This is a DAO .... dataSource=")).append(dataSource).toString());
+        _logger.debug((new StringBuilder("_params=")).append(_params.toString()).toString());
+        String searchGubun = "";
+        String searchText = UtilString.pnull(_params.get("searchText"));
+        whereStr = "";
+        if(searchText != null && searchText.length() > 0)
+        {
+            searchGubun = UtilString.pnull(_params.get("searchGubun"));
+            if(searchGubun.equals("title"))
+                whereStr = (new StringBuilder(" AND TITLE LIKE '%")).append(searchText).append("%'").toString();
+            else
+            if(searchGubun.equals("url"))
+                whereStr = (new StringBuilder(" AND URL LIKE '%")).append(searchText).append("%'").toString();
+        }
+        result = 0;
+        rs = null;
+        String query = "";
+        try
+        {
+            query = (new StringBuilder("SELECT count(1) FROM newcaincheon.newcaincheon.BANNER_BOX WHERE 1=1 ")).append(whereStr).toString();
+            rs = super.executeQuery(query);
+            if(rs.next())
+                result = rs.getInt(1);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        } finally {
+        	freeResultSet(rs);
+        	free();
+    	}
+        return result;
+    }
+
+    public Map bannerContents(Map _params)
+    {
+        Map result;
+        ResultSet rs;
+        String query_type="";
+        String query = "";
+        String banner_no="";
+        _logger.info((new StringBuilder("_params=")).append(_params.toString()).toString());
+        result = new HashMap();
+        rs = null;
+        query_type = UtilString.pnull(_params.get("query_type"));
+        banner_no = UtilString.pnull(_params.get("banner_no"));
+        String whereStr = "";
+        try
+        {
+            if(query_type.equals("modify"))
+            {
+                whereStr = (new StringBuilder(" WHERE BANNER_NO = '")).append(banner_no).append("'").toString();
+                query = (new StringBuilder("SELECT BANNER_NO, ID, NAME, POST_TYPE,  CONVERT(VARCHAR(16), POST_DATE_FROM, 120) POST_DATE_FROM, CONVERT(VARCHAR(16), POST_DATE_TO, 120) POST_DATE_TO,  IMG, URL, LINK_TYPE, OPEN_YN, OPEN_SEQ, TITLE, USE_YN,  CONVERT(VARCHAR(10), REGISTDT, 120) REGISTDT, CONVERT(VARCHAR(10), UPDATEDT, 120) UPDATEDT  FROM newcaincheon.newcaincheon.BANNER_BOX ")).append(whereStr).toString();
+                _logger.info((new StringBuilder("query=")).append(query).toString());
+                rs = super.executeQuery(query);
+                if(rs.next())
+                {
+                    result.put("BANNER_NO", Integer.valueOf(rs.getInt(1)));
+                    result.put("ID", rs.getString(2));
+                    result.put("NAME", rs.getString(3));
+                    result.put("POST_TYPE", rs.getString(4));
+                    result.put("POST_DATE_FROM", rs.getString(5));
+                    result.put("POST_DATE_TO", rs.getString(6));
+                    result.put("IMG", rs.getString(7));
+                    result.put("URL", rs.getString(8));
+                    result.put("LINK_TYPE", rs.getString(9));
+                    result.put("OPEN_YN", rs.getString(10));
+                    result.put("OPEN_SEQ", Integer.valueOf(rs.getInt(11)));
+                    result.put("TITLE", rs.getString(12));
+                    result.put("USE_YN", rs.getString(13));
+                    result.put("REGISTDT", rs.getString(14));
+                    result.put("UPDATEDT", rs.getString(15));
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        } finally {
+        	freeResultSet(rs);
+        	free();
+    	}
+        _logger.info((new StringBuilder("result=")).append(result.toString()).toString());
+        return result;
+    }
+
+    public boolean bannerInsert(Map _params)
+    {
+        String id;
+        String post_type;
+        String post_date_from;
+        String post_date_to;
+        String imgfile;
+        String url;
+        String link_type;
+        String open_yn;
+        String open_seq;
+        String title;
+        String use_yn;
+        Map memberInfo;
+        int result;
+        Connection connection;
+        PreparedStatement preparedStatement;
+        _logger.info((new StringBuilder(" .... This is a DAO ....dataSource=")).append(dataSource).toString());
+        _logger.info((new StringBuilder("_params=")).append(_params.toString()).toString());
+        id = UtilString.pnull(_params.get("id"));
+        post_type = UtilString.pnull(_params.get("post_type"));
+        post_date_from = UtilString.pnull(_params.get("post_date_from"));
+        post_date_to = UtilString.pnull(_params.get("post_date_to"));
+        imgfile = UtilString.pnull(_params.get("imgfile"));
+        url = UtilString.pnull(_params.get("url"));
+        link_type = UtilString.pnull(_params.get("link_type"));
+        open_yn = UtilString.pnull(_params.get("open_yn"));
+        open_seq = UtilString.pnull(_params.get("open_seq"));
+        title = UtilString.pnull(_params.get("title"));
+        use_yn = "Y";
+        memberInfo = getMember(_params);
+        result = 0;
+        connection = null;
+        preparedStatement = null;
+        try
+        {
+        	if(connection==null || connection.isClosed()) connection = dataSource.getConnection();
+            String query = "INSERT INTO newcaincheon.newcaincheon.BANNER_BOX  (id, name, post_type, post_date_from, post_date_to, img, url, link_type, open_yn, open_seq, title, use_yn,  registDT, updateDT)  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, getdate(),getdate())";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, id);
+            preparedStatement.setString(2, UtilString.pnull(memberInfo.get("NAME")));
+            preparedStatement.setString(3, post_type);
+            preparedStatement.setString(4, post_date_from);
+            preparedStatement.setString(5, post_date_to);
+            preparedStatement.setString(6, imgfile);
+            preparedStatement.setString(7, url);
+            preparedStatement.setString(8, link_type);
+            preparedStatement.setString(9, open_yn);
+            preparedStatement.setString(10, open_seq);
+            preparedStatement.setString(11, title);
+            preparedStatement.setString(12, use_yn);
+            result = preparedStatement.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        } finally {
+        	if(preparedStatement != null) try { preparedStatement.close(); } catch ( Exception e ) { e.printStackTrace(); }
+            if(connection != null) try { connection.close();} catch ( Exception e ) { e.printStackTrace(); }
+        	free();
+    	}
+        return result > 0;
+    }
+
+    public boolean bannerModify(Map _params)
+    {
+        String id;
+        String banner_no;
+        String post_type;
+        String post_date_from;
+        String post_date_to;
+        String imgfile;
+        String url;
+        String link_type;
+        String open_yn;
+        String open_seq;
+        String title;
+        String use_yn;
+        Map memberInfo;
+        int result;
+        Connection connection;
+        PreparedStatement preparedStatement;
+        _logger.info((new StringBuilder(" .... This is a DAO (modify)....dataSource=")).append(dataSource).toString());
+        _logger.info((new StringBuilder("_params=")).append(_params.toString()).toString());
+        id = UtilString.pnull(_params.get("id"));
+        banner_no = UtilString.pnull(_params.get("banner_no"));
+        post_type = UtilString.pnull(_params.get("post_type"));
+        post_date_from = UtilString.pnull(_params.get("post_date_from"));
+        post_date_to = UtilString.pnull(_params.get("post_date_to"));
+        imgfile = UtilString.pnull(_params.get("imgfile"));
+        url = UtilString.pnull(_params.get("url"));
+        link_type = UtilString.pnull(_params.get("link_type"));
+        open_yn = UtilString.pnull(_params.get("open_yn"));
+        open_seq = UtilString.pnull(_params.get("open_seq"));
+        title = UtilString.pnull(_params.get("title"));
+        use_yn = "Y";
+        memberInfo = getMember(_params);
+        result = 0;
+        connection = null;
+        preparedStatement = null;
+        if(UtilString.pnull(_params.get("delFile")).equals("Y"))
+            imgfile = "";
+        try
+        {
+        	if(connection==null || connection.isClosed()) connection = dataSource.getConnection();
+            String query = "UPDATE newcaincheon.newcaincheon.BANNER_BOX  SET name=?, post_type=?, post_date_from=?, post_date_to=?,  img=?, url=?, link_type=?, open_yn=?, open_seq=?, title=?, use_yn=?, updateDT=getdate()  WHERE banner_no = ? and id= ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, UtilString.pnull(memberInfo.get("NAME")));
+            preparedStatement.setString(2, post_type);
+            preparedStatement.setString(3, post_date_from);
+            preparedStatement.setString(4, post_date_to);
+            preparedStatement.setString(5, imgfile);
+            preparedStatement.setString(6, url);
+            preparedStatement.setString(7, link_type);
+            preparedStatement.setString(8, open_yn);
+            preparedStatement.setString(9, open_seq);
+            preparedStatement.setString(10, title);
+            preparedStatement.setString(11, use_yn);
+            preparedStatement.setInt(12, Integer.parseInt(banner_no));
+            preparedStatement.setString(13, id);
+            _logger.info((new StringBuilder("query=")).append(query).toString());
+            result = preparedStatement.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        } finally {
+        	
+        	if(preparedStatement != null) try { preparedStatement.close(); } catch ( Exception e ) { e.printStackTrace(); }
+            if(connection != null) try { connection.close();} catch ( Exception e ) { e.printStackTrace(); }
+        	free();
+    	}
+        return result > 0;
+    }
+
+    public boolean bannerDelete(Map _params)
+    {
+        boolean bReturn;
+        String banner_no;
+        Connection connection;
+        PreparedStatement preparedStatement;
+        bReturn = true;
+        _logger.info((new StringBuilder(" .... This is a DAO ....dataSource=")).append(dataSource).toString());
+        _logger.info((new StringBuilder("INQUIRE_APPLY Delete..._params=")).append(_params.toString()).toString());
+        banner_no = UtilString.pnull(_params.get("banner_no"));
+        connection = null;
+        preparedStatement = null;
+        try
+        {
+        	if(connection==null || connection.isClosed()) connection = dataSource.getConnection();
+            String query = "delete from newcaincheon.newcaincheon.BANNER_BOX where banner_no = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, Integer.parseInt(banner_no));
+            int i = preparedStatement.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            bReturn = false;
+        } finally {
+        	
+        	if(preparedStatement != null) try { preparedStatement.close(); } catch ( Exception e ) { e.printStackTrace(); }
+            if(connection != null) try { connection.close();} catch ( Exception e ) { e.printStackTrace(); }
+        	free();
+    	}
+        return bReturn;
+    }
+
+    public Map getMember(Map _params)
+    {
+        Map result;
+        ResultSet rs;
+        result = new HashMap();
+        rs = null;
+        try
+        {
+            String query = (new StringBuilder("SELECT ADM_NAME AS NAME FROM newcaincheon.newcaincheon.ADMMEMBER WHERE ADM_ID='")).append(_params.get("id")).append("' ").toString();
+            rs = super.executeQuery(query);
+            if(rs.next())
+                result.put("NAME", rs.getString(1));
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        } finally {
+        	freeResultSet(rs);
+        	free();
+    	}
+        _logger.debug((new StringBuilder("result=")).append(result.toString()).toString());
+        return result;
+    }
+
+    private final Logger _logger = Logger.getLogger(getClass());
+}

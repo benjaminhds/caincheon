@@ -1,0 +1,22 @@
+package kr.caincheon.church.member.service;
+
+import java.util.Map;
+
+import kr.caincheon.church.common.CommonDaoDTO;
+import kr.caincheon.church.common.CommonException;
+
+public interface InqService
+{
+	
+    public CommonDaoDTO inqList(Map map, boolean isAdmin);
+
+    public Map inqContents(Map map, boolean isAdmin);
+
+    public boolean inqInsert(Map map, boolean isAdmin) throws CommonException;
+
+    public boolean inqModify(Map map, boolean isAdmin);
+
+    public boolean inqDelete(Map map, boolean isAdmin);
+    
+    
+}

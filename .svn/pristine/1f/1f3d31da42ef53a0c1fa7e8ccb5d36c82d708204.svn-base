@@ -1,0 +1,198 @@
+package kr.caincheon.church.admin.serivce;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import kr.caincheon.church.admin.dao.CodeDao;
+import kr.caincheon.church.common.CommonDaoDTO;
+import kr.caincheon.church.common.CommonException;
+import kr.caincheon.church.common.CommonSQL;
+import kr.caincheon.church.common.CommonService;
+import kr.caincheon.church.common.Const;
+
+
+@Service("codeService")
+public class CodeServiceImpl extends CommonService implements CodeService
+{
+    private final Logger _logger = Logger.getLogger(getClass());
+    
+    
+    @Resource(name="codeDao")
+    private CodeDao codeDao;
+    
+    //============= code management ==================
+    
+	@Override
+	public int insertCode(Map params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		int i = codeDao.insertCode(params);
+		D(_logger, Thread.currentThread().getStackTrace(), ".. Return : " + i );
+		return i;
+	}
+
+	@Override
+	public int updateCode(Map params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		int i = codeDao.updateCode(params);
+		D(_logger, Thread.currentThread().getStackTrace(), ".. Return : " + i );
+		return i;
+	}
+
+	@Override
+	public int deleteCode(Map params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		int i = codeDao.deleteCode(params);
+		D(_logger, Thread.currentThread().getStackTrace(), ".. Return : " + i );
+		return i;
+	}
+
+	@Override
+	public Map selectCode(Map params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		List<Map> l = codeDao.selectCode(params);
+		D(_logger, Thread.currentThread().getStackTrace(), ".. Return : " + l );
+		return l==null||l.size()<1 ? new HashMap():(Map)l.get(0);
+	}
+
+	@Override
+	public Map selectCodes(Map params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		
+		List rtList = null;
+		int  rtTotal = -1;
+		
+		try {
+			rtList  = codeDao.selectCode(params);
+			rtTotal = codeDao.executeCount();
+		} catch (SQLException e) {
+			throw new CommonException(e.getMessage(), "ERR-900", e);
+		}
+		
+		D(_logger, Thread.currentThread().getStackTrace(), ".. Return : " + rtList );
+		
+		// return 
+		String pageNo   = pnull(params, "pageNo",   "1");
+		String pageSize = pnull(params, "pageSize", "20");
+		params.put(Const.ADM_MAPKEY_LIST,  rtList==null ? new ArrayList() : rtList);
+		params.put(Const.ADM_MAPKEY_COUNT, rtTotal);
+		setPaging(params, pageNo, pageSize, rtTotal);
+		
+		return null;
+	}
+
+
+    //============= code-instance management ==================
+
+    /** 코드인스턴스를 리턴 */
+	@Override
+    public int iudCodeInstance(Map params) throws CommonException, Exception {
+    	int i = -1;
+    	String mode = pnull(params, "mode");
+    	if("i".equalsIgnoreCase(mode)) {
+    		i = insertCodeInstance(params);
+    	} else if("u".equalsIgnoreCase(mode)) {
+    		i = updateCodeInstance(params);
+    	} else if("d".equalsIgnoreCase(mode)) {
+    		i = deleteCodeInstance(params);
+    	}
+		return i;
+    }
+    
+	
+	@Override
+	public int insertCodeInstance(Map _params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		
+		// 자동채번
+		String code      = pnull(_params, "code");
+		pnullPut(_params, "code_inst", "(SELECT MAX(CODE_INST)+1 FROM "+CommonSQL.DB_OWNER+".CODE_INSTANCE WHERE CODE='"+code+"')" );
+		
+		int i = codeDao.insertCodeInstance(_params);
+		D(_logger, Thread.currentThread().getStackTrace(), ".. Return : " + i );
+		return i;
+	}
+
+	@Override
+	public int updateCodeInstance(Map params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		int i = codeDao.updateCodeInstance(params);
+		D(_logger, Thread.currentThread().getStackTrace(), ".. Return : " + i );
+		return i;
+	}
+
+	@Override
+	public int deleteCodeInstance(Map params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		int i = codeDao.deleteCodeInstance(params);
+		D(_logger, Thread.currentThread().getStackTrace(), ".. Return : " + i );
+		return i;
+	}
+
+	@Override
+	public Map selectCodeInstance(Map params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		List<Map> l = codeDao.selectCodeInstance(params);
+		D(_logger, Thread.currentThread().getStackTrace(), ".. List : " + l );
+		D(_logger, Thread.currentThread().getStackTrace(), ".. Return Row : " + (l.size() > 0 ? l.get(0):null) );
+		return l==null||l.size()<1 ? new HashMap():(Map)l.get(0);
+	}
+
+	@Override
+	public CommonDaoDTO selectCodeInstanceList(Map params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		try {
+			params.remove("use_yn");//사용중
+			params.remove("del_yn");//미삭제코드
+			pnullPut(params, "orderby", "CODE_INST ASC, ORDER_NO ASC");//정렬
+			
+			dto.daoList  = codeDao.selectCodeInstance(params);
+			dto.daoTotalCount = codeDao.executeCount();
+			
+			// 목록에서 memo 컬럼의 \n 제거
+			checkMemoColumn(dto.daoList); 
+			
+		} catch (SQLException e) {
+			throw new CommonException(e.getMessage(), "ERR-900", e);
+		}
+		
+		D(_logger, Thread.currentThread().getStackTrace(), ".. Return : " + dto.daoList );
+		
+		// return 
+		String pageNo   = pnull(params, "pageNo",   "1");
+		String pageSize = pnull(params, "pageSize", "20");
+		setPaging(dto, pageNo, pageSize, dto.daoTotalCount);
+		
+		return dto;
+	}
+
+	/** 코드인스턴스의 메모값을 조회 */
+	@Override
+	public List<Map> selectedAreaCodeMapPolygonPath(Map params) throws CommonException, Exception {
+		List<Map> rtList = codeDao.selectedAreaCodeMapPolygonPath(params);
+		return rtList ;
+	}
+
+	private void checkMemoColumn(List<Map> rtList) {
+		if(rtList!=null && rtList.size()>0) {
+			String tmp = "";
+			for(int i=0, i2=rtList.size() ; i<i2 ; i++) {
+				
+				Map row = rtList.get(i);
+				tmp = pnull(row, "MEMO");
+				tmp = tmp.replaceAll("\n", "<BR>").replaceAll("\r", "").replaceAll("\"", "'");
+				row.put("MEMO", tmp);
+			}
+		}
+	}
+}

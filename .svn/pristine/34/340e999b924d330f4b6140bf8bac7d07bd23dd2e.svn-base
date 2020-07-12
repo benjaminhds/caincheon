@@ -1,0 +1,840 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>천주교 인천교구 Admin</title>
+    <link href="/admin/_common/css/sub.css" rel="stylesheet">
+    <link href="/admin/_common/css/sub2.css" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+    <link href="/admin/_common/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- MetisMenu CSS -->
+    <link href="/admin/_common/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/admin/_common/dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/admin/_common/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	<!-- footer script -->
+	<!-- jQuery -->
+	<link href="/admin/_common/vendor/jquery/jquery-ui.css" rel="stylesheet">
+    <script src="/admin/_common/vendor/jquery/jquery.min.js"></script>
+    <script src="/admin/_common/vendor/jquery/jquery-ui.min.js"></script>
+    
+   	<!-- Bootstrap Core JavaScript -->
+    <script src="/admin/_common/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="/admin/_common/vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="/admin/_common/dist/js/sb-admin-2.js"></script>
+	<!-- /.footer script -->
+	
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+	<script type="text/javascript">
+	var doChangeURI = function(fullURL) {
+
+		$.ajax({
+			type: 'GET',
+			url: fullURL,
+			async: false,
+			dataType: "text",
+			contentType:"application/x-www-form-urlencoded; charset=UTF-8",
+			success: function(data) {
+				$('body').html(data);
+			},
+			error: function(request, status, error) {
+				alert(error);
+			}
+		});
+	};
+	</script>
+</head>
+<script type="text/javascript">
+function goPage(pageNo) {
+	document.getElementById('pageNo').value=pageNo;
+	document.form01.submit();
+    return false;
+}
+
+function goSearchM() {
+	if(document.getElementById('searchMText').value == '') {
+		//alert('검색할 문자를 입력하세요.');
+		//document.getElementById('searchText').focus();
+		//return false;
+	}
+	document.form01.submit();
+    return false;
+}
+
+function goSearchS() {
+	alert('goSearchS');
+	if(document.getElementById('searchSText').value == '') {
+		//alert('검색할 문자를 입력하세요.');
+		//document.getElementById('searchText').focus();
+		//return false;
+	}
+	document.getElementById('category_code').value = document.getElementById('categoryCode').value;
+	document.getElementById('active').value = "tab2";
+	document.form01.submit();
+    return false;
+}
+
+function insertHistoryM() {
+	document.form01.action = '/admin/board/historym_view.do';
+	document.getElementById('query_type').value = "insert";
+	document.form01.submit();
+    return false;
+}
+
+function modifyHistoryM(category_code) {
+	//alert("modifyContents");
+	document.form01.action = '/admin/board/historym_view.do';
+	document.getElementById('query_type').value = "modify";
+	document.getElementById('category_code').value = category_code;
+	document.form01.submit();
+    return false;
+}
+
+function deleteHistoryM(category_code) {
+	//alert("deleteContents");
+	document.form01.action = '/admin/board/historym_delete.do';
+	document.getElementById('category_code').value=category_code;
+	document.form01.submit();
+    return false;
+}
+
+function insertHistoryS() {
+	document.form01.action = '/admin/board/historys_view.do';
+	document.getElementById('query_type').value = "insert";
+	document.form01.submit();
+    return false;
+}
+
+function modifyHistoryS(category_code, history_no) {
+	//alert("modifyContents");
+	document.form01.action = '/admin/board/historys_view.do';
+	document.getElementById('query_type').value = "modify";
+	document.getElementById('category_code').value = category_code;
+	document.getElementById('history_no').value = history_no;
+	document.form01.submit();
+    return false;
+}
+
+function deleteHistoryS(category_code, history_no) {
+	//alert("deleteContents");
+	document.form01.action = '/admin/board/historys_delete.do';
+	document.getElementById('category_code').value=category_code;
+	document.getElementById('history_no').value = history_no;
+	document.form01.submit();
+    return false;
+}
+
+
+window.onload = function () {
+	//alert("로딩 완료");
+//	document.getElementById("delete_n").checked = true;
+}
+
+$(document).ready(function(){
+	$(".nav-tabs a").click(function(){
+        $(this).tab('show');
+    });
+
+    $('.nav-tabs a').on('shown.bs.tab', function(event){
+        var x = $(event.target).text();         // active tab
+        var y = $(event.relatedTarget).text();  // previous tab
+        
+        if(x=="역사관 카테고리 관리") {
+        	//alert("역사관");
+        	goSearchM();
+        }
+        else if(x=="카테고리별 연혁관리") {
+        	//alert("카테고리별");
+        	goSearchS();
+        }
+    });
+});
+	
+</script>
+
+<body>
+<form class="form-inline" name="form01" action="/admin/board/history_list.do" method="POST">
+<input type="hidden" name="active" id="active" value="" />
+<input type="hidden" name="query_type" id="query_type" value="" />
+<input type="hidden" name="category_code" id="category_code" value=""/>
+<input type="hidden" name="history_no" id="history_no" value=""/>
+
+    <div class="container" id="wrapper">
+        <!-- Navigation -->
+        
+
+
+		<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/admin/main.jsp">천주교 인천교구 관리자 v1.0</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <!-- 
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-envelope fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-messages">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <strong>John Smith</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                                </div>
+                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <strong>John Smith</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                                </div>
+                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <strong>John Smith</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                                </div>
+                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>Read All Messages</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    -->
+                    <!-- /.dropdown-messages -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+	                <!-- 
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-tasks fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-tasks">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 1</strong>
+                                        <span class="pull-right text-muted">40% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                                            <span class="sr-only">40% Complete (success)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 2</strong>
+                                        <span class="pull-right text-muted">20% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+                                            <span class="sr-only">20% Complete</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 3</strong>
+                                        <span class="pull-right text-muted">60% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                                            <span class="sr-only">60% Complete (warning)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 4</strong>
+                                        <span class="pull-right text-muted">80% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+                                            <span class="sr-only">80% Complete (danger)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>See All Tasks</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                     -->
+                    <!-- /.dropdown-tasks -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                	<!-- 
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-comment fa-fw"></i> New Comment
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                    <span class="pull-right text-muted small">12 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-tasks fa-fw"></i> New Task
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>See All Alerts</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    -->
+                    <!-- /.dropdown-alerts -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+					    
+					        <li>SUPER관리자</li>
+					    
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                		<!-- 
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        -->
+                        <li class="divider"></li>
+                        <li><a href="/admin/logout.jsp"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            
+	
+
+	<!-- ---------------------- -->
+	<!-- common_left_menu start -->
+<!-- 
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<form role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Search">
+			</div>
+		</form>
+		<ul class="nav menu">
+			<li ><a href="dashboard.jsp"><svg class="glyph stroked dashboard-dial"><use xlink:href="#stroked-dashboard-dial"></use></svg> Dashboard</a></li>
+			<li ><a href="customeroverview.jsp"><svg class="glyph stroked calendar"><use xlink:href="#stroked-calendar"></use></svg> Customer</a></li>
+			<li ><a href="sales.jsp"><svg class="glyph stroked pencil"><use xlink:href="#stroked-pencil"></use></svg> Sales Manage</a></li>
+			<li role="presentation" class="divider"></li>
+			<li><a href="#" onClick="return myLogout();"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> Login Page</a></li>
+		</ul>
+
+	</div>
+ -->
+<!--/.sidebar-->
+	<!-- common_left_menu end -->
+	<!-- -------------------- -->
+	
+	<div class="navbar-default sidebar" role="navigation">
+        <div class="sidebar-nav navbar-collapse">
+            <ul class="nav" id="side-menu">
+                <li>
+                    <a href="#"><i class="fa fa-sitemap fa-fw"></i> 조직코드관리</a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="/admin/org/org_list.do">임지코드관리</a></li>
+                        <li><a href="/admin/org/pos_codeList.do">직급코드관리</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-sitemap fa-fw"></i> 게시판관리</a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="/admin/board/par_list.do">교구장동정</a></li>
+                        <li><a href="/admin/board/news_list.do">교회/교구/공동체</a></li>
+                        <li><a href="/admin/board/chruch_notice.do">본당알림</a></li>
+                        <li><a href="/admin/board/cure_list.do">사목자료</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>앨범게시판관리</a>
+                    <ul class="nav nav-second-level">
+                    	<li><a href="/admin/">역대교구장앨범</a></li>
+			<li><a href="/admin/">교구앨범</a></li>
+			<li><a href="/admin/">본당앨범</a></li>
+			<li><a href="/admin/">교구영상</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>기타게시판 관리</a>
+                    <ul class="nav nav-second-level">
+			<li><a href="/admin/">교구장메시지</a></li>
+			<li><a href="/admin/">교구장일정</a></li>
+			<li><a href="/admin/">교구일정</a></li>
+			<li><a href="/admin/board/mgz_list.do">간행물관리</a></li>
+			<li><a href="/admin/board/faq_list.do">FAQ(교구법원)</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>정보관리</a>
+                    <ul class="nav nav-second-level">
+			<li><a href="/admin/board/history_list.do">역사관관리</a></li>
+			<li><a href="/admin/board/departdc_list.do">교구청</a></li>
+			<li><a href="/admin/board/dgroup_list.do">지구코드</a></li>
+			<li><a href="/admin/">본당</a></li>
+			<li><a href="/admin/board/org_list.do">수도회/기관단체</a></li>
+			<li><a href="/admin/board/priest_list.do">사제</a></li>
+			<li><a href="/admin/board/bef_priest_list.do">선종사제</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>접수관리</a>
+                    <ul class="nav nav-second-level">
+			<li><a href="/admin/board/doctrine_list.do">통신교리 신청관리</a></li>
+			<li><a href="/admin/board/marry_list.do">카나혼인강좌,약혼자주말 신청관리</a></li>
+			<li><a href="/admin/">성체분배권 신청관리</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>메인관리</a>
+                    <ul class="nav nav-second-level">
+			<li><a href="/admin/board/popup_list.do">팝업관리</a></li>
+			<li><a href="/admin/board/banner_list.do">배너관리</a></li>
+			<li><a href="/admin/">전례력/말씀 관리</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+				<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>관리자정보관리</a>
+                    <ul class="nav nav-second-level">
+						<li><a href="/admin/member/admmember_list.do">관리자정보</a></li>
+						<li><a href="/admin/">관리자권한그룹설정</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+<li><a href="#"><i class="fa fa-sitemap fa-fw"></i>회원서비스관리</a>
+                    <ul class="nav nav-second-level">
+			<li><a href="/admin/">회원관리</a></li>
+			<li><a href="/admin/board/inquire_list.do">나누고싶은이야기</a></li>
+			<li><a href="/admin/board/email_list.do">메일발송</a></li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+        </div>
+        <!-- /.sidebar-collapse -->
+    </div>
+	
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <!-- Page Content -->
+        
+        <div id="page-wrapper">
+        	<ul class="nav nav-tabs">
+        		
+					
+				    
+				    	<li class="active"><a data-toggle="tab" href="#tab1">역사관 카테고리 관리</a></li>
+					    <li><a data-toggle="tab" href="#tab2">카테고리별 연혁관리</a></li>
+				    
+			    
+	  		</ul>
+	        
+	        <div class="tab-content">
+	        	<!--  첫번째 탭 -->
+       	
+			
+	        
+	        	<div id="tab1" class="tab-pane fade in active">
+	        
+	        	
+					<div class="col-lg-12">
+				    	<h1 class="page-header">역사관 카테고리 관리</h1>
+				    </div>
+        
+					<div class="row">	
+				    	<div class="col-lg-12">
+				        	<div class="panel panel-default">
+				            	<div class="panel-heading">		  
+									<div class="form-group">						  	
+								    	<label for="sel1">검색</label>
+										<input type="text" class="form-control" placeholder="" name="searchMText" id="searchMText" value="">
+										&nbsp;&nbsp;&nbsp;		
+								    	<button type="button" class="btn btn-default" onclick="javascript:goSearchM();return false;">검색</button>
+								    	<button type="button" class="btn btn-default" onclick="javascript:insertHistoryM();return false;">등록</button>
+								  	</div>
+								</div>
+          						<!-- /.row -->
+						        <div class="panel-body">
+						        	<table width="100%" class="table" id="dataTables-example">
+										<thead>
+									    	<tr>
+									        <th>NO</th>
+									        <th>카테고리</th>
+									        <th>노출여부</th>
+									        <th>노출순서</th>
+									        <th>등록일</th>
+									        <th>수정</th>
+									        <th>삭제</th>			        
+									      	</tr>
+									    </thead>
+									<tbody>
+										
+											
+												      
+									</tbody>
+									</table>			
+										<div>
+						                  <!-- arrow -->
+						                  
+
+<script language="javascript">
+
+var goPage = function(c){
+	// queryString 은 페이징 관련 변수를 제외한 나머지
+	
+	var xUri = location.href;
+	xUri = xUri.substring(0, xUri.indexOf(".do")+3);
+	
+	//alert( xUri );
+	//alert( xUri + "?&pageSize=20&pageNo="+c );
+	
+	$.ajax({
+		type: 'GET',
+		url: xUri + "?&pageSize=20&pageNo="+c,
+		async:false,
+		dataType: "text",
+		contentType:"application/x-www-form-urlencoded; charset=UTF-8",
+		success: function(data) {
+			$('body').html(data);
+		},
+		error: function(request, status, error) {
+			alert(error);
+		}
+	});
+};
+
+
+
+var goToPageFormId = function( formId ){
+	goToPage( $("#"+formId).attr("action") +"?"+ $("#"+formId).serialize() );
+}
+
+var goToPage = function(fullURL){
+	// queryString 은 페이징 관련 변수를 제외한 나머지
+	$.ajax({
+		type: 'GET',
+		url: fullURL,
+		async:false,
+		dataType: "text",
+		contentType:"application/x-www-form-urlencoded; charset=UTF-8",
+		success: function(data) {
+			$('body').html(data);
+		},
+		error: function(request, status, error) {
+			alert(error);
+		}
+	});
+};
+
+
+</script>
+<ol class="arrow">
+    <li class="fst arr">
+        <a href="javascript:goPage(0)"><img src="/img/sub/_ico/board_arr_first.png" alt="처음으로"></a>
+    </li>
+    <li class="prev arr">
+        <a href="javascript:goPage(0)"><img src="/img/sub/_ico/board_arr_prev.png" alt="이전으로"></a>
+    </li>
+    
+        
+            
+            
+            	<li class="num"><a href="javascript:goPage(0)">0</a></li>
+            
+        
+    
+    <li class="next arr">
+        <a href="javascript:goPage(0)"><img src="/img/sub/_ico/board_arr_next.png" alt="다음으로"></a>
+    </li>
+    <li class="lst arr">
+        <a href="javascript:goPage(0)"><img src="/img/sub/_ico/board_arr_last.png" alt="마지막으로"></a>
+    </li>
+</ol>
+
+						      			<!-- //arrow -->                                
+						              	</div>  
+								</div>	
+									<!-- /.panel-body -->
+							</div>
+							<!-- panel panel-default -->
+						</div>
+						<!-- col-lg-12 -->
+					</div>	
+				</div>	
+	            				
+				<!--  두번쨰 탭 -->
+				<!-- <div id="tab2" class="tab-pane fade"> -->
+				
+		
+			
+	        
+	        	<div id="tab2" class="tab-pane fade">
+	        
+	       
+				
+	                <div class="col-lg-12">
+	                    <h1 class="page-header">카테고리별 연혁관리</h1>
+	                </div>
+	                <!-- /.col-lg-12 -->
+	            
+		            <div class="row">	
+		            	<div class="col-lg-12">
+		                    <div class="panel panel-default">
+		                        <div class="panel-heading">		
+		                        	<div class="form-group">
+		                        		<label for="">정렬 </label>		                        			
+										<select name="categoryCode" id="categoryCode">
+											<option value="ALL">전체</option>
+											
+										</select>															  	
+									    <label for="">검색 </label>
+									    <select name="searchGubun" id="searchGubun">
+											<option value="TITLE">제목</option>
+											<option value="CONTENTS">내용</option>
+										</select>	
+										
+										<input type="text" class="form-control" placeholder="" name="searchSText" id="searchSText" value="">
+										&nbsp;&nbsp;&nbsp;		
+									    <button type="button" class="btn btn-default" onclick="javascript:goSearchS();return false;">검색</button>
+									    <button type="button" class="btn btn-default" onclick="javascript:insertHistoryS();return false;">등록</button>
+									</div>
+								</div>
+		            			<!-- /.row -->
+					            <div class="panel-body">
+					              <table width="100%" class="table" id="dataTables-example">
+								    <thead>
+								      <tr>
+								        <th>NO</th>
+								        <th>카테고리</th>
+								        <th>제목</th>
+								        <th>노출여부</th>
+								        <th>행사일</th>			        
+								        <th>수정</th>
+								        <th>삭제</th>
+								      </tr>
+								    </thead>
+								    <tbody>
+								      
+											
+												      
+								    </tbody>
+								  </table>			
+								  <div>
+					                  <!-- arrow -->
+					                  
+
+<script language="javascript">
+
+var goPage = function(c){
+	// queryString 은 페이징 관련 변수를 제외한 나머지
+	
+	var xUri = location.href;
+	xUri = xUri.substring(0, xUri.indexOf(".do")+3);
+	
+	//alert( xUri );
+	//alert( xUri + "?&pageSize=20&pageNo="+c );
+	
+	$.ajax({
+		type: 'GET',
+		url: xUri + "?&pageSize=20&pageNo="+c,
+		async:false,
+		dataType: "text",
+		contentType:"application/x-www-form-urlencoded; charset=UTF-8",
+		success: function(data) {
+			$('body').html(data);
+		},
+		error: function(request, status, error) {
+			alert(error);
+		}
+	});
+};
+
+
+
+var goToPageFormId = function( formId ){
+	goToPage( $("#"+formId).attr("action") +"?"+ $("#"+formId).serialize() );
+}
+
+var goToPage = function(fullURL){
+	// queryString 은 페이징 관련 변수를 제외한 나머지
+	$.ajax({
+		type: 'GET',
+		url: fullURL,
+		async:false,
+		dataType: "text",
+		contentType:"application/x-www-form-urlencoded; charset=UTF-8",
+		success: function(data) {
+			$('body').html(data);
+		},
+		error: function(request, status, error) {
+			alert(error);
+		}
+	});
+};
+
+
+</script>
+<ol class="arrow">
+    <li class="fst arr">
+        <a href="javascript:goPage(0)"><img src="/img/sub/_ico/board_arr_first.png" alt="처음으로"></a>
+    </li>
+    <li class="prev arr">
+        <a href="javascript:goPage(0)"><img src="/img/sub/_ico/board_arr_prev.png" alt="이전으로"></a>
+    </li>
+    
+        
+            
+            
+            	<li class="num"><a href="javascript:goPage(0)">0</a></li>
+            
+        
+    
+    <li class="next arr">
+        <a href="javascript:goPage(0)"><img src="/img/sub/_ico/board_arr_next.png" alt="다음으로"></a>
+    </li>
+    <li class="lst arr">
+        <a href="javascript:goPage(0)"><img src="/img/sub/_ico/board_arr_last.png" alt="마지막으로"></a>
+    </li>
+</ol>
+
+					      			<!-- //arrow -->                                
+					              </div>  
+								</div>	
+								<!-- /.panel-body -->
+							</div>
+						<!-- panel panel-default -->
+						</div>
+					<!-- col-lg-12 -->
+					</div>	
+				</div>	
+	        </div>       
+        	<!-- /#page-wrapper -->
+        	
+    <!-- /#wrapper -->
+</form>
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.kpdus.com/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   TempleDao.java
+
+package kr.caincheon.church.dao;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import kr.caincheon.church.common.BaseDao;
+import kr.caincheon.church.common.CommonDaoMultiDTO;
+
+public interface TempleDao
+    extends BaseDao
+{
+
+    public abstract void inquireChurchListWithMisa(Map map, CommonDaoMultiDTO daodto)
+        throws Exception;
+
+    public abstract void vacancyList(Map map, CommonDaoMultiDTO daodto)
+        throws Exception;
+
+    public abstract void selectMisaInfo(String as[], CommonDaoMultiDTO daodto, Map map)
+        throws SQLException;
+
+    public abstract Map groupbyMailhallInRegion(Map map)
+        throws Exception;
+
+    public abstract Map listMailhallInRegion(Map map)
+        throws Exception;
+
+    public abstract Map selectTotallyMainhallInfo(String s)
+        throws Exception;
+
+    public abstract Map selectPriestInChurch(String s)
+        throws Exception;
+
+    public abstract List selectChurchPictures(String s)
+        throws Exception;
+
+    public abstract Map selectNewsInChurch(Map map)
+        throws Exception;
+
+//    public abstract void newsList(Map map, CommonDaoMultiDTO daodto)
+//        throws Exception;
+
+    public abstract void newsVO(Map map, CommonDaoMultiDTO daodto)
+        throws Exception;
+
+    public abstract void parishAlbumList(Map map, CommonDaoMultiDTO daodto)
+        throws Exception;
+
+    public abstract void albumVO(Map map, CommonDaoMultiDTO daodto)
+        throws Exception;
+
+    public abstract Map templeAlbumContents(Map map)
+        throws Exception;
+    
+    /** 통합검색 :: 본당/공소 검색 */
+    public List unifySearch(Map _params, Connection conn) throws Exception;
+}

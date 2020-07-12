@@ -1,0 +1,205 @@
+package kr.caincheon.church.common;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class CommonParameter extends CommonLogging {
+	
+	/*  */
+	protected final String ERROR_MSG = "ERROR_MSG";
+	protected final String ERROR_CD  = "ERROR_CD";
+	
+	/* CommonController.build()에서 request parameters(_params) 에 세션 MAP을 저장하는데, 사용하는 키 변수임. */
+	public final String SESSION_MAP = "__SESSION_MAP__";
+	
+	/* request header */
+	public final String HEADER_MAP = "__HEADER_MAP__";
+	
+	/* 세션에서 해당 키의 값을 리턴, 없으면 공백을 리턴 */
+	protected String getSession(Map _params, String sessionKey) {
+		Object o = _params.get(SESSION_MAP);
+		if(o!=null) {
+			Map s = (Map)o;
+			Object v = s.get(sessionKey);
+			return v == null ? "":v.toString();
+		}
+		return "";
+	}
+
+	/* 세션에서 해당 키의 값을 리턴, 없으면 공백을 리턴 */
+	protected String getHeader(Map _params, String sessionKey) {
+		Object o = _params.get(HEADER_MAP);
+		if(o!=null) {
+			Map s = (Map)o;
+			Object v = s.get(sessionKey);
+			return v == null ? "":v.toString();
+		}
+		return "";
+	}
+
+	/* map을 복사하여 새로운 map을 리턴 */
+	public Map cloneParams(Map params) {
+		Map<String, Object> newP = new HashMap<String, Object>();
+		newP.putAll(params);
+		return newP;
+	}
+	
+	public String getParameter(Map params, String key) {
+		if(params.containsKey(key)) {
+			return params.get(key).toString();
+		}
+		return "";
+	}
+
+	public Map getParameterMap(Map params, String key) {
+		if(params.containsKey(key)) {
+			return (Map)params.get(key);
+		}
+		return new HashMap();
+	}
+	
+
+	public List getParameterList(Map params, String key) {
+		if(params.containsKey(key)) {
+			return (List)params.get(key);
+		}
+		return new ArrayList();
+	}
+	
+
+	/* 세션에서 해당 키의 값을 리턴, 없으면 공백을 리턴 */
+	protected void setSession(Map _params, String key, String val) {
+		Map<String,String> s = null;
+		Object o = _params.get(SESSION_MAP);
+		if(o==null) {
+			s = new HashMap<String,String>();
+		} else {
+			s =(Map)o;
+		}
+		s.put(key, val);
+	}
+	
+	/* 세션에서 해당 키의 값을 리턴, 없으면 공백을 리턴 */
+	protected void setHeader(Map _params, String key, String val) {
+		Map<String,String> h = null;
+		Object o = _params.get(HEADER_MAP);
+		if(o==null) {
+			h = new HashMap<String,String>();
+		} else {
+			h =(Map)o;
+		}
+		h.put(key, val);
+	}
+	
+	public String pnull(Object v) {
+        return v != null ? v.toString() : "";
+    }
+
+	public String pnull(Object v, String defaulVal) {
+        return v != null ? v.toString() : defaulVal;
+    }
+
+	public String pnull(String v) {
+        return v != null ? v : "";
+    }
+
+	public String pnull(String v, String defaulVal) {
+        return v != null ? v : defaulVal;
+    }
+
+	public String pnull(Map params, String k) {
+		Object v = params.get(k);
+        return v != null ? v.toString() : "";
+    }
+
+	public String pnull(Map params, String k, String defaulVal) {
+		Object v = params.get(k);
+        return v != null ? v.toString() : defaulVal;
+    }
+	
+	/** k의 값이  compareVal와 일치하면 k의 값을 리턴, 다르면 wrongVal을 리턴 */
+	public String pcompare(Map params, String k, String compareVal, String wrongVal) {
+		Object v = params.get(k);
+        return v != null ? v.toString().equalsIgnoreCase(compareVal) ? v.toString():wrongVal : wrongVal;
+    }
+
+	/** k의 값이  compareVal와 일치하면 rightVal(null 이면 k의 값)을 리턴, 다르면 wrongVal(null 이면 k의 값)을 리턴 */
+	public String pcompare(Map params, String k, String compareVal, String rightVal, String wrongVal) {
+		// String isManChurch  = pcompare(_params, "man_member_type",   "3", "-", null);
+		String v = pnull(params, k);
+        return v.equalsIgnoreCase(compareVal) ? rightVal:wrongVal;
+    }
+
+	public int ipnull(String v) {
+        return v != null ? Integer.parseInt(v.toString()) : -1;
+    }
+
+	public int ipnull(String v, int defaulVal) {
+        return v != null ? Integer.parseInt(v.toString()) : defaulVal;
+    }
+
+	public int ipnull(Map params, String k) {
+		Object v = params.get(k);
+        return v != null ? Integer.parseInt(v.toString()) : -1;
+    }
+
+	public int ipnull(Map params, String k, int defaulVal) {
+		Object v = params.get(k);
+        return v != null ? Integer.parseInt(v.toString()) : defaulVal;
+    }
+
+
+//	public int pint(String v) {
+//        return v != null ? Integer.parseInt(v.toString()) : -1;
+//    }
+//
+//	public int pint(String v, int defaulVal) {
+//        return v != null ? Integer.parseInt(v.toString()) : defaulVal;
+//    }
+//
+//	public int pint(Map params, String k) {
+//		Object v = params.get(k);
+//        return v != null ? Integer.parseInt(v.toString()) : -1;
+//    }
+//
+//	public int pint(Map params, String k, int defaulVal) {
+//		Object v = params.get(k);
+//        return v != null ? Integer.parseInt(v.toString()) : defaulVal;
+//    }
+	
+	
+	
+	public void pnullPut(Map params, String k, String defaulVal) {
+		Object k1 = params.get(k);
+        if(k1==null || k1.toString().trim().length()==0) {
+        	params.put(k, defaulVal);
+        }
+    }
+	
+	
+	public void pnullUpdate(Map params, String k, String updateVal) {
+        params.put(k, updateVal);
+    }
+	
+	/** 특정키를 다른키로 변경한다. */
+	public int pchange(Map params, String oldKeyName, String newKeyName) {
+		if(params.containsKey(newKeyName)) {
+			return MAP_KEY_CHANGE_DUPLICATION;
+		}
+		Object v = params.remove(oldKeyName);
+		if(v!=null) {
+			params.put(newKeyName, v);
+			return MAP_KEY_CHANGE_SUCESS;
+		} else {
+			return MAP_KEY_CHANGE_NOTEXISTS;
+		}
+    }
+	public static final int MAP_KEY_CHANGE_SUCESS  = 1;
+	public static final int MAP_KEY_CHANGE_FAILURE = 0;
+	public static final int MAP_KEY_CHANGE_NOTEXISTS = -1;
+	public static final int MAP_KEY_CHANGE_DUPLICATION = -2;
+	
+	
+}

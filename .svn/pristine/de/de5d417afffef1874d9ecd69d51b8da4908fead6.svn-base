@@ -1,0 +1,396 @@
+// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.kpdus.com/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   TempleUtil.java
+
+package kr.caincheon.church.common;
+
+import java.util.*;
+
+// Referenced classes of package kr.caincheon.church.common:
+//            TempleVO
+
+/**
+ * 
+ * @author benjamin
+ * @deprecated
+ */
+public class TempleUtil
+{
+
+	/**
+	 * 
+	 * @return
+	 * @deprecated
+	 */
+    public static Map getRegionList()
+    {
+        LinkedHashMap r = new LinkedHashMap();
+        r.put("R01", "강화지구");
+        r.put("R02", "김포지구");
+        r.put("R03", "\uACC4\uC591\uC9C0\uAD6C");
+        r.put("R04", "\uB0A8\uAD6C\uC9C0\uAD6C");
+        r.put("R05", "\uB0A8\uB3D9\uC9C0\uAD6C");
+        r.put("R06", "\uBD80\uD3C9\uC9C0\uAD6C");
+        r.put("R07", "\uC11C\uAD6C\uC9C0\uAD6C");
+        r.put("R08", "\uC5F0\uC218\uC9C0\uAD6C");
+        r.put("R09", "\uC911\uB3D9\uAD6C\uC9C0\uAD6C");
+        r.put("R10", "\uBD80\uCC9C1\uC9C0\uAD6C");
+        r.put("R11", "\uBD80\uCC9C2\uC9C0\uAD6C");
+        r.put("R12", "\uC2DC\uD765/\uC548\uC0B0\uC9C0\uAD6C");
+        r.put("R13", "\uACF5\uC18C");
+        r.put("R14", "\uD2B9\uC218");
+        r.put("\uAC15\uD654\uC9C0\uAD6C", "R01");
+        r.put("\uAE40\uD3EC\uC9C0\uAD6C", "R02");
+        r.put("\uACC4\uC591\uC9C0\uAD6C", "R03");
+        r.put("\uB0A8\uAD6C\uC9C0\uAD6C", "R04");
+        r.put("\uB0A8\uB3D9\uC9C0\uAD6C", "R05");
+        r.put("\uBD80\uD3C9\uC9C0\uAD6C", "R06");
+        r.put("\uC11C\uAD6C\uC9C0\uAD6C", "R07");
+        r.put("\uC5F0\uC218\uC9C0\uAD6C", "R08");
+        r.put("\uC911\uB3D9\uAD6C\uC9C0\uAD6C", "R09");
+        r.put("\uBD80\uCC9C1\uC9C0\uAD6C", "R10");
+        r.put("\uBD80\uCC9C2\uC9C0\uAD6C", "R11");
+        r.put("\uC2DC\uD765/\uC548\uC0B0\uC9C0\uAD6C", "R12");
+        r.put("\uACF5\uC18C", "R13");
+        r.put("\uD2B9\uC218", "R14");
+        return r;
+    }
+
+    /**
+     * @param regionCode
+     * @deprecated
+     */
+    public static String getRegionName(String regionCode)
+    {
+        return (String)getRegionList().get(regionCode);
+    }
+
+    /**
+     * @param regionCode
+     * @deprecated
+     */
+    public static LinkedHashMap listMailhallInRegion()
+    {
+        return listMailhallInRegion(true);
+    }
+
+    /**
+     * @param regionCode
+     * @deprecated
+     */
+    public static LinkedHashMap listMailhallInRegion(boolean isRegione)
+    {
+        LinkedHashMap lm_1 = new LinkedHashMap();
+        lm_1.put("강화", "14008");
+        lm_1.put("내가", "14077");
+        lm_1.put("마니산(준)", "14091");
+        lm_1.put("온수", "14036");
+        lm_1.put("\uD558\uC810", "14087");
+        LinkedHashMap lm_2 = new LinkedHashMap();
+        lm_2.put("\uACE0\uCD0C", "14076");
+        lm_2.put("\uAE40\uD3EC", "14069");
+        lm_2.put("\uB300\uACF6", "14100");
+        lm_2.put("\uB9C8\uC0B0\uB3D9", "14120");
+        lm_2.put("\uBD88\uB85C\uB3D9", "14096");
+        lm_2.put("\uC0AC\uC6B0\uB3D9", "14114");
+        lm_2.put("\uC591\uACE1", "14070");
+        lm_2.put("\uC6B4\uC591\uB3D9", "14123");
+        lm_2.put("\uCCAD\uC218", "14083");
+        lm_2.put("\uD1B5\uC9C4", "14071");
+        lm_2.put("\uD48D\uBB34\uB3D9", "14080");
+        lm_2.put("\uD558\uC131", "14084");
+        LinkedHashMap lm_3 = new LinkedHashMap();
+        lm_3.put("\uACC4\uC0B0\uB3D9", "14009");
+        lm_3.put("\uBC15\uCD0C\uB3D9", "14099");
+        lm_3.put("\uC11C\uC6B4\uB3D9", "14073");
+        lm_3.put("\uC791\uC8042\uB3D9(\uAD6C \uACC4\uC0B01\uB3D9)", "14110");
+        lm_3.put("\uC791\uC804\uB3D9", "14041");
+        lm_3.put("\uC7A5\uAE30\uB3D9", "14075");
+        lm_3.put("\uD6A8\uC131\uB3D9", "14049");
+        LinkedHashMap lm_4 = new LinkedHashMap();
+        lm_4.put("\uAC00\uC8153\uB3D9", "14003");
+        lm_4.put("\uAC00\uC815\uB3D9", "14002");
+        lm_4.put("\uAC00\uC88C\uB3D9", "14004");
+        lm_4.put("\uAC80\uB2E8\uB3D9", "14079");
+        lm_4.put("\uAC80\uC554\uB3D9", "14024");
+        lm_4.put("\uB9C8\uB9AC\uC2A4\uD154\uB77C(\uC900)", "14996");
+        lm_4.put("\uB9C8\uC804\uB3D9", "14097");
+        lm_4.put("\uC11D\uB0A8\uB3D9", "14025");
+        lm_4.put("\uC5F0\uD76C\uB3D9", "14113");
+        lm_4.put("\uC624\uB958\uB3D9", "14037");
+        lm_4.put("\uC6D0\uB2F9\uB3D9", "14098");
+        lm_4.put("\uCCAD\uB77C", "14116");
+        LinkedHashMap lm_5 = new LinkedHashMap();
+        lm_5.put("\uB2F5\uB3D9\uC8FC\uAD50\uC88C", "14001");
+        lm_5.put("\uB300\uCCAD\uB3C4(\uC900)", "14095");
+        lm_5.put("\uB355\uC801\uB3C4", "14085");
+        lm_5.put("\uBC31\uB839", "14016");
+        lm_5.put("\uC1A1\uB9BC4\uB3D9", "14029");
+        lm_5.put("\uC1A1\uB9BC\uB3D9", "14028");
+        lm_5.put("\uC1A1\uD604\uB3D9", "14030");
+        lm_5.put("\uC2E0\uACF5\uD56D", "14082");
+        lm_5.put("\uC2E0\uB3C4(\uC900)", "14104");
+        lm_5.put("\uC5F0\uC548", "14034");
+        lm_5.put("\uC5F0\uD3C9\uB3C4", "14072");
+        lm_5.put("\uC601\uC885", "14035");
+        lm_5.put("\uC6A9\uC720(\uC900)", "14094");
+        lm_5.put("\uD574\uC548", "14047");
+        lm_5.put("\uD654\uC218\uB3D9", "14048");
+        LinkedHashMap lm_6 = new LinkedHashMap();
+        lm_6.put("\uAC08\uC0B0\uB3D9", "14007");
+        lm_6.put("\uBD80\uAC1C2\uB3D9", "14093");
+        lm_6.put("\uBD80\uAC1C\uB3D9", "14021");
+        lm_6.put("\uBD80\uD3C91\uB3D9", "14017");
+        lm_6.put("\uBD80\uD3C92\uB3D9", "14018");
+        lm_6.put("\uBD80\uD3C93\uB3D9", "14019");
+        lm_6.put("\uBD80\uD3C94\uB3D9", "14020");
+        lm_6.put("\uC0B0\uACE13\uB3D9", "14023");
+        lm_6.put("\uC0B0\uACE1\uB3D9", "14022");
+        lm_6.put("\uC0BC\uC0B0\uB3D9", "14092");
+        lm_6.put("\uC2ED\uC815\uB3D9", "14032");
+        lm_6.put("\uC77C\uC2E0\uB3D9", "14040");
+        LinkedHashMap lm_7 = new LinkedHashMap();
+        lm_7.put("\uB3C4\uD654\uB3D9", "14012");
+        lm_7.put("\uC22D\uC758\uB3D9", "14031");
+        lm_7.put("\uC6A9\uD6045\uB3D9", "14039");
+        lm_7.put("\uC6A9\uD604\uB3D9", "14038");
+        lm_7.put("\uC81C\uBB3C\uD3EC", "14042");
+        lm_7.put("\uC8FC\uC5481\uB3D9", "14043");
+        lm_7.put("\uC8FC\uC5483\uB3D9", "14044");
+        lm_7.put("\uC8FC\uC5485\uB3D9", "14045");
+        lm_7.put("\uC8FC\uC5488\uB3D9", "14046");
+        lm_7.put("\uD559\uC775\uB3D9", "14108");
+        LinkedHashMap lm_8 = new LinkedHashMap();
+        lm_8.put("\uAC04\uC11D2\uB3D9", "14005");
+        lm_8.put("\uAC04\uC11D4\uB3D9", "14006");
+        lm_8.put("\uACE0\uC794", "14010");
+        lm_8.put("\uAD6C\uC6D41\uB3D9", "14011");
+        lm_8.put("\uAD6C\uC6D4\uB3D9", "14121");
+        lm_8.put("\uB0A8\uCD0C\uB3D9", "14081");
+        lm_8.put("\uB17C\uD604\uB3D9", "14109");
+        lm_8.put("\uB9CC\uC2181\uB3D9", "14014");
+        lm_8.put("\uB9CC\uC2182\uB3D9", "14115");
+        lm_8.put("\uB9CC\uC2183\uB3D9", "14015");
+        lm_8.put("\uB9CC\uC2186\uB3D9", "14078");
+        lm_8.put("\uBAA8\uB798\uB0B4", "14111");
+        lm_8.put("\uC11C\uCC3D2\uB3D9", "14124");
+        lm_8.put("\uC11C\uCC3D\uB3D9", "14103");
+        lm_8.put("\uC18C\uB798\uD3EC\uAD6C(\uAD6C \uB17C\uD6041\uB3D9)", "14112");
+        LinkedHashMap lm_9 = new LinkedHashMap();
+        lm_9.put("\uB3D9\uCD98\uB3D9", "14013");
+        lm_9.put("\uC120\uD559\uB3D9", "14026");
+        lm_9.put("\uC1A1\uB3C42\uB3D9", "14119");
+        lm_9.put("\uC5F0\uC218", "14033");
+        lm_9.put("\uC625\uB828\uB3D9(\uAD6C \uC1A1\uB3C4)", "14027");
+        lm_9.put("\uC778\uCC9C\uAC00\uD1A8\uB9AD\uB300\uD559\uAD50 \uD55C\uAD6D\uC21C\uAD50\uC131\uC778", "14102");
+        lm_9.put("\uCCAD\uD559\uB3D9", "14086");
+        LinkedHashMap lm_10 = new LinkedHashMap();
+        lm_10.put("\uBC94\uBC15\uB3D9", "14089");
+        lm_10.put("\uC0C1\uB3D9", "14052");
+        lm_10.put("\uC18C\uC0AC", "14054");
+        lm_10.put("\uC18C\uC0AC\uBCF83\uB3D9", "14055");
+        lm_10.put("\uC18C\uC0AC\uBCF8\uB3D9", "14117");
+        lm_10.put("\uC1A1\uB0B41\uB3D9", "14106");
+        lm_10.put("\uC2EC\uACE1", "14056");
+        lm_10.put("\uC2EC\uACE1\uBCF8\uB3D9", "14057");
+        lm_10.put("\uC5ED\uACE1", "14059");
+        lm_10.put("\uC5ED\uACE12\uB3D9", "14060");
+        LinkedHashMap lm_11 = new LinkedHashMap();
+        lm_11.put("\uACE0\uAC15\uB3D9", "14050");
+        lm_11.put("\uC0BC\uC815\uB3D9", "14051");
+        lm_11.put("\uC0C11\uB3D9", "14053");
+        lm_11.put("\uC0C13\uB3D9", "14090");
+        lm_11.put("\uC5EC\uC6D4\uB3D9", "14058");
+        lm_11.put("\uC624\uC815\uB3D9", "14061");
+        lm_11.put("\uC6D0\uBBF8\uB3D9", "14062");
+        lm_11.put("\uC6D0\uC8852\uB3D9", "14107");
+        lm_11.put("\uC9111\uB3D9", "14105");
+        lm_11.put("\uC9112\uB3D9", "14064");
+        lm_11.put("\uC9113\uB3D9", "14063");
+        LinkedHashMap lm_12 = new LinkedHashMap();
+        lm_12.put("\uB300\uBD80", "14068");
+        lm_12.put("\uB300\uC57C\uB3D9", "14065");
+        lm_12.put("\uB3C4\uCC3D\uB3D9", "14074");
+        lm_12.put("\uC2E0\uCC9C", "14066");
+        lm_12.put("\uC601\uD765", "14101");
+        lm_12.put("\uC740\uD589\uB3D9", "14088");
+        lm_12.put("\uD3EC\uB3D9", "14067");
+        LinkedHashMap lm_13 = new LinkedHashMap();
+        LinkedHashMap lm_14 = new LinkedHashMap();
+        lm_14.put("\uCCAD\uC5B8", "14997");
+        
+        
+        LinkedHashMap rows = new LinkedHashMap();
+        if(isRegione)
+        {
+            rows.put("\uAC15\uD654\uC9C0\uAD6C", lm_1);
+            rows.put("\uAE40\uD3EC\uC9C0\uAD6C", lm_2);
+            rows.put("\uACC4\uC591\uC9C0\uAD6C", lm_3);
+            rows.put("\uC11C\uAD6C\uC9C0\uAD6C", lm_4);
+            rows.put("\uC911\uB3D9\uAD6C\uC9C0\uAD6C", lm_5);
+            rows.put("\uBD80\uD3C9\uC9C0\uAD6C", lm_6);
+            rows.put("\uB0A8\uAD6C\uC9C0\uAD6C", lm_7);
+            rows.put("\uB0A8\uB3D9\uC9C0\uAD6C", lm_8);
+            rows.put("\uC5F0\uC218\uC9C0\uAD6C", lm_9);
+            rows.put("\uBD80\uCC9C1\uC9C0\uAD6C", lm_10);
+            rows.put("\uBD80\uCC9C2\uC9C0\uAD6C", lm_11);
+            rows.put("\uC2DC\uD765/\uC548\uC0B0\uC9C0\uAD6C", lm_12);
+            rows.put("\uACF5\uC18C", lm_13);
+            rows.put("\uD2B9\uC218", lm_14);
+        } else
+        {
+            rows.putAll(lm_1);
+            rows.putAll(lm_2);
+            rows.putAll(lm_3);
+            rows.putAll(lm_4);
+            rows.putAll(lm_5);
+            rows.putAll(lm_6);
+            rows.putAll(lm_7);
+            rows.putAll(lm_8);
+            rows.putAll(lm_9);
+            rows.putAll(lm_10);
+            rows.putAll(lm_11);
+            rows.putAll(lm_12);
+            rows.putAll(lm_13);
+            rows.putAll(lm_14);
+        }
+        return rows;
+    }
+
+    /**
+     * @param regionCode
+     * @deprecated
+     */
+    public static TempleVO findFirstChurchInGigu(String giguName)
+    {
+        TempleVO vo = new TempleVO();
+        vo.GIGU_NAME = giguName;
+        LinkedHashMap rows = listMailhallInRegion();
+        for(Iterator itr = rows.keySet().iterator(); itr.hasNext();)
+        {
+            String giguNm = itr.next().toString();
+            if(giguNm.equals(giguName))
+            {
+                LinkedHashMap row = (LinkedHashMap)rows.get(giguNm);
+                Iterator ir = row.keySet().iterator();
+                String k = ir.next().toString();
+                vo.CHURCH_IDX = row.get(k).toString();
+                vo.CHURCH_NAME = k;
+                break;
+            }
+        }
+
+        return vo;
+    }
+
+    /**
+     * @param regionCode
+     * @deprecated
+     */
+    public static LinkedHashMap groupbyMailhallInRegion()
+    {
+        int sum = 0;
+        LinkedHashMap rows = listMailhallInRegion();
+        String giguNm;
+        LinkedHashMap row;
+        for(Iterator itr = rows.keySet().iterator(); itr.hasNext(); rows.put(giguNm, (new StringBuilder()).append(row.size()).toString()))
+        {
+            giguNm = itr.next().toString();
+            row = (LinkedHashMap)rows.get(giguNm);
+            sum += row.size();
+        }
+
+        rows.put("\uACF5\uC18C", "36");
+        rows.put("\uC804\uCCB4", (new StringBuilder()).append(sum).toString());
+        return rows;
+    }
+
+    /**
+     * @param regionCode
+     * @deprecated
+     */
+    public static String findChurchName(Map rows, String churchIdx)
+    {
+        String rtVal = "";
+        boolean isContinue = true;
+        for(Iterator itrs = rows.entrySet().iterator(); itrs.hasNext() && isContinue;)
+        {
+            java.util.Map.Entry entry = (java.util.Map.Entry)itrs.next();
+            Map row = (Map)entry.getValue();
+            for(Iterator it = row.entrySet().iterator(); it.hasNext() && isContinue;)
+            {
+                java.util.Map.Entry e = (java.util.Map.Entry)it.next();
+                if(e.getValue().toString().equals(churchIdx))
+                {
+                    rtVal = e.getKey().toString();
+                    isContinue = false;
+                    break;
+                }
+            }
+
+        }
+
+        return rtVal;
+    }
+
+    public static String getChurchListByTabCode(int tabCode)
+    {
+        String x = "";
+        switch(tabCode)
+        {
+        case 1: // '\001'
+            x = "14008,14077,14091,14036,14087";
+            break;
+
+        case 2: // '\002'
+            x = "14076,14069,14100,14120,14096,14114,14070,14123,14083,14071,14080,14084";
+            break;
+
+        case 3: // '\003'
+            x = "14009,14099,14073,14110,14041,14075,14049";
+            break;
+
+        case 4: // '\004'
+            x = "14012,14031,14039,14038,14042,14043,14044,14045,14046,14108";
+            break;
+
+        case 5: // '\005'
+            x = "14005,14006,14010,14011,14121,14081,14109,14014,14115,14015,14078,14111,14124,14103,14112";
+            break;
+
+        case 6: // '\006'
+            x = "14007,14093,14021,14017,14018,14019,14020,14023,14022,14092,14032,14040";
+            break;
+
+        case 7: // '\007'
+            x = "14003,14002,14004,14079,14024,14996,14097,14025,14113,14037,14098,14116";
+            break;
+
+        case 8: // '\b'
+            x = "14013,14026,14119,14033,14027,14102,14086";
+            break;
+
+        case 9: // '\t'
+            x = "14001,14095,14085,14016,14029,14028,14030,14082,14104,14034,14072,14035,14094,14047,14048";
+            break;
+
+        case 10: // '\n'
+            x = "14089,14052,14054,14055,14117,14106,14056,14057,14059,14060";
+            break;
+
+        case 11: // '\013'
+            x = "14050,14051,14053,14090,14058,14061,14062,14107,14105,14064,14063";
+            break;
+
+        case 12: // '\f'
+            x = "14068,14065,14074,14066,14101,14088,14067";
+            break;
+
+        case 14: // '\016'
+            x = "14997";
+            break;
+        }
+        return x;
+    }
+}

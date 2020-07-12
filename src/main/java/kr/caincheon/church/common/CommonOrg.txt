@@ -1,0 +1,57 @@
+package kr.caincheon.church.common;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+import java.util.Map;
+
+import kr.caincheon.church.common.base.CommonDao;
+
+/**
+ * 조직과 관련한 공통 모듈을 제공하는 유틸성 컴포넌트이다.
+ * @author benjamin
+ */
+public class CommonOrg extends CommonDao {
+	
+	private static CommonOrg INSTANCE = new CommonOrg();
+	
+	private CommonOrg () {
+	}
+	
+	/*
+	 * 
+	 */
+	public synchronized static CommonOrg getInstance() {
+		if(INSTANCE==null) {
+			INSTANCE = new CommonOrg();
+		} 
+		return INSTANCE;
+	}
+	
+	/*
+	 * 조직 목록 조회
+	 */
+	public List<Map> getDepartments() {
+		return null;
+	}
+	
+	/*
+	 * 게시판 카테고리 조회
+	 */
+	public List<Map> getBoardCategories(Connection conn, Statement stmt) throws SQLException {
+		if(__conn == null) __conn = conn; 
+		if(__stmt == null) __stmt = stmt; 
+		String query = "SELECT C_IDX, B_IDX, NAME FROM "+DB_OWNER+".BOARD_CATEGORY WHERE IS_USE='Y'";
+		List l = super.executeQueryList(query);
+		return l;
+	}
+	
+	/*
+	 * 교회 목록 조회
+	 */
+	public List<Map> getChurchs() {
+		return null;
+	}
+	
+}

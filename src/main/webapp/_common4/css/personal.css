@@ -1,0 +1,1562 @@
+/* large */
+
+body{
+  background-color: #F7F7F7;
+}
+/* adds some margin below the link sets  */
+.navbar .dropdown-menu div[class*="col"] {
+   margin-bottom:0rem;
+}
+
+.navbar .dropdown-menu {
+  border:none;
+  background-image: url("../img/navbar.png");
+  background-color:#044F88;
+  background-blend-mode: luminosity;
+  background-repeat:no-repeat;
+}
+
+.color-overlay{
+  width:100%;
+  height:100%;
+  background: #0068B7;
+  opacity: .7;
+  position:absolute
+}
+.col-md-2-7{
+  position: relative;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+/* breakpoint and up - mega dropdown styles */
+@media screen and (min-width: 1200px) {
+  .breaking{
+    margin-left:230px;
+  }
+
+.col-md-2-7 .nav-item{
+  font-size:13.75px;
+  font-family: 'Noto Sans KR';
+}
+
+.col-md-2-7 span{
+  font-family: 'Noto Sans KR';
+
+  font-size:15.625px;
+  padding-left:8px;
+  text-decoration: underline;
+  text-underline-position: under;
+}
+  /* remove the padding from the navbar so the dropdown hover state is not broken */
+.navbar {
+  padding-top:20px;
+  padding-bottom:20px;
+}
+
+/* remove the padding from the nav-item and add some margin to give some breathing room on hovers */
+
+
+/* makes the dropdown full width  */
+.navbar .dropdown {position:static;}
+
+.navbar .dropdown-menu {
+  width:100%;
+  left:0;
+  right:0;
+/*  height of nav-item  */
+  top:45px;
+  margin-top:35px;
+  display:block;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.3s linear;
+
+}
+
+
+
+
+  /* shows the dropdown menu on hover */
+.navbar .dropdown:hover .dropdown-menu, .navbar .dropdown .dropdown-menu:hover {
+  display:block;
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s, opacity 0.3s linear;
+}
+
+  .navbar .dropdown-menu {
+    border: 1px solid rgba(0,0,0,0);
+  }
+
+}
+
+
+.header{
+  background-color: #0068B7;
+}
+.menu-item{
+    width: calc(100% / 6.2)
+}
+
+.fontmenu{
+  font-family: 'Noto Sans KR';
+  color: #FFFFFF;
+  font-size:18.75px;
+}
+
+.mainlogo{
+  max-height:100%;
+  width:127.318px;
+  display:block;
+}
+.slideimg{
+  width:100%;
+  height: 336.875px;
+  object-fit: cover;
+}
+.light{
+  width:100%;
+  height:187.5px;
+  object-fit:cover;
+}
+
+.leftsection{
+  padding-right:7.5px;
+}
+.rightsection{
+  padding-left:7.5px;
+
+}
+
+.containerbox{
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin:0.78rem 1.875rem;
+}
+
+.innerbox{
+  padding:21.875px 25px;
+}
+
+.colorbox{
+  height:56.875px;
+  width:100%;
+  background-color: #4EB2F0;
+  padding-left:25.625px;
+  padding-right:25.625px;
+}
+
+.nocolorbox{
+  height:25.625px;
+  width:100%;
+  padding-left:25.625px;
+  padding-right:25.625px;
+  margin-top:15.625px;
+}
+
+.nocolordongjungbox{
+  height:25.625px;
+  width:100%;
+  padding-left:25.625px;
+  padding-right:25.625px;
+}
+
+.dongjungbox{
+  height:25.625px;
+}
+
+.churchbox{
+  height:56.875px;
+  width:100%;
+  padding-left:25.625px;
+  padding-right:25.625px;
+  background-color: #58A0DA;
+}
+
+.bondangcolor{
+  height:56.875px;
+  width:100%;
+  padding-left:25.625px;
+  padding-right:25.625px;
+  background-color: #5BBEA7;
+}
+
+.gongdongbox{
+  height:56.875px;
+  width:100%;
+  padding-left:25.625px;
+  padding-right:25.625px;
+  background-color: #73BBC7;
+}
+
+
+.innergyogu{
+  padding:35px 40px;
+}
+
+.gyogucontent{
+  padding: 6.25px 25px;
+  height: 100%;
+}
+
+.gyoguimg{
+  height:131.25px;
+  width:100%;
+  height: 187.5px;
+  object-fit: cover;
+}
+
+.innertitle{
+  font-size:1.1328125rem;
+  font-family: 'Noto Sans KR';
+  color:#0068B7;
+  float:left;
+  font-weight: bold;
+}
+
+.holyinnertitle{
+  font-size:1.1328125rem;
+  font-family: 'Noto Sans KR';
+  color:#0068B7;
+  float:left;
+  font-weight: bold;
+}
+
+.holybutton{
+  width:100%;
+}
+
+.innerawesome{
+  float:right;
+  font-size:1.1328125rem;
+}
+
+.innerawesomes{
+  float:right;
+  font-size:1.1328125rem;
+}
+
+.icons{
+  width:13.125px;
+  height:13.125px;
+}
+.whitespace{
+  width:25px;
+}
+
+.dash{
+  border:1px dashed #707070;
+  margin-left:12.5px;
+  margin-right:12.5px;
+  margin-top:15.3125px;
+  margin-bottom:7.1875px;
+}
+
+.borders{
+  border-width:0.5px;
+  border-color:#C7C7C7;
+  border-style:solid;
+}
+
+.dash2{
+  border:1px dashed #707070;
+  margin-top:10.3125px;
+  margin-bottom:7.1875px;
+
+}
+
+.dash3{
+  border:1px dashed #707070;
+  margin-top:30.6255px;
+  margin-bottom:7.1875px;
+
+}
+
+.innercontent{
+  padding:0px 25.625px;
+}
+
+li{
+  list-style: none;
+}
+
+.innercontent li{
+  margin: 10px 0px;
+}
+
+.innercontent em{
+  font-family: 'Noto Sans KR';
+  display:inline-block;
+  width:15%;
+  font-size: 15.625px;
+  color: #707070;
+  font-style:normal;
+  text-decoration:none;
+}
+
+.innercontent a{
+  font-family: 'Noto Sans KR';
+  display:inline-block;
+  width:50%;
+  font-size: 15.625px;
+  color: #707070;
+}
+
+.innercontent span{
+  font-family: 'Noto Sans KR';
+  display:inline-block;
+  width:25%;
+  font-size: 15.625px;
+  color: #707070;
+}
+
+.infocontent{
+  padding:0px 25.625px;
+}
+.infocontent li{
+  margin: 10px 0px;
+}
+
+.infocontent em{
+  font-family: 'Noto Sans KR';
+  display:inline-block;
+  width:85%;
+  font-size: 15.625px;
+  color: #707070;
+  font-style:normal;
+  text-decoration:none;
+}
+.videobox{
+  background: #fff;
+  width: 100%;
+  overflow: hidden;
+  height: 271.25px;
+  margin-top:16px;
+}
+.footerbox{
+  width: 100%;
+  overflow: hidden;
+  height: 200.25px;
+}
+.footercontainer{
+  background-color: #707070;
+  width: 100%;
+  overflow: hidden;
+  height: 150px;
+  padding:0;
+}
+
+.footersection{
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+.footersection .col-xl-12{
+  padding:0;
+}
+.innerfooter{
+  width: 90%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  height: 85px;
+  margin-left:62.5px;
+  margin-top:33.125px;
+  margin-bottom:54.375px;
+  margin-right:62.5px;
+}
+
+.footerimg{
+   float:left;
+   display:block;
+}
+.footertext{
+  font-size:14.375px;
+  color:#FFF;
+}
+
+.footerright{
+    float:right;
+    font-size:14.375px;
+    color:#FFF;
+  }
+
+.footerrighttext{
+  font-size:14.375px;
+  color:#FFF;
+}
+
+
+.footertext a{
+  font-size:14.375px;
+  color:#FFF;
+}
+
+.video{
+  margin: 12.5px 25px;.
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+.videoimg{
+  width:100%;
+  height: 187.5px;
+  object-fit: cover;
+}
+
+.albumimg{
+  width:100%;
+  height: 134.375px;
+  object-fit: cover;
+}
+
+.albumtxt{
+  font-family : 'Noto Sans KR' ;
+  font-size : 15.625px;
+  margin-bottom:0rem;
+  margin-top:6.25px;
+  color:#707070;
+}
+.albumdate{
+  font-family : 'Noto Sans KR';
+  font-size: 13.125px;
+  color:#3F80BE;
+}
+.videocontent{
+  padding:0px 25px;
+}
+.videocontent li{
+  margin: 14.375px 0px;
+}
+
+.videocontent em{
+  font-family: 'Noto Sans KR';
+  display:inline-block;
+  width:10%;
+  font-size: 15.625px;
+  color: #707070;
+  font-style:normal;
+  text-decoration:none;
+}
+.videocontent a{
+  font-family: 'Noto Sans KR';
+  display:inline-block;
+  width:5%;
+  font-size: 15.625px;
+  color: #707070;
+}
+
+.videocontent span{
+  font-family: 'Noto Sans KR';
+  display:inline-block;
+  width:60%;
+  font-size: 15.625px;
+  color: #707070;
+}
+
+.pdfbutton{
+  background-color: #F7F7F7;
+  border-color: #F7F7F7;
+  width:47.5px;
+  height:20px;
+  font-size:14.125px;
+  padding:0;
+  font-family: 'Noto Sans KR';
+  color: #707070;
+}
+.infocontent a{
+  font-family: 'Noto Sans KR';
+  display:inline-block;
+  width:10%;
+  font-size: 15.625px;
+  color: #707070;
+}
+
+.box{
+  background: #fff;
+  width: 100%;
+  overflow: hidden;
+  height: 236.25px;
+  position:relative;
+}
+
+.iljungbox{
+  width: 100%;
+  overflow: hidden;
+  max-height: 250.25px;
+  position:relative;
+}
+
+.nomarginbox{
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+.firstline{
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-top:23.125px;
+}
+.secondline{
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-top:26.875px;
+}
+.iconbox{
+  background: #fff;
+  width: 100%;
+  overflow: hidden;
+  height: 312.5px;
+  margin-top: 1rem;
+}
+
+.holybox{
+  margin-top: 1rem;
+  background: #fff;
+  width: 100%;
+  overflow: hidden;
+  height: 335px;
+  }
+.menupadding{
+  padding-left:45px;
+  padding-right:45px;
+}
+
+.holyplace{
+  width:100%;
+  height: 223.125px;
+  object-fit: cover;
+}
+
+.iconbox ul{
+  display:table;
+  width:100%;
+  position: relative;
+}
+.icon{
+  height:113.75px;
+  max-width:100%;
+}
+
+.speicalicon{
+  height:130.75px;
+  max-width:100%;
+}
+
+.icontag{
+  margin: 0 auto;
+  display:block;
+}
+.bondangbox{
+  background: #fff;
+  width: 100%;
+  height: 312.5px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.bondangtitle{
+  font-family: 'Noto Sans KR';
+  font-size: 18.125px;
+  color: #FFF;
+  margin-top: 23.75px;
+  font-weight: bold;
+}
+
+.bondangtext{
+  font-family: 'Noto Sans KR';
+  font-size: 15.625px;
+  color: #FFF;
+  margin-top: 16.25px;
+  font-weight: bold;
+}
+
+
+.leftimg{
+  padding-left:25px;
+  padding-right:12.500px;
+}
+
+.rightimg{
+  padding-left:12.5px;
+  padding-right:25px;
+}
+.holytitle{
+  font-family: 'Noto Sans KR';
+  font-size: 15.125px;
+  color: #FFF;
+  font-weight: bold;
+  }
+
+.holytext{
+  font-family: 'Noto Sans KR';
+  font-size: 12.5px;
+  color: #FFF;
+  margin-bottom:30px;
+  }
+
+.col-half-offset{
+  margin-left:4.166666667%
+}
+.topmargin{
+  margin-top:1rem;
+}
+
+@media (min-width: 1200px) {
+  .icon{
+    height:113px;
+    max-width:100%;
+    display:block;
+    margin: 0 auto;
+  }
+  .holybox{
+    margin-top: 1rem;
+    background: #fff;
+    width: 100%;
+    overflow: hidden;
+    height: 335px;
+  }
+  .leftsection{
+    padding-right:0.5rem;
+  }
+  .rightsection{
+    padding-left:0.5rem;
+    margin-top:0rem;
+  }
+}
+
+.firsticon{
+  float:left;
+}
+.middleicon{
+  margin-top: 23.125px;
+  margin-right:130px;
+}
+.lasticon{
+  margin-top: 23.125px;
+}
+
+.lastbox{
+  margin-top:1rem;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+.newsbox{
+  background: #fff;
+  width: 100%;
+  overflow: hidden;
+  height: 43.125px;
+  margin: 12.5px 0px 0px 0px;
+}
+
+@media (max-width: 640px) {
+  .newsbox{
+    background: #fff;
+    width: 100%;
+    overflow: hidden;
+    height: 83.125px;
+    margin-top: 1rem;
+  }
+}
+
+.news{
+  font-family: 'Noto Sans KR';
+  display:inline-block;
+  font-size: 14.735px;
+  color: #707070;
+  padding: 12.5px 0px;
+  margin-bottom: 0px;
+  margin-left:25px;
+  vertical-align: middle;
+}
+
+.leftbox{
+  margin-top:16px;
+  padding-left:0px;
+  padding-right:0px;
+}
+
+.rightbox{
+  padding-right:0px;
+  margin-top:16px;
+}
+
+.gyogubox{
+  width: 100%;
+  max-height: 645px;
+  margin-top: 12.5px;
+  overflow:auto;
+  position:relative;
+}
+
+.boxgyogu{
+  background: #fff;
+  width: 100%;
+  overflow: auto  ;
+  max-height: 645px;
+  position:relative;
+}
+
+.gyogucard{
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  min-height: 1px;
+  font-family: 'Noto Sans KR';
+  font-size: 14.375px;
+  color: #707070;
+}
+
+.leftarw{
+  margin-right:11px;
+}
+
+.rightarw{
+  margin-left:11px;
+}
+.gyogutext{
+  font-family: 'Noto Sans KR';
+  font-size: 15.375px;
+  color: #707070;
+  margin-bottom:17.8125px;
+}
+.gyogutitle{
+  font-family: 'Noto Sans KR';
+  font-size: 15.375px;
+  margin: 10px 0px;
+  color: #707070;
+  font-weight: bold;
+}
+
+.gyogusosik{
+  font-size:1.1728125rem;
+  font-family: 'Noto Sans KR';
+  color:#FFF;
+  font-weight: bold;
+  display:inline-block;
+  vertical-align:middle;
+}
+
+.sosiktitle{
+  margin-top:15.625px;
+  margin-bottom:0px;
+}
+.sosikicon{
+  margin-top:20.625px;
+}
+
+.gyoguline{
+  padding-right:0px;
+  padding-left: 0px;
+}
+
+.dropbox{
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    width:1075px;
+    height:56.25px;
+}
+
+.dongne .btn-light{
+  font-family: 'Noto Sans KR';
+  font-size:14px;
+  color:#0068B7;
+}
+
+.dongne div.dropdown{
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+.seconddongne div.dropdown{
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+
+.dongne .btn{
+  padding-top:0px;
+  padding-bottom:0px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+.dongne .dropdown-item{
+  text-align: center;
+  font-family: 'Noto Sans KR';
+  font-size:13.125px;
+  color:#0068B7;
+}
+
+.dongne .dropdown-menu{
+  width:100%;
+  border-radius: 20px;
+  max-height:150px;
+  overflow-y: scroll;
+  min-width:0;
+}
+
+.video .col-xl-6.right{
+  padding-right:9.375px;
+}
+
+.video .col-xl-6.left{
+  padding-left:9.375px;
+}
+
+.seconddongne .btn-light{
+  font-family: 'Noto Sans KR';
+  font-size:14px;
+}
+
+.seconddongne .dropdown-item{
+  font-family: 'Noto Sans KR';
+  font-size: 13.125px;
+  color:#0068B7;
+}
+
+.seconddongne .btn{
+  padding-top:0px;
+  padding-bottom:0px;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.dongne .btn{
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.seconddongne .dropdown-menu{
+  min-width:6.328rem;
+  border-radius: 20px;
+  max-height:150px;
+  overflow-y: scroll;
+}
+
+.cardimg{
+  max-height:312.5px;
+  width:100%;
+  object-fit: cover;
+}
+
+.mainmenu{
+  padding-right:19px;
+  padding-left:19px;
+}
+
+.lastbox .btn{
+  text-align: left;
+}
+
+.lastbox .dropdown-menu{
+  width:100%;
+  background-color: #0068B7;
+  max-height:205.625px;
+  overflow-y: scroll;
+}
+
+.lastbox .dropdown-item{
+  text-align: left;
+  padding: 0.25rem 0.75rem;
+  font-family: 'Noto Sans KR';
+  color:#FFF;
+}
+.mainmenu .dropdown-toggle::after{
+  display:none;
+}
+.buttonmargin{
+  margin-right:20px
+}
+
+.firstcarouimg{
+  padding-left:0;
+  padding-right:9.375px;
+}
+
+.secondcarouimg{
+  padding-left:9.375px;
+  padding-right:0;
+}
+
+/* 슬라이더 */
+
+/* 아이폰기준xs */
+  @media (max-width: 414px) {
+    .videocontent span{
+      display:inline;
+      margin-left:35px;
+    }
+    .col-xl-4{
+      padding-left:0px;
+      padding-right:0px;
+    }
+
+    .col-xl-6{
+      padding-left:0px;
+      padding-right:0px;
+    }
+
+    .col-xl-8{
+      padding-left:0px;
+      padding-right:0px;
+    }
+
+    .col-xl-12{
+      padding-left:0px;
+      padding-right:0px;
+    }
+
+    .video .col-xl-6.right{
+      padding-right: 25px;
+      padding-left: 25px;
+    }
+    .video .col-xl-6.left{
+      padding-right: 25px;
+      padding-left: 25px;
+    }
+    .videobox{
+      background: #fff;
+      width: 100%;
+      overflow: hidden;
+      height: 260px;
+    }
+
+    .dongne div.dropdown{
+      margin-left: 4.375px;
+      margin-right: 4.375px;
+    }
+    .video .col-xl-6{
+      padding-right:0;
+      padding-left:0;
+    }
+
+      .dongne dropdown{
+        margin-left:4.375px;
+        margin-right:4.375px;
+      }
+
+      .cardimg{
+        max-height:none;
+        height:253.75px;
+        object-fit: cover;
+      }
+      .topmargin{
+        padding-left: 0px;
+        padding-right: 0px;
+      }
+      .card-img-overlay{
+        padding:0;
+      }
+      .dropdown btn-light{
+        width:20%;
+      }
+      .bondangtitle{
+        font-family: 'Noto Sans KR';
+        font-size: 9.3px;
+        color: #FFF;
+        margin-top: 15px;
+        font-weight: bold;
+      }
+
+      .bondangtext{
+        font-family: 'Noto Sans KR';
+        font-size: 8.75px;
+        color: #FFF;
+        margin-top: 11.875px;
+        font-weight: bold;
+      }
+
+      .btn{
+        font-size:0.1rem;
+      }
+      .videoimg{
+        height:162.5px;
+        margin-bottom:30px;
+      }
+
+      .pdfbutton{
+        background-color: #F7F7F7;
+        border-color: #F7F7F7;
+        width:46%;
+        height:20px;
+        font-size:13.125px;
+        padding:0;
+        font-family: 'Noto Sans KR';
+        color: #707070;
+      }
+      .albumdate{
+        margin-bottom:20px;
+      }
+      .iconbox{
+        height:265px;
+      }
+      .icon{
+        width:60px;
+        height:78px;
+      }
+      .speicalicon{
+        width:61px;
+        height:90.652px;
+      }
+      .holytitle{
+        margin-left:5px;
+      }
+      .holytext{
+        margin-lefT:5px;
+      }
+
+      .gyogubox{
+        overflow:hidden;
+        max-height:370px;
+      }
+      .newsbox{
+        height:21.875px;
+      }
+      .newsbox .news{
+        margin-left:15.625px;
+        font-size:7.5px;
+        padding:0px;
+      }
+
+      .dongne div.dropdown{
+        margin-left: 4.375px;
+        margin-right: 4.375px;
+      }
+
+      .seconddongne div.dropdown{
+        margin-left: 4.375px;
+        margin-right: 4.375px;
+      }
+
+      .dongne .btn-light{
+        padding-left:2.9375px;
+        padding-right:2.9375px;
+      }
+
+      .seconddongne a.btn-light{
+        padding-left:2.9375px;
+        padding-right:2.9375px;
+        margin:8.75px 0px;
+      }
+
+        .dongne a{
+          margin: 5px 6px;
+        }
+        .cardimg{
+          max-height:none;
+          object-fit: cover;
+        }
+
+        .bondangtitle{
+          font-family: 'Noto Sans KR';
+          font-size: 9.3px;
+          color: #FFF;
+          margin-top: 15px;
+          font-weight: bold;
+        }
+        .dongne .btn-light{
+          margin: 8.75px 0px;
+        }
+
+        .bondangtext{
+          font-family: 'Noto Sans KR';
+          font-size: 8.75px;
+          color: #FFF;
+          margin-top: 11.875px;
+          font-weight: bold;
+        }
+
+        .btn{
+          font-size:0.3rem;
+        }
+
+        .col-md-6{
+          padding:0px;
+        }
+        .col-md-4{
+          padding:0px;
+        }
+        .box{
+          margin-top:16px;
+        }
+        .leftbox{
+          margin-top:0px;
+        }
+        .rightbox{
+          margin-top:0px;
+        }
+        .footerbox{
+          height:100px;
+        }
+        .innerfooter{
+          margin-left:10px;
+          margin-top:0px;
+          margin-bottom:0px;
+          margin-right:0px;
+          font-size:8px;
+        }
+    }
+    /* 아이폰 5 */
+    @media (max-width:320px){
+      .videocontent em{
+        font-size:10px;
+      }
+      .videocontent span{
+        font-size:10px;
+      }
+      .pdfbutton{
+        width: 122px;
+      }
+      .newsbox .news{
+        margin-left:0px;
+        font-size:5px;
+        padding:0px;
+      }
+      .newsbox{
+        height:32px;
+      }
+      .innerfooter{
+        margin-left:10px;
+        margin-top:0px;
+        margin-bottom:0px;
+        margin-right:0px;
+        font-size:10px;
+      }
+      .mainlogo{
+        width:150px;
+      }
+    }
+/* 아이패드 */
+  @media (min-width: 768px) and (max-width:1024px){
+      .videocontent span{
+        display:inline;
+        margin-left:35px;
+      }
+      .col-xl-4{
+        padding-left:20px;
+        padding-right:20px;
+      }
+      .col-xl-6{
+        padding-left:20px;
+        padding-right:20px;
+      }
+      .col-md-6{
+        padding-left:20px;
+        padding-right:20px
+      }
+      .col-xl-8{
+        padding-left:20px;
+        padding-right:20px;
+      }
+      .col-xl-12{
+        padding-left:20px;
+        padding-right:20px;
+      }
+      .gyogubox{
+        max-height: 236.25px;
+        overflow:hidden;
+      }
+      .video .col-xl-6.right{
+        padding-right:25px;
+      }
+      .video .col-xl-6.left{
+        padding-left:25px;
+      }
+      .videoimg{
+        margin-bottom:20px;
+      }
+      .pdfbutton{
+          width:48%;
+      }
+      .buttonmargin{
+        margin-right:5px;
+      }
+      .col-md-6.leftsection{
+        padding-right:8px;
+      }
+      .col-md-6.rightsection{
+        padding-left:8px;
+      }
+      .albumdate{
+        margin-bottom:40px;
+      }
+      .videobox{
+        height:255px;
+      }
+      .dongne .btn-light{
+        padding-left:2.9375px;
+        padding-right:2.9375px;
+      }
+      .seconddongne .btn-light{
+        padding-left:2.9375px;
+        padding-right:2.9375px;
+      }
+      .card-img-overlay{
+        padding:0;
+      }
+      .seconddongne a.btn-light{
+        padding-left:2.9375px;
+        padding-right:2.9375px;
+        margin:16px 0px;
+      }
+      .dongne a.btn-light{
+        padding-left:2.9375px;
+        padding-right:2.9375px;
+        margin:16px 0px;
+      }
+      .dongne div.dropdown{
+        margin-left:10px;
+        margin-right:10px;
+      }
+      .seconddongne div.dropdown{
+        margin-left:10px;
+        margin-right:10px;
+      }
+      .holybox{
+        height:310px;
+      }
+      .holytitle{
+        font-size:17px;
+        margin:13px;
+      }
+      .holytext{
+        font-size:15px;
+        margin:13px;
+      }
+      .lastbox a.btn-secondary{
+        font-weight: bold;
+        font-family: 'Noto Sans KR';
+      }
+      .holybutton{
+        width:100%;
+      }
+      .firstholybutton{
+        padding-right:8px;
+      }
+      .lastbox .col-xl-2dot4{
+        padding-right:8px;
+      }
+      .lastbox .lastholybutton{
+        padding-right:0px;
+      }
+      .footerbox{
+        height:153px;
+      }
+      .ipad{
+        margin-top:0rem;
+      }
+      .iljungbox{
+        position: relative;
+        width: 100%;
+        flex: 0 0 50%;
+        max-width: 50%;
+        margin-top:1rem;
+        padding-left:0px;
+        padding-right:8px;
+      }
+      .gyogubox{
+        position: relative;
+        width: 100%;
+        flex: 0 0 50%;
+        max-width: 50%;
+        margin-top:1rem;
+        position: relaitve;
+        padding-left:8px;
+      }
+      .innerfooter{
+        margin-left:45px;
+        margin-top:10px;
+        margin-bottom:10px;
+        margin-right:0px;
+      }
+    }
+
+
+  @media (min-width: 415px) and (max-width:765px){
+    .rightsection{
+      padding-left:15px;
+      margin-top:16px;
+    }
+    .foripad{
+      padding-left:0px;
+    }
+    .leftsection{
+      margin-top:16px;
+      padding-right:15px;
+    }
+    .gyogubox{
+      margin-top:16px;
+    }
+    .col-md-6 .videobox{
+      margin-top:0px;
+    }
+    .btn-light{
+      margin-top:16px;
+      margin-bottom:16px;
+    }
+  }
+/* 컴퓨터 기준 */
+  @media (min-width: 1200px) {
+      .lastbox .col-xl-2dot4{
+      padding-right:8px;
+      }
+      .lastbox .lastholybutton{
+        padding-right:0px;
+      }
+
+      .seconddongne .btn-light{
+        margin: 36.25px 0px;
+      }
+
+      .seconddongne a{
+        margin: 0px 12px;
+      }
+
+      .cardimg{
+        max-height:312.5px;
+        object-fit: cover;
+      }
+
+    }
+
+  @media (min-width: 765px) {
+      .leftbox{
+        padding-left:0px;
+        padding-right:8px;
+      }
+      .rightbox{
+        padding-right:0px;
+        padding-left:8px;
+      }
+    }
+
+@media (min-width: 50px) {
+  .containerbox{
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin:0rem 0rem;
+  }
+}
+@media (min-width: 576px) {
+  .containerbox{
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin:0rem 0rem;
+  }
+}
+
+
+@media (min-width: 768px) {
+  .containerbox{
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin:0rem 0rem;
+  }
+  .col-md-2-7{
+    -ms-flex: 0 0 14.285714285714285714285714285714%;
+    flex: 0 0 14.285714285714285714285714285714%;
+    max-width: 14.285714285714285714285714285714%;
+  }
+}
+
+@media (min-width: 992px) {
+  .containerbox{
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin:0rem 0rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .containerbox{
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin:0.78rem 1.875rem;
+  }
+}
+
+.col-2dot4,
+.col-sm-2dot4,
+.col-md-2dot4,
+.col-lg-2dot4,
+.col-xl-2dot4 {
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+.col-2dot4 {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+}
+
+
+@media (min-width: 300px) {
+    .col-sm-2dot4 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+        padding-left:0px;
+        padding-right:0px;
+    }
+
+    .col-xl-2dot4 {
+        padding-left:0px;
+        padding-right:0px;
+        padding-top:1rem;
+    }
+}
+
+
+@media (min-width: 540px) {
+    .col-sm-2dot4 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+        padding-left:0px;
+        padding-right:0px;
+    }
+
+    .col-xl-2dot4 {
+        padding-left:0px;
+        padding-right:0px;
+    }
+}
+
+@media (min-width: 720px) {
+    .col-md-2dot4 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+        padding-left:0px;
+        padding-right:0px;
+    }
+    .col-xl-2dot4 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+        padding-left:0px;
+        padding-right:0px;
+    }
+}
+@media (min-width: 960px) {
+    .col-lg-2dot4 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+        padding-left:0px;
+        padding-right:0px;
+    }
+    .col-xl-2dot4 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+        padding-left:0px;
+        padding-right:0px;
+    }
+}
+@media (min-width: 1140px) {
+    .col-xl-2dot4 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+        padding-left:0px;
+        padding-right:0px;
+    }
+}
+
+.firstholybutton{
+  padding-left:0px;
+}
+
+.lastholybutton{
+  padding-right:0px;
+}
+
+
+.div-inline{
+  display: inline-block;
+}
+
+/* Horizontal menubar */
+@media (min-width:768px) {
+ /* height of the menu collapsed */
+  .nav-bg {
+	    height: 0px;
+	    width: 100%;
+	    position: absolute;
+	    top: 50px;
+	    background: #e7e7e7;
+	    transition: all .5s ease-in-out;
+	}
+
+	.menu-open .nav-bg { height: 50px } /* change to your height of the child menu */
+
+	.menu-open #page {
+        padding-top:60px;
+	    transition: all .2s ease-in-out;
+	}
+
+  #page {      height:1000px;/* demo only */
+}
+
+	.navbar-nav.nav > li { position: static }
+
+	.navbar-nav.nav .dropdown-menu {
+	    left: 0 !important;
+	    right: 0 !important;
+	    box-shadow: none;
+	    border: none;
+	    margin: 0 auto;
+	    max-width: 1170px;
+	    background: transparent;
+	    padding: 0;
+	}
+
+	.navbar-nav.nav .dropdown-menu > li { float: left }
+
+	.navbar-nav.nav .dropdown-menu > li > a {
+	    width: auto !important;
+	    background: transparent;
+	    line-height: 49px;
+	    padding-top: 0;
+	    padding-bottom: 0;
+	    margin: 0;
+	}
+}

@@ -1,0 +1,118 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" %>
+<%@page import="com.oreilly.servlet.MultipartRequest" %>
+<%@page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy" %>
+<%@page import="kr.caincheon.church.common.FileUtils" %>
+<%@page import="java.io.*" %>
+<%@page import="java.util.Date" %>
+<%@page import="java.text.SimpleDateFormat" %>
+<%
+
+
+/*
+ *
+ * 이 프로그램은 삭제 대상이며, 이것을 호출하는 것은 모두 uploadOK.jsp로 변경해야 함.
+ * - /admin/board/uploadOK.jsp 이것도 /admin/_common/ 으로 이동 필요.
+ *
+ */
+
+
+	System.out.println("uploadImageOk.jsp_1");
+	
+    request.setCharacterEncoding("UTF-8");
+ 
+    System.out.println("uploadType =" + request.getParameter("uploadType"));
+    System.out.println("testField =" + request.getParameter("testField"));
+    
+    
+    // 10Mbyte 제한
+    int maxSize  = 1024*1024*10;       
+ 
+    // 웹서버 컨테이너 경로
+    String root = request.getSession().getServletContext().getRealPath("/");
+    System.out.println("[uploadImageOk.jsp] root=" + root);
+    
+    
+    // 파일 업로드 경로(ex : /home/tour/web/ROOT/upload)
+    String uploadPath = FileUtils.fatherFilePath;
+    System.out.println("[uploadImageOk.jsp] uploadPath=" + uploadPath);
+    
+    // 업로드 파일명
+    String uploadFile = "";
+ 
+    String savePath = "";
+    // 실제 저장할 파일명
+    String saveFile = "";
+    
+    String uploadType = "";
+ 
+    int read = 0;
+    byte[] buf = new byte[1024];
+    FileInputStream fin = null;
+    FileOutputStream fout = null;
+    long currentTime = System.currentTimeMillis(); 
+    SimpleDateFormat simDf = new SimpleDateFormat("yyyyMMddHHmmss"); 
+    
+    try{
+ 
+        MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8", new DefaultFileRenamePolicy());
+         
+        // 전송받은 parameter의 한글깨짐 방지
+        //String title = multi.getParameter("photo");
+        //title = new String(title.getBytes("8859_1"), "UTF-8");
+        
+        uploadType = multi.getParameter("uploadType");
+        System.out.println("[uploadImageOk.jsp] uploadType=" + uploadType);
+        if(uploadType.equals("image1") ||
+        	uploadType.equals("image2") ||
+        	uploadType.equals("image3")) {
+        	
+        	// 파일업로드
+            uploadFile = multi.getFilesystemName(uploadType);
+            System.out.println("[uploadImageOk.jsp] uploadFile=" + uploadFile);
+            
+            // save path
+        	//savePath = root + "img\\magazine\\upload\\pdf\\";
+        	savePath = uploadPath + uploadType + "\\";
+        	System.out.println("[uploadImageOk.jsp] savePath=" + savePath);
+        	
+        	File savePathDir = new File(savePath); 
+        	if(!savePathDir.exists()) { 
+        		savePathDir.mkdirs();
+        		System.out.println("디렉토리를 생성했습니다.디렉토리=" + savePath); 
+        	}
+        	
+            saveFile = uploadFile;
+            System.out.println("[uploadImageOk.jsp] saveFile=" + saveFile);
+        } 
+ 
+
+        // 업로드된 파일 객체 생성
+        File oldFile = new File(uploadPath + uploadFile);
+ 
+         
+        // 실제 저장될 파일 객체 생성
+        File newFile = new File(savePath + saveFile);
+     	
+        // 파일명 rename
+        if(!oldFile.renameTo(newFile)){
+ 
+            // rename이 되지 않을경우 강제로 파일을 복사하고 기존파일은 삭제
+ 
+            buf = new byte[1024];
+            fin = new FileInputStream(oldFile);
+            fout = new FileOutputStream(newFile);
+            read = 0;
+            while((read=fin.read(buf,0,buf.length))!=-1){
+                fout.write(buf, 0, read);
+            }
+             
+            fin.close();
+            fout.close();
+            oldFile.delete();
+        }  
+ 
+    }catch(Exception e){
+        e.printStackTrace();
+    }
+ 
+%>

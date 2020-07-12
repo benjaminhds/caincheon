@@ -1,0 +1,178 @@
+package kr.caincheon.church.admin.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
+import kr.caincheon.church.common.CommonDao;
+import kr.caincheon.church.common.CommonException;
+
+/**
+ * 게시판 카테고리 관리 
+ * @author benjamin
+ */
+@Repository("boardCategoryDao")
+public class BoardCategoryDaoImpl extends CommonDao implements BoardCategoryDao
+{
+
+    private final Logger _logger = Logger.getLogger(getClass());
+
+	@Override
+	public List<Map> selectBoardCategory(Map params) throws CommonException, Exception {
+		
+		D(_logger, Thread.currentThread().getStackTrace(), "..params = " + params);
+		
+		// param
+		String name   = pnull(params, "name");
+		String is_use = pnull(params, "is_use","").toUpperCase();
+		String b_idx  = pnull(params, "b_idx");
+		String c_idx  = pnull(params, "c_idx");
+		// sql
+		String sql = "SELECT * FROM "+DB_OWNER+".NBOARD_CATEGORY WHERE 1=1 "
+				+ (name.length()  ==0 ? "" : " AND NAME='"+name+"' ")
+				+ (is_use.length()==0 ? "" : " AND IS_USE='"+is_use+"' ")
+				+ (b_idx.length() ==0 ? "" : " AND B_IDX='"+b_idx+"' ")
+				+ (c_idx.length() ==0 ? "" : " AND C_IDX='"+c_idx+"' ")
+				;
+		
+		// exeucte
+		List rtList = null;
+		try {
+			rtList = executeQueryList(sql);
+		} catch (SQLException e) { 
+			e.printStackTrace();
+			throw new CommonException(e.getMessage(), "SELECT ERROR", e);
+		}
+		D(_logger, Thread.currentThread().getStackTrace(), "DAO Result.["+rtList+"]" );
+		return rtList;
+	}
+
+	@Override
+	public int selectTotalCount(Map params) throws CommonException, Exception {
+		
+		D(_logger, Thread.currentThread().getStackTrace(), "..params = " + params);
+		
+		// param
+		String name = pnull(params, "name");
+		String is_use = pnull(params, "is_use").toUpperCase();
+		String b_idx = pnull(params, "b_idx");
+		String c_idx = pnull(params, "c_idx");
+		// sql
+		String sql = "SELECT * FROM "+DB_OWNER+".NBOARD_CATEGORY";
+		String where = " WHERE 1=1 "
+				+ (name.length()==0 ? "" : " AND name like '%"+name+"%' ")
+				+ (is_use.length()==0 ? "" : " AND is_use='"+is_use+"' ")
+				+ (b_idx.length()==0 ? "" : " AND b_idx='"+b_idx+"' ")
+				+ (c_idx.length()==0 ? "" : " AND del_yn='"+c_idx+"' ")
+				;
+		// exeucte
+		int rtVal = 0;
+		try {
+			rtVal = executeCount(sql+where, true);
+		} catch (SQLException e) { 
+			throw new CommonException(e.getMessage(), "SELECT ERROR", e);
+		}
+		
+		D(_logger, Thread.currentThread().getStackTrace(), "DAO Result.["+rtVal+"]" );
+		
+		return rtVal;
+	}
+	
+	@Override
+	public int insertBoardCategory(Map params) throws CommonException, Exception {
+		
+		D(_logger, Thread.currentThread().getStackTrace(), "..params = " + params);
+		
+		// Params
+		String b_idx  = pnull(params, "b_idx"); // 게시판 코드
+		String c_idx  = pnull(params, "c_idx"); // 게시판에서 사용하는 분류코드
+		String name   = pnull(params, "name");  // 게시판에서 사용하는 분류코드명
+		String is_use = pnull(params, "is_use", "Y").toUpperCase();
+		
+		//180120
+//		if(c_idx.length()==0) c_idx = "(SELECT ISNULL(MAX(C_IDX),0)+1 FROM "+DB_OWNER+".NBOARD_CATEGORY)";
+		
+		//
+		int rtVal = 0;
+		// syntax
+		String sql = "INSERT INTO "+DB_OWNER+".NBOARD_CATEGORY (C_IDX, NAME, IS_USE, B_IDX) VALUES ("+c_idx+", '"+name+"', '"+is_use+"', '"+b_idx+"') ";
+		sql = "INSERT INTO "+DB_OWNER+".NBOARD_CATEGORY (NAME, IS_USE, B_IDX) VALUES ('"+name+"', '"+is_use+"', '"+b_idx+"') "; // IDENTITY(1,1) 때문에 c_idx 컬럼 제외
+		
+		// execute
+		try {
+			rtVal = executeUpdate(sql);
+		} catch (SQLException e) { 
+			throw new CommonException(e.getMessage(), "INSERT ERROR", e);
+		}
+		D(_logger, Thread.currentThread().getStackTrace(), "DAO Result.["+rtVal+"]" );
+		return rtVal;
+	}
+
+	@Override
+	public int updateBoardCategory(Map params) throws CommonException, Exception {
+		
+		D(_logger, Thread.currentThread().getStackTrace(), "..params = " + params);
+		
+		// Params
+		String name   = pnull(params, "name");
+		String is_use = pnull(params, "is_use").toUpperCase();
+		String b_idx  = pnull(params, "b_idx");
+		String c_idx  = pnull(params, "c_idx");
+		if( !("Y".equalsIgnoreCase(is_use) || "N".equalsIgnoreCase(is_use)) ) {
+			throw new CommonException("IS_USE Column must has a Y or N.", "PARAM CHECK ERROR");
+		}
+		//
+		int rtVal = 0;
+		// syntax
+		String sql = "UPDATE "+DB_OWNER+".NBOARD_CATEGORY SET "
+				+ " NAME='"+name+"' "
+				+ " " + (is_use.length()==0 ? "" : ", IS_USE='"+is_use+"' ")
+				+ " WHERE B_IDX=" + b_idx + " AND C_IDX=" + c_idx
+				;
+		
+		// execute
+		try {
+			rtVal = executeUpdate(sql);
+		} catch (SQLException e) { 
+			throw new CommonException(e.getMessage(), "UPDATE ERROR", e);
+		}
+		D(_logger, Thread.currentThread().getStackTrace(), "DAO Result.["+rtVal+"]" );
+		return rtVal;
+	}
+
+	@Override
+	public int deleteBoardCategory(Map params) throws CommonException, Exception {
+		
+		D(_logger, Thread.currentThread().getStackTrace(), "..params = " + params);
+		
+		// Params
+		//String is_use = pnull(params, "is_use").toUpperCase();
+		String b_idx = pnull(params, "b_idx");
+		String c_idx = pnull(params, "c_idx");
+		if( "".equalsIgnoreCase(b_idx) || "".equalsIgnoreCase(c_idx) ) {
+			throw new CommonException("The b_idx & c_idx value is neccerssary value.", "PARAM CHECK ERROR");
+		}
+		
+		//
+		int rtVal = 0;
+		// syntax :: TODO 삭제가 아닌 flag를 N으로 설정했는데, 고객의 확인이 필요함.
+		String sql = "UPDATE "+DB_OWNER+".NBOARD_CATEGORY SET IS_USE='N' "
+				+ " WHERE B_IDX = " + b_idx + " AND C_IDX = " + c_idx
+				;
+		
+		// execute
+		try {
+			rtVal = executeUpdate(sql);
+		} catch (SQLException e) { 
+			throw new CommonException(e.getMessage(), "DELETE ERROR", e);
+		}
+		D(_logger, Thread.currentThread().getStackTrace(), "DAO Result.["+rtVal+"]" );
+		return rtVal;
+	}
+
+    //=================== innert method =======================
+    	
+}

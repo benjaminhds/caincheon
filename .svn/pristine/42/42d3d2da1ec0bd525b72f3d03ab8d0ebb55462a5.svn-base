@@ -1,0 +1,25 @@
+package kr.caincheon.church.admin.serivce;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import kr.caincheon.church.common.CommonDaoDTO;
+import kr.caincheon.church.common.CommonException;
+
+public interface NBoardService
+{
+	
+	public String MAP_K_ATTACHED_FILE_COUNT = "_ATTACHED_FILE_COUNT";
+	
+    public abstract CommonDaoDTO nboardList(Map _params, String left_menu_data_pg, boolean hasOrgList, int attachedFileCount) throws CommonException;
+
+    public abstract CommonDaoDTO nboardContents(Map _params, String left_menu_data_pg, boolean hasOrgList, int attachedFileCount) throws CommonException;
+
+    public abstract boolean nboardInsert(Map _params, String left_menu_data_pg, HttpServletRequest request) throws CommonException;
+
+    public abstract boolean nboardModify(Map _params, String left_menu_data_pg, HttpServletRequest request) throws CommonException;
+
+    public abstract boolean nboardDelete(Map _params, String left_menu_data_pg) throws CommonException;
+    
+}

@@ -1,0 +1,279 @@
+// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.kpdus.com/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   InqDaoImpl.java
+
+package kr.caincheon.church.dao;
+
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
+import kr.caincheon.church.common.CommonDao;
+import kr.caincheon.church.common.CommonDaoDTO;
+import kr.caincheon.church.common.UtilString;
+
+// Referenced classes of package kr.caincheon.church.dao:
+//            InqDao
+
+@Repository("inqDao")
+public class InqDaoImpl extends CommonDao
+    implements InqDao
+{
+	
+	@Override
+    public CommonDaoDTO inqList(Map _params)
+    {
+		D(_logger, Thread.currentThread().getStackTrace(), "DAO Called.[params:"+_params+"]" );
+        
+		CommonDaoDTO dto = new CommonDaoDTO();
+		setPaging(_params);
+		
+        String user_id = UtilString.pnull(_params.get("id"));
+        String ADM_YN = UtilString.pnull(_params.get("ADM_YN"));
+        String query = "", whereStr = "";
+        String whereStrTemp = "", searchGubun = "";
+        String searchText = UtilString.pnull(_params.get("searchText"));
+        String delete_yn = UtilString.pnull(_params.get("delete_yn"));
+        
+        if(delete_yn.equals("Y"))
+            whereStr = " AND DELETE_YN='Y' ";
+        else
+            whereStr = " AND DELETE_YN='N' ";
+        
+        if(searchText != null && searchText.length() > 0) {
+            searchGubun = UtilString.pnull(_params.get("searchGubun"));
+            
+            if(searchGubun.equals("title"))
+                whereStrTemp = " AND TITLE LIKE '%"+searchText+"%'";
+            else if(searchGubun.equals("name"))
+                whereStrTemp = " AND NAME LIKE '%"+searchText+"%'";
+            else if(searchGubun.equals("contents"))
+                whereStrTemp = " AND CONTENTS LIKE '%"+searchText+"%'";
+            
+            whereStr += whereStrTemp;
+        }
+        
+        try {
+        	// sql
+        	query = " SELECT ROW_NUMBER() OVER(ORDER BY APPLY_DAY DESC) RNUM, INQUIRE_NO, ID, NAME, DELETE_YN, TITLE, CONTENTS"
+            		+ ", CASE WHEN LEN(ISNULL(RTRIM(LTRIM(REPLYTYPE)),'0'))=0 THEN '1' ELSE ISNULL(RTRIM(LTRIM(REPLYTYPE)),'0') END AS replyType"
+            		+ ", CASE WHEN replyType = '3' THEN '답변완료'  ELSE	'답변대기'  END AS REPLYTYPE_TEXT , REPLY,  CONVERT(char(10),  APPLY_DAY, 120) APPLY_DAY "
+            		+ " FROM "+DB_OWNER+".INQUIRE_APPLY "
+            		+ " WHERE 1 = 1 "+whereStr ;
+        	
+            if(!ADM_YN.equals("Y"))
+                query += " AND ID='"+user_id+"' ";
+            
+        	// count
+        	dto.daoTotalCount = executeCount(query, true);
+        	
+        	// list
+        	query = "SELECT * FROM (" + query+" ) ROWS WHERE RNUM BETWEEN "+startRnum+" AND "+endRnum;
+            dto.daoList = super.executeQueryList(query);
+            dto.setPaging(pageNo, pageSize);
+            
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+        	free();
+    	}
+        
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Result:"+dto );
+        
+        return dto;
+    }
+
+    public Map inqContents(Map _params)
+    {
+        Map result = null;
+        String inquire_no;
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Called.[params:"+_params+"]" );
+        
+        String query = "";
+        String user_id = UtilString.pnull(_params.get("user_id"));
+        inquire_no = UtilString.pnull(_params.get("inquire_no"));
+        try
+        {
+        	// select
+            query = "SELECT A.INQUIRE_NO, A.ID, A.NAME, A.DELETE_YN, A.TITLE, A.CONTENTS"
+            		+ ", CASE WHEN LEN(ISNULL(RTRIM(LTRIM(A.REPLYTYPE)),'0'))=0 THEN '1' else ISNULL(RTRIM(LTRIM(A.REPLYTYPE)),'0') END AS REPLYTYPE"
+            		+ ", A.REPLY, CONVERT(CHAR(10), A.APPLY_DAY, 120) APPLY_DAY, B.ID AS EMAIL "
+            		+ " FROM "+DB_OWNER+".INQUIRE_APPLY A "
+            		+ ", "+DB_OWNER+".MEMBER B "
+            		+ " WHERE INQUIRE_NO="+inquire_no+" AND A.ID=B.ID ";
+            result = super.executeQueryMap(query);
+            
+            // auto-status update
+            executeUpdate("UPDATE "+DB_OWNER+".INQUIRE_APPLY SET REPLYTYPE='2' WHERE INQUIRE_NO="+inquire_no+" AND REPLYTYPE='1' ");
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        } finally {
+        	free();
+    	}
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Result:"+result );
+        return result;
+    }
+
+    public boolean inqInsert(Map _params)
+    {
+    	D(_logger, Thread.currentThread().getStackTrace(), "DAO Called.[params:"+_params+"]" );
+    	
+        boolean bReturn=true;
+        String user_id;
+        Map memberInfo;
+        String title;
+        String contents;
+        
+        PreparedStatement preparedStatement=null;
+        
+        user_id = UtilString.pnull(_params.get("user_id"));
+        memberInfo = getMember(_params);
+        if(memberInfo == null)
+            return false;
+        title = UtilString.pnull(_params.get("title"));
+        contents = UtilString.pnull(_params.get("contents"));
+        
+        
+        int i = 0;
+        try
+        {
+        	
+            String query = "INSERT INTO "+DB_OWNER+".INQUIRE_APPLY  (id, name, replyType, title, contents, delete_yn, apply_day, updateDT)  VALUES (?, ?, '1', ?, ?, 'N', getdate(),getdate())";
+            preparedStatement = getConnection().prepareStatement(query);
+            preparedStatement.setString(1, user_id);
+            preparedStatement.setString(2, UtilString.pnull(memberInfo.get("NAME")));
+            preparedStatement.setString(3, title);
+            preparedStatement.setString(4, contents);
+            i = preparedStatement.executeUpdate();
+            
+        } catch(Exception e) {
+            e.printStackTrace();
+            bReturn = false;
+        } finally {
+        	
+        	if(preparedStatement != null) try { preparedStatement.close(); } catch ( Exception e ) { e.printStackTrace(); }
+            
+        	free();
+    	}
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Result:"+(bReturn && i > 0) );
+        
+        return bReturn && i > 0;
+    }
+
+    public boolean inqModify(Map _params)
+    {
+    	D(_logger, Thread.currentThread().getStackTrace(), "DAO Called.[params:"+_params+"]" );
+    	
+        boolean bReturn=true;
+        PreparedStatement preparedStatement=null;
+        
+        
+        
+        String ADM_YN = UtilString.pnull(_params.get("ADM_YN"));
+        String title = UtilString.pnull(_params.get("title"));
+        String contents = UtilString.pnull(_params.get("contents"));
+        String inquire_no = UtilString.pnull(_params.get("inquire_no"));
+        String replyType = UtilString.pnull(_params.get("replyType"));
+        String reply = UtilString.pnull(_params.get("reply"));
+        String query = "";
+        
+        
+        int i = 0;
+        try
+        {
+        	
+            query = "UPDATE "+DB_OWNER+".INQUIRE_APPLY  SET title=?, contents=?,  replyType=?, reply=?, updateDT=getdate()  WHERE inquire_no = ?";
+            preparedStatement = getConnection().prepareStatement(query);
+            preparedStatement.setString(1, title);
+            preparedStatement.setString(2, contents);
+            preparedStatement.setString(3, replyType);
+            preparedStatement.setString(4, reply);
+            preparedStatement.setString(5, inquire_no);
+            _logger.info((new StringBuilder("query=")).append(query).toString());
+            i = preparedStatement.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            bReturn = false;
+        } finally {
+        	
+        	if(preparedStatement != null) try { preparedStatement.close(); } catch ( Exception e ) { e.printStackTrace(); }
+            
+        	free();
+    	}
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Result:"+(bReturn && i > 0) );
+        
+        return bReturn && i > 0;
+    }
+
+    public boolean inqDelete(Map _params)
+    {
+    	D(_logger, Thread.currentThread().getStackTrace(), "DAO Called.[params:"+_params+"]" );
+    	
+        boolean bReturn=true;
+        PreparedStatement preparedStatement=null;
+        String inquire_no = UtilString.pnull(_params.get("inquire_no"));
+        
+        
+        int i = 0;
+        try
+        {
+        	
+            String query = "delete from "+DB_OWNER+".INQUIRE_APPLY where inquire_no = ?";
+            preparedStatement = getConnection().prepareStatement(query);
+            preparedStatement.setInt(1, Integer.parseInt(inquire_no));
+            i = preparedStatement.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            bReturn = false;
+        } finally {
+        	
+        	if(preparedStatement != null) try { preparedStatement.close(); } catch ( Exception e ) { e.printStackTrace(); }
+            
+        	free();
+    	}
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Result:"+(bReturn && i > 0) );
+        
+        return bReturn && i > 0;
+    }
+
+    public Map getMember(Map _params)
+    {
+    	D(_logger, Thread.currentThread().getStackTrace(), "DAO Called.[params:"+_params+"]" );
+    	
+        Map result;
+        
+        String user_id;
+        result = new HashMap();
+        
+        user_id = UtilString.pnull(_params.get("user_id"));
+        try
+        {
+            String query = (new StringBuilder("SELECT NAME, BAPTISMALNAME, MEMBERTYPE, CHURCH_IDX, ID AS EMAIL FROM "+DB_OWNER+".MEMBER WHERE ID='")).append(user_id).append("' ").toString();
+            result = super.executeQueryMap(query);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        } finally {
+        	
+        	free();
+    	}
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Result:"+result );
+        
+        return result;
+    }
+
+    private final Logger _logger = Logger.getLogger(getClass());
+}

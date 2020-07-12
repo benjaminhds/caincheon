@@ -1,0 +1,107 @@
+package kr.caincheon.church.admin.serivce;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import kr.caincheon.church.admin.dao.BoardCategoryDao;
+import kr.caincheon.church.common.CommonException;
+import kr.caincheon.church.common.CommonService;
+import kr.caincheon.church.common.Const;
+import kr.caincheon.church.common.Paging;
+
+
+@Service("boardCategoryService")
+public class BoardCategoryServiceImpl extends CommonService implements BoardCategoryService
+{
+    private final Logger _logger = Logger.getLogger(getClass());
+    
+    
+    @Resource(name="boardCategoryDao")
+    private BoardCategoryDao boardCategoryDao;
+    
+    //============= code management ==================
+    
+	@Override
+	public int insertBoardCategory(Map params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		int i = boardCategoryDao.insertBoardCategory(params);
+		D(_logger, Thread.currentThread().getStackTrace(), ".. Return : " + i );
+		return i;
+	}
+
+	@Override
+	public int updateBoardCategory(Map params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		int i = boardCategoryDao.updateBoardCategory(params);
+		D(_logger, Thread.currentThread().getStackTrace(), ".. Return : " + i );
+		return i;
+	}
+
+	@Override
+	public int deleteBoardCategory(Map params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		int i = boardCategoryDao.deleteBoardCategory(params);
+		D(_logger, Thread.currentThread().getStackTrace(), ".. Return : " + i );
+		return i;
+	}
+
+    /** mode in {I,U,D}에 따라서 CUD를 처리하는 메서드 */
+    public int cudBoardCategory(Map params) throws CommonException, Exception {
+    	D(_logger, Thread.currentThread().getStackTrace(), "..called");
+    	
+    	int rtVal = 0;
+    	String mode = pnull(params, "mode");
+    	switch(mode.charAt(0)) {
+    	case 'U':
+    	case 'u':
+    		rtVal = boardCategoryDao.updateBoardCategory(params);
+    		break;
+
+    	case 'I':
+    	case 'i':
+    		rtVal = boardCategoryDao.insertBoardCategory(params);
+    		break;
+    		
+    	case 'D':
+    	case 'd':
+//    		params.put("is_use","N");
+//    		rtVal = boardCategoryDao.updateBoardCategory(params);//TODO 고객확인 후 삭제일지 is_use를 지금처럼 N으로 flag처리 할 지 확인 필요.
+    		rtVal = boardCategoryDao.deleteBoardCategory(params);
+    		break;
+    	}
+    	
+    	D(_logger, Thread.currentThread().getStackTrace(), "..done. rtVal="+rtVal);
+    	return rtVal;
+    }
+
+	@Override
+	public void selectBoardCategory(Map params) throws CommonException, Exception {
+		D(_logger, Thread.currentThread().getStackTrace(), "..called");
+		
+		// param
+		pnullPut(params, "pageNo", "1");
+		pnullPut(params, "pageSize", "30");
+		String pageNo = pnull(params, "pageNo");
+		String pageSize = pnull(params, "pageSize");
+		
+		// dao
+		List<Map> list = boardCategoryDao.selectBoardCategory(params);
+		int total = boardCategoryDao.selectTotalCount(params);
+		
+		// return
+		params.put(Const.ADM_MAPKEY_LIST, list);
+		params.put(Const.ADM_MAPKEY_COUNT, total);
+		setPaging(params, pageNo, pageSize, total);
+		
+		D(_logger, Thread.currentThread().getStackTrace(), ".. end. "  );
+		
+	}
+
+
+}

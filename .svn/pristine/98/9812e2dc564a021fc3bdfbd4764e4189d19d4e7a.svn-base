@@ -1,0 +1,14 @@
+package kr.caincheon.church.search.service;
+
+import java.util.Map;
+
+import kr.caincheon.church.common.CommonDaoMultiDTO;
+import kr.caincheon.church.common.CommonException;
+
+public interface UnifySearchService {
+	
+	/** 통합검색 메인 서비스 */
+	CommonDaoMultiDTO multiSearch(Map _params) throws CommonException;
+	
+	
+}

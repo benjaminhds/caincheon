@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <? include_once "../_common/inc/head.html"; ?>
+        <title>천주교 인천교구</title>
+</head>
+
+<body>
+    <p class="skipNavi" tabindex="1">본문바로가기</p>
+    <!-- wrap -->
+    <div id="wrap">
+        <!-- header -->
+        <header>
+            <? include_once "../_common/inc/gnb.html"; ?>
+        </header>
+        <!-- //header -->
+        <!-- subVisual -->
+        <section class="subVisual srchBg">
+            <h2 class="blind">중심내용</h2>
+            <div class="visBg">bg</div>
+            <div class="artWrap">
+                <article>
+                    <h3>사이트맵</h3>
+                    <ul>
+                        <li>홈</li>
+                        <li>사이트맵</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+        <!-- //subVisual -->
+        <!-- secWrap -->
+        <div class="secWrap">
+            <!-- sec01 -->
+            <section class="sec01 fin totalSearch">
+                <!-- secCont -->
+                <div class="secCont">
+                    <h3 class="ttl">사이트맵</h3>
+                    <div class="sitemap">
+                        <dl>
+                            <dt>교구안내</dt>
+                            <dd>
+                                <ul>
+                                    <li><a href="/intro/intro.html">교구안내</a></li>
+                                    <li><a href="/intro/history.html">온라인역사관</a></li>
+                                    <li><a href="/intro/shirine.html">교구성지</a></li>
+                                    <li><a href="/intro/diocesan.html">교구청</a></li>
+                                    <li><a href="/intro/ordo_list.html">수도회</a></li>
+                                    <li><a href="/intro/org_list.html">기관/단체</a></li>
+                                </ul>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>교구장</dt>
+                            <dd>
+                                <ul>
+                                    <li><a href="/gyogu/intro.html">소개</a></li>
+                                    <li><a href="/gyogu/msg_list.html">메세지</a></li>
+                                    <li><a href="/gyogu/par_list.html">교구장동정</a></li>
+                                    <li><a href="/gyogu/ever_list.html">역대교구장</a></li>
+                                </ul>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>사제단</dt>
+                            <dd>
+                                <ul>
+                                    <li><a href="/father/father_list.html">사제</a></li>
+                                    <li><a href="/father/holy_list.html">선종사제</a></li>
+                                </ul>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>본당</dt>
+                            <dd>
+                                <ul>
+                                    <li><a href="/temple/temp_01.html">본당 현황</a></li>
+                                    <li><a href="/temple/temple.html">지구별</a></li>
+                                    <li><a href="/temple/vacancy.html">공소</a></li>
+                                </ul>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>소식</dt>
+                            <dd>
+                                <ul>
+                                    <li><a href="/news/news_list.html">교구소식</a></li>
+                                    <li><a href="/news/sch_list.html">교구일정</a></li>
+                                    <li><a href="/news/alb_list.html">교구앨범</a></li>
+                                    <li><a href="/news/mov_list.html">교구영상</a></li>
+                                    <li><a href="/news/publication.html">인천주보</a></li>
+                                </ul>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>자료실</dt>
+                            <dd>
+                                <ul>
+                                    <li><a href="http://www.cbck.or.kr" target="_blank" title="새창">성경</a></li>
+                                    <li><a href="http://www.cbck.or.kr" target="_blank" title="새창">성인</a></li>
+                                    <li><a href="http://www.cbck.or.kr" target="_blank" title="새창">기도문</a></li>
+                                    <li><a href="http://www.cbck.or.kr" target="_blank" title="새창">전례력</a></li>
+                                    <li><a href="http://www.cbck.or.kr" target="_blank" title="새창">매일미사</a></li>
+                                    <li><a href="/support/cure_list.html">사목자료</a></li>
+                                </ul>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>참여마당</dt>
+                            <dd>
+                                <ul>
+                                    <li><a href="/community/doctrine.html">통신교리신청</a></li>
+                                    <li><a href="/community/cana.html">카나혼인강좌 &amp; 약혼자 주말신청</a></li>
+                                    <li><a href="/community/eucharist.html"></a></li>
+                                    <li><a href="/community/tale.html">나누고 싶은 이야기</a></li>
+                                </ul>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <!-- //secCont -->
+            </section>
+            <!-- //sec01 -->
+        </div>
+        <!-- //secWrap -->
+        <!-- footer -->
+        <footer>
+            <? include_once "../_common/inc/footer.html"; ?>
+        </footer>
+        <!-- //footer -->
+    </div>
+    <!--// wrap -->
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+package kr.caincheon.church.father.service;
+
+import java.util.Map;
+
+import kr.caincheon.church.common.CommonException;
+
+/*
+ * 
+ */
+public interface FatherCalService {
+
+	/*
+	 * 사제 서품일/축일을 달력과 연동한 목록 조회
+	 */
+	public Map selectFathersByDiary(Map _params) throws CommonException;
+	
+}

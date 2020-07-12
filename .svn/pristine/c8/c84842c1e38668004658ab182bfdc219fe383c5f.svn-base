@@ -1,0 +1,17 @@
+@charset 'utf-8';
+
+/* main */
+.sec03 .box50 > div ul{background:#fff;}
+.sec04 > article > ol > li > a{background-image: none;
+filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/img/main/sec_04_sel.png',sizingMethod='scale'); -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/img/main/sec_04_sel.png', sizingMethod='scale')";}
+.news .box .right > div ul li{margin-bottom:6px;}
+.news .box .right > div + div ul li{margin-bottom:3px;}
+.news .box .right > div ul li a{width:84.5%;}
+.visual .botBar a{background:black;}
+.sec01 > div .remeber ul li > a > i{ right:0 !important}
+/* sub */
+.stepIco dt{background-position:-30px; }
+.blue.secWide{background:#212d46;}
+
+select{background-image:none; }
+   

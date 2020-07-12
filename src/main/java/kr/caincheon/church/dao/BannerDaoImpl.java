@@ -1,0 +1,377 @@
+package kr.caincheon.church.dao;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
+import kr.caincheon.church.common.base.CommonDao;
+import kr.caincheon.church.common.base.CommonDaoDTO;
+import kr.caincheon.church.common.utils.ImageUtils;
+
+
+/**
+ * 배너 관리 DAO
+ * @author benjamin
+ */
+@Repository("bannerDao")
+public class BannerDaoImpl extends CommonDao
+    implements BannerDao
+{
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see kr.caincheon.church.dao.BannerDao#bannerList(java.util.Map, kr.caincheon.church.common.CommonDaoDTO)
+	 */
+	@Override
+    public void bannerList(Map _params, CommonDaoDTO dto)
+    {
+		D(_logger, Thread.currentThread().getStackTrace(), "DAO Called.[params:"+_params+"]" );
+		        
+		String whereStr = "";
+        String searchGubun = pnull(_params.get("searchGubun"));
+        String searchText  = pnull(_params.get("searchText"));
+        
+        int pageNo = ipnull(_params, "pageNo", 1);
+        startRnum = (pageNo - 1) * 20 + 1;
+        endRnum   = pageNo * 20;
+        
+        if(searchText != null && searchText.length() > 0) {
+            if(searchGubun.equals("title"))
+                whereStr = " AND TITLE LIKE '%"+searchText+"%' ";
+            else if(searchGubun.equals("url"))
+                whereStr = " AND URL LIKE '%"+searchText+"%' ";
+        }
+        
+        // from main
+        String use_yn  = pnull(_params, "use_yn");
+        if(use_yn.length() > 0 ) {
+        	use_yn = " AND USE_YN='"+use_yn+"' ";
+        } else {
+        	use_yn = "";
+        }
+        String open_date= pnull(_params, "open_date");//형식:'2017-11-28 15:00:01' or 'now'
+        String open_yn  = pnull(_params, "open_yn");
+        if(use_yn.length() > 0 ) {
+        	open_yn = " AND OPEN_YN='"+open_yn+"' ";
+        } else {
+        	open_yn = "";
+        }
+        if("now".equalsIgnoreCase(open_date)) {
+        	open_date = " AND POST_DATE_FROM <= GETDATE() AND POST_DATE_TO >= GETDATE()";
+        } else if (open_date.length() > 3) {
+        	open_date = " AND POST_DATE_FROM <= CONVERT(DATETIME, '"+open_date+"') AND POST_DATE_TO >= CONVERT(DATETIME, '"+open_date+"') ";
+        } else {
+        	open_date = "";
+        }
+        
+        try {
+        	String query0 = "SELECT /* 배너관리 : 목록 */ ROW_NUMBER() OVER(ORDER BY OPEN_SEQ) RNUM"
+            		+ ", BANNER_NO, ID, NAME, POST_TYPE, TITLE, IMG, URL, LINK_TYPE"
+            		+ ", OPEN_SEQ, OPEN_YN"
+            		+ ", CASE WHEN OPEN_YN = 'Y' THEN '노출'  ELSE '비노출'  END AS OPEN_YN_TEXT"
+            		+ ", USE_YN"
+            		+ ", CASE WHEN USE_YN = 'Y' THEN '사용'  ELSE '중지'  END AS USE_YN_TEXT"
+            		+ ", CONVERT(varchar(16),  POST_DATE_FROM, 120) POST_DATE_FROM"
+            		+ ", CONVERT(varchar(16),  POST_DATE_TO, 120) POST_DATE_TO"
+            		+ ", CONVERT(varchar(10),  registDT, 120) registDT "
+            		+ ", CONVERT(varchar(10),  updateDT, 120) updateDT "
+            		+ " FROM BANNER_BOX "
+            		+ " WHERE 1=1 "+whereStr
+            		+ open_date
+            		+ open_yn
+            		+ use_yn 
+            		;
+        	// total count
+        	dto.daoTotalCount = executeCount(query0);
+        	// paging
+        	dto.paging = getPageing(dto.daoTotalCount);
+        	
+        	String query = "SELECT  X.* FROM ( "
+        			+ query0
+        			+ " ) X "+" WHERE RNUM BETWEEN "+startRnum+" AND "+endRnum;
+        	// list
+            dto.daoList = super.executeQueryList(query);
+            
+        } catch(Exception e) {
+            e.printStackTrace();
+            E(_logger, Thread.currentThread().getStackTrace(), "DAO SQL Error.[last SQL:"+lastSQL+"]" );
+        } finally {
+        	free();
+    	}
+        
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Result Count: "+dto.daoTotalCount );
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Result: "+dto.daoList );
+        
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see kr.caincheon.church.dao.BannerDao#bannerContents(java.util.Map)
+     */
+    @Override
+    public Map bannerContents(Map _params)
+    {
+    	D(_logger, Thread.currentThread().getStackTrace(), "DAO Called.[params:"+_params+"]" );
+    	
+        Map result = null;;
+        
+        String query_type = pnull(_params.get("query_type"));
+        String banner_no = pnull(_params.get("banner_no"));
+        
+        String query = "", whereStr = "";
+        try
+        {
+            if(query_type.equals("modify"))
+            {
+                whereStr = " WHERE BANNER_NO = '"+banner_no+"' ";
+                query    = "SELECT /* 배너관리 : 조회 */ BANNER_NO, ID, NAME, POST_TYPE"
+                		+ ", IMG, URL, LINK_TYPE, OPEN_YN, OPEN_SEQ, TITLE, USE_YN"
+                		+ ", CONVERT(VARCHAR(16), POST_DATE_FROM, 120) POST_DATE_FROM"
+                		+ ", CONVERT(VARCHAR(16), POST_DATE_TO, 120) POST_DATE_TO"
+                		+ ", CONVERT(VARCHAR(10), REGISTDT, 120) REGISTDT"
+                		+ ", CONVERT(VARCHAR(10), UPDATEDT, 120) UPDATEDT "
+                		+ " FROM BANNER_BOX "+whereStr;
+                result   = super.executeQueryMap(query);
+            }
+        } catch(Exception e) {
+        	e.printStackTrace();
+            E(_logger, Thread.currentThread().getStackTrace(), "DAO SQL Error.[last SQL:"+lastSQL+"]" );
+        } finally {
+        	free();
+    	}
+        
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Result: "+result );
+        
+        return result;
+    }
+
+    /**
+     * 신규 추가
+     * (non-Javadoc)
+     * @see kr.caincheon.church.dao.BannerDao#bannerInsert(java.util.Map, java.util.List)
+     */
+    @Override
+    public boolean bannerInsert(Map _params, List uploadedFiles)
+    {
+    	D(_logger, Thread.currentThread().getStackTrace(), "DAO Called.[params:"+_params+", "+uploadedFiles+"]" );
+    	
+        Map memberInfo = getMember(_params);
+        
+        int result=0;
+        
+        String id = pnull(_params.get("id"));
+        String banner_no = pnull(_params.get("banner_no"));
+        String post_type = pnull(_params.get("post_type"));
+        String post_date_from = pnull(_params.get("post_date_from"));
+        String post_date_to = pnull(_params.get("post_date_to"));
+        String imgfile = pnull(_params.get("imgfile"));
+        String url = pnull(_params.get("url"));
+        String link_type = pnull(_params.get("link_type"));
+        String open_yn = pnull(_params.get("open_yn"));
+        String open_seq = pnull(_params.get("open_seq"));
+        String title = pnull(_params.get("title"));
+        
+        // file
+        if( uploadedFiles.size() > 0 ) {
+			Map tmp = (Map) uploadedFiles.get(0);
+			imgfile = pnull(_params, "CONTEXT_URI_PATH") + pnull(tmp, "STORED_FILE_NAME");
+			/*
+			(2, pnull(tmp.get("FILE_SIZE")));
+			(3, pnull(tmp.get("IS_USE"), "Y"));
+			(5, pnull(tmp.get("ORIGINAL_FILE_NAME")));
+			(7, pnull(tmp.get("STORED_FILE_NAME")));
+			String uploadedFileURI  = pnull(tmp, "CONTEXT_URI_PATH"); // "/upload/news/"
+			String uploadedFileRootPath = pnull(tmp, "CONTEXT_ROOT_PATH");// "d:/newcaincheon/webapps/upload/news/"
+			*/
+		}
+        
+        PreparedStatement pStmt = null;
+        
+        try
+        {
+            String query = "INSERT INTO BANNER_BOX  (id, name, post_type, post_date_from, post_date_to, img, url, link_type, open_yn, open_seq, title, use_yn, "
+            		+ " registDT, updateDT) "
+            		+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'N', getdate(), getdate())";
+            pStmt = getPreparedStatement(query);
+            pStmt.setString(1, id);
+            pStmt.setString(2, pnull(memberInfo.get("NAME")));
+            pStmt.setString(3, post_type);
+            pStmt.setString(4, post_date_from);
+            pStmt.setString(5, post_date_to);
+            pStmt.setString(6, imgfile);
+            pStmt.setString(7, url);
+            pStmt.setString(8, link_type);
+            pStmt.setString(9, open_yn);
+            pStmt.setString(10, open_seq);
+            pStmt.setString(11, title);
+            result = pStmt.executeUpdate();
+        } catch(Exception e) {
+        	e.printStackTrace();
+            E(_logger, Thread.currentThread().getStackTrace(), "DAO SQL Error.[last SQL:"+lastSQL+"]" );
+        } finally {
+        	free(pStmt);
+        	free();
+    	}
+        
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Result: "+result+" (" + (result > 0) +")" );
+        
+        return result > 0;
+    }
+
+    /**
+     * 수정
+     * (non-Javadoc)
+     * @see kr.caincheon.church.dao.BannerDao#bannerModify(java.util.Map, java.util.List)
+     */
+    @Override
+    public boolean bannerModify(Map _params, List uploadedFiles)
+    {
+    	D(_logger, Thread.currentThread().getStackTrace(), "DAO Called.[params:"+_params+", "+uploadedFiles+"]" );
+        
+        Map memberInfo = getMember(_params);
+        
+        int result=0;
+        
+        String id = pnull(_params.get("id"));
+        String banner_no = pnull(_params.get("banner_no"));
+        String post_type = pnull(_params.get("post_type"));
+        String post_date_from = pnull(_params.get("post_date_from"));
+        String post_date_to = pnull(_params.get("post_date_to"));
+        String imgfile = pnull(_params.get("imgfile"));
+        String url = pnull(_params.get("url"));
+        String link_type = pnull(_params.get("link_type"));
+        String open_yn = pnull(_params.get("open_yn"));
+        String open_seq = pnull(_params.get("open_seq"));
+        String title = pnull(_params.get("title"));
+        
+        // old file delete
+        if("Y".equals(pnull(_params, "delFile"))) {
+        	try {
+				Map delRow = executeQueryMap("SELECT IMG FROM BANNER_BOX WHERE BANNER_NO="+banner_no);
+				
+				String CONTEXT_ROOT_PATH = pnull(_params, "CONTEXT_ROOT_PATH");
+				String dFilepath         = pnull(delRow,  "IMG");
+				dFilepath = dFilepath.substring( dFilepath.lastIndexOf("/")+1 );
+				boolean isDel = ImageUtils.deleteFileWithThumbnail(CONTEXT_ROOT_PATH, dFilepath);
+				D(_logger, Thread.currentThread().getStackTrace(), "Old File Delete(isDel:"+isDel+"), Paht:"+CONTEXT_ROOT_PATH+dFilepath+"]" );
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				E(_logger, Thread.currentThread().getStackTrace(), "DAO SQL Error.[last SQL:"+lastSQL+"]" );
+			}
+            imgfile = "";
+        }
+        
+        // file
+        if( uploadedFiles.size() > 0 ) {
+			Map tmp = (Map) uploadedFiles.get(0);
+			imgfile = pnull(_params, "CONTEXT_URI_PATH") + pnull(tmp, "STORED_FILE_NAME");
+		}
+        
+        PreparedStatement pStmt=null;
+        try {
+            String query = "UPDATE BANNER_BOX SET "
+            		+ " name=?, post_type=?, post_date_from=?, post_date_to=?"
+            		+ ", img=?, url=?, link_type=?, open_yn=?, open_seq=?, title=?"
+            		+ ", updateDT=getdate() "
+            		+ " WHERE banner_no = ? and id= ?";
+            pStmt = getPreparedStatement(query);
+            pStmt.setString(1, pnull(memberInfo.get("NAME")));
+            pStmt.setString(2, post_type);
+            pStmt.setString(3, post_date_from);
+            pStmt.setString(4, post_date_to);
+            pStmt.setString(5, imgfile);
+            pStmt.setString(6, url);
+            pStmt.setString(7, link_type);
+            pStmt.setString(8, open_yn);
+            pStmt.setString(9, open_seq);
+            pStmt.setString(10, title);
+            pStmt.setInt(11, Integer.parseInt(banner_no));
+            pStmt.setString(12, id);
+            
+            result = pStmt.executeUpdate();
+        } catch(Exception e) {
+        	e.printStackTrace();
+            E(_logger, Thread.currentThread().getStackTrace(), "DAO SQL Error.[last SQL:"+lastSQL+"]" );
+        } finally {
+        	free(pStmt);
+        	free();
+    	}
+        
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Result: "+result+" (" + (result > 0) +")" );
+        
+        return result > 0;
+    }
+
+    /**
+     * 배너 서비스 중지/재개 flag 관리
+     * (non-Javadoc)
+     * @see kr.caincheon.church.dao.BannerDao#bannerDelete(java.util.Map)
+     */
+    @Override
+    public boolean bannerDelete(Map _params)
+    {
+    	D(_logger, Thread.currentThread().getStackTrace(), "DAO Called.[params:"+_params+"]" );
+    	
+        boolean bReturn = false;
+        int d = 0 ;
+        String banner_no = pnull(_params, "banner_no");
+        String use_yn = pnull(_params, "use_yn", "N");
+        
+        try {
+            String query = "UPDATE /* 배너관리 : 삭제(중지) */ BANNER_BOX SET USE_YN = '"+use_yn+"' WHERE BANNER_NO=" + banner_no;
+            d = super.executeUpdate(query);
+            bReturn = d == 1 ? true : false;
+        } catch(Exception e) {
+        	e.printStackTrace();
+            E(_logger, Thread.currentThread().getStackTrace(), "DAO SQL Error.[last SQL:"+lastSQL+"]" );
+        } finally {
+        	free();
+    	}
+        
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Result: "+bReturn );
+        
+        return bReturn;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see kr.caincheon.church.dao.BannerDao#getMember(java.util.Map)
+     */
+    @Override
+    public Map getMember(Map _params)
+    {
+    	D(_logger, Thread.currentThread().getStackTrace(), "DAO Called.[params:"+_params+"]" );
+    	
+        Map result = new HashMap();
+        ResultSet rs = null;
+        try
+        {
+            String query = "SELECT ADM_NAME AS NAME FROM ADMMEMBER WHERE ADM_ID='"+_params.get("id")+"' ";
+            rs = super.executeQuery(query);
+            if(rs.next())
+                result.put("NAME", rs.getString(1));
+        }
+        catch(Exception e)
+        {
+        	e.printStackTrace();
+            E(_logger, Thread.currentThread().getStackTrace(), "DAO SQL Error.[last SQL:"+lastSQL+"]" );
+        } finally {
+        	freeResultSet(rs);
+        	free();
+    	}
+        
+        D(_logger, Thread.currentThread().getStackTrace(), "DAO Result: "+result );
+        
+        return result;
+    }
+
+    private final Logger _logger = Logger.getLogger(getClass());
+}

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:mybatis="http://mybatis.org/scheme/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+						http://www.springframework.org/schema/mvc/spring-mvc.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context-4.3.xsd
+						http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+						http://www.springframework.org/schema/jdbc
+						http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+						http://mybatis.org/schema/mybatis-spring 
+						http://mybatis.org/schema/mybatis-spring.xsd">
+
+	<!-- Auto-injection -->
+	<mvc:annotation-driven />
+	
+	<!-- Uncomment and your base-package here: <context:component-scan base-package="org.springframework.samples.web"/> -->
+	<context:component-scan base-package="kr.caincheon.church" />
+	
+	<context:property-placeholder location="classpath:application.properties" />
+	
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<mvc:resources mapping="/**" location="/" />
+	<mvc:resources mapping="/_common/**" location="/_common/**"  />
+	<mvc:resources mapping="/img/**"  location="/img/**"  />	
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="cache" value="false" />
+		<property name="prefix" value="/" /><!-- /WEB-INF/views/ -->
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	<!-- MSSQL 124.111.234.97/10.211.55.3--> <!-- 
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+        <property name="url" value="jdbc:sqlserver://112.172.48.142:1433;databaseName=newcaincheon" />
+        <property name="username" value="newcaincheon" />
+        <property name="password" value="newcaincheon" />
+    </bean>
+    -->
+    <!-- 
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+        <property name="url" value="jdbc:sqlserver://localhost:1433;databaseName=newcaincheon2" />
+        <property name="username" value="sa" />
+        <property name="password" value="sa" />
+    </bean>
+    -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName"	value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+		<property name="url" 				value="jdbc:sqlserver://localhost:1433;databaseName=newcaincheon2" />
+		<property name="username" 			value="sa" />
+		<property name="password" 			value="sa" />
+		<property name="validationQuery" 	value="SELECT 1"/>
+		<property name="testOnBorrow" 		value="false"/>
+		<property name="testOnReturn" 		value="false"/>
+		<property name="testWhileIdle" 		value="true"/>
+		<property name="timeBetweenEvictionRunsMillis" value="60000"/>
+    </bean>
+    
+    
+    <!-- for sql iBatis Logging -->
+     <bean id="dataSourceLog4j" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+        <constructor-arg ref="dataSource" />
+        <property name="logFormatter">
+            <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+                <property name="loggingType" value="MULTI_LINE" />
+                <property name="sqlPrefix" value="SQL:::"/>
+            </bean>
+        </property>
+    </bean>
+    <!-- for iBatis -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceLog4j" />
+        <property name="configLocation"  value="classpath:/mybatis-config.xml" />
+        <property name="mapperLocations" value="classpath:/sqlmap/**/*.xml" />
+    </bean>
+    
+    <!-- Transaction manager for a single JDBC DataSource -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="insert*" rollback-for="Exception" />
+			<tx:method name="update*" rollback-for="Exception" />
+			<tx:method name="delete*" rollback-for="Exception" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config proxy-target-class="true">
+		<aop:advisor pointcut="execution(* com..service.*Service*.*(..))" advice-ref="txAdvice"/>
+	</aop:config>
+	
+    
+	
+	<!-- email sender --><!-- 
+	<beans:bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl" >
+       <beans:property name="host" value="mail.caincheon.or.kr" />
+       <beans:property name="port" value="25" />
+       <beans:property name="username" value="no-reply@caincheon.or.kr" />
+       <beans:property name="password" value="rygha2017" />
+       <beans:property name="javaMailProperties">
+       <beans:props>
+           <beans:prop key="mail.smtp.starttls.enable">true</beans:prop>
+       </beans:props>
+       </beans:property>
+   </beans:bean>
+    -->
+    
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl" >
+       <property name="host" value="smtp.gmail.com" />
+       <property name="port" value="587" /><!-- ssl:465, tls:587 -->
+       <property name="username" value="benjamin.botton.ds@gmail.com" />
+       <property name="password" value="Ehdtn75$*@" />
+       <property name="javaMailProperties">
+       <props>
+           <prop key="mail.smtp.auth">true</prop>
+           <prop key="mail.smtp.starttls.enable">true</prop>
+       </props>
+       </property>
+   </bean>
+   
+	
+	<!-- Viewer Resolver :: 뷰 이름과 동일한 이름을 갖는 빈을 뷰 객체로 사용 -->
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+        <property name="order" value="1" />
+    </bean>
+    
+    
+    <!-- Exception Resolver -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"> 
+        <property name="order" value="0"/> 
+        <property name="exceptionAttribute" value="exceptionMsg"/> 
+        <property name="defaultErrorView" value="error"/> 
+        <property name="exceptionMappings"> 
+            <props> 
+                <prop key="RuntimeException">error</prop> 
+            </props> 
+        </property>
+    </bean>
+    
+    
+    <!-- Excel Viewer -->
+    <bean name="excelView" class="kr.caincheon.church.common.ExcelView"/>
+    
+    
+	<!-- MultipartResolver -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize"   value="100000000"/>
+        <property name="maxInMemorySize" value="100000000"/>
+    </bean>
+	
+	
+</beans>

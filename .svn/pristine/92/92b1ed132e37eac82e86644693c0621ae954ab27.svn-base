@@ -1,0 +1,73 @@
+﻿<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+                    
+                    
+                    <!-- srchTabs -->
+                    <script>
+                    var goChangHref = function(fullURL){
+                    	location.href = fullURL;
+                    };
+                    
+                    function reloadPage(divCode) {
+                    	//var xURL = "/church/temp_02.do?${fn:replace(qstring, 'qk=&', '')}&";
+                    	var xURL = "/church/temp_${temp_no}.do?pageSize=12&pageNo=1&";
+                    	switch(divCode) {
+                    	case  0: xURL += "tabs=0&qk=&church_idx="; break;
+                    	case  1: xURL += "tabs=1&qk=&church_idx=${mainHallByGigu['중동구지구']}"; break;
+                    	case  2: xURL += "tabs=2&qk=&church_idx=${mainHallByGigu['미추홀지구']}"; break;
+                    	case  3: xURL += "tabs=3&qk=&church_idx=${mainHallByGigu['서구지구']}"; break;
+                    	case  4: xURL += "tabs=4&qk=&church_idx=${mainHallByGigu['남동지구']}"; break;
+                    	case  5: xURL += "tabs=5&qk=&church_idx=${mainHallByGigu['연수지구']}"; break;
+                    	case  6: xURL += "tabs=6&qk=&church_idx=${mainHallByGigu['부평지구']}"; break;
+                    	case  7: xURL += "tabs=7&qk=&church_idx=${mainHallByGigu['계양지구']}"; break;
+                    	case  8: xURL += "tabs=8&qk=&church_idx=${mainHallByGigu['부천1지구']}"; break;
+                    	case  9: xURL += "tabs=9&qk=&church_idx=${mainHallByGigu['부천2지구']}"; break;
+                    	case 10: xURL += "tabs=10&qk=&church_idx=${mainHallByGigu['시흥안산지구']}"; break;
+                    	case 11: xURL += "tabs=11&qk=&church_idx=${mainHallByGigu['김포지구']}"; break;
+                    	case 12: xURL += "tabs=12&qk=&church_idx=${mainHallByGigu['강화지구']}"; break;
+                    	case 13: xURL += "tabs=13&qk=&church_idx=${mainHallByGigu['특수']}"; break;
+                    	}
+                    	goChangHref(xURL);
+                    }
+                    </script>
+                    
+	                <c:if test = "${tabs eq '' }"><c:set var="tabstyle0" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '0'}"><c:set var="tabstyle0" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '1'}"><c:set var="tabstyle1" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '2'}"><c:set var="tabstyle2" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '3'}"><c:set var="tabstyle3" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '4'}"><c:set var="tabstyle4" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '5'}"><c:set var="tabstyle5" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '6'}"><c:set var="tabstyle6" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '7'}"><c:set var="tabstyle7" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '8'}"><c:set var="tabstyle8" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '9'}"><c:set var="tabstyle9" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '10'}"><c:set var="tabstyle10" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '11'}"><c:set var="tabstyle11" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '12'}"><c:set var="tabstyle12" value="class='on'" /></c:if>
+	                <c:if test = "${tabs eq '13'}"><c:set var="tabstyle13" value="class='on'" /></c:if>
+                    <ul class="srchTabs">
+                        <li ${tabstyle0 }><a href="javascript: reloadPage(0)">전체보기(<c:out value="${mainHallByGigu['전체_CNT']}"/>)</a></li>
+                        <li ${tabstyle1 }><a href="javascript: reloadPage(1)">중동구지구(<c:out value="${mainHallByGigu['중동구지구_CNT']}"/>)</a></li>
+                        <li ${tabstyle2 }><a href="javascript: reloadPage(2)">미추홀지구(<c:out value="${mainHallByGigu['미추홀지구_CNT']}"/>)</a></li>
+                        <li ${tabstyle3 }><a href="javascript: reloadPage(3)">서구지구(<c:out value="${mainHallByGigu['서구지구_CNT']}"/>)</a></li>
+                        <li ${tabstyle4 }><a href="javascript: reloadPage(4)">남동지구(<c:out value="${mainHallByGigu['남동지구_CNT']}"/>)</a></li>
+                        <li ${tabstyle5 }><a href="javascript: reloadPage(5)">연수지구(<c:out value="${mainHallByGigu['연수지구_CNT']}"/>)</a></li>
+                        <li ${tabstyle6 }><a href="javascript: reloadPage(6)">부평지구(<c:out value="${mainHallByGigu['부평지구_CNT']}"/>)</a></li>
+                        <li ${tabstyle7 }><a href="javascript: reloadPage(7)">계양지구(<c:out value="${mainHallByGigu['계양지구_CNT']}"/>)</a></li>
+                        <li ${tabstyle8 }><a href="javascript: reloadPage(8)">부천1지구(<c:out value="${mainHallByGigu['부천1지구_CNT']}"/>)</a></li>
+                        <li ${tabstyle9 }><a href="javascript: reloadPage(9)">부천2지구(<c:out value="${mainHallByGigu['부천2지구_CNT']}"/>)</a></li>
+                        <li ${tabstyle10}><a href="javascript: reloadPage(10)">시흥안산지구(<c:out value="${mainHallByGigu['시흥안산지구_CNT']}"/>)</a></li>
+                        <li ${tabstyle11}><a href="javascript: reloadPage(11)">김포지구(<c:out value="${mainHallByGigu['김포지구_CNT']}"/>)</a></li>
+                        <li ${tabstyle12}><a href="javascript: reloadPage(12)">강화지구(<c:out value="${mainHallByGigu['강화지구_CNT']}"/>)</a></li>
+                        <li ${tabstyle13}><a href="javascript: reloadPage(13)">특수(<c:out value="${mainHallByGigu['특수_CNT']}"/>)</a></li>
+                        <li class="vacancy"><a href="#none"> </a></li>
+                        <li class="vacancy"><a href="#none"> </a></li>
+						<li class="vacancy"><a href="#none"> </a></li>
+						<li class="vacancy"><a href="#none"> </a></li>
+                    </ul>
+                    <!-- //srchTabs -->
+                    
+                    

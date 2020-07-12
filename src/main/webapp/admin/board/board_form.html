@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<title>천주교인천교구 관리자</title>
+
+	<!-- Bootstrap Core CSS -->
+	<link href="../_common/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	
+	<!-- MetisMenu CSS -->
+	<link href="../_common/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+	
+	<!-- Custom CSS -->
+	<link href="../_common/dist/css/sb-admin-2.min.css" rel="stylesheet">
+	<link href="../_common/css/admin.css" rel="stylesheet">
+	
+	<!-- Custom Fonts -->
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<!-- jQuery (ie 8 이하 미지원) -->
+	<script src="../_common/vendor/jquery/jquery.min.js"></script>
+
+	<!-- LNB 제어 -->
+	<script type="text/javascript">
+		$(function() {
+			// active gnb			
+			$("#side-menu ul.nav>li[data-pg='bbs_01']").addClass("active");
+			$("#side-menu ul.nav>li[data-pg='bbs_01']>a").addClass("active");
+			$("#side-menu ul.nav>li[data-pg='bbs_01']").parents("li").addClass("active");
+		});
+	</script>
+</head>
+<body>
+	<div id="wrapper">
+		<!-- Navigation : begin -->
+		<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#none">천주교인천교구 </a>
+			</div>
+			<!-- /.navbar-header -->
+
+			<ul class="nav navbar-top-links navbar-right">
+				<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+						<span>Welcome <Strong>천주교인천교구</Strong></span>
+						<i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+					</a>
+					<ul class="dropdown-menu dropdown-user">
+						<li>
+							<a href="#none"><i class="fa fa-user fa-fw"></i> 내정보수정</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a href="#none"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+						</li>
+					</ul>
+					<!-- /.dropdown-user -->
+				</li>
+				<!-- /.dropdown -->
+			</ul>
+			<!-- /.navbar-top-links -->
+
+			<div class="navbar-default sidebar" role="navigation">
+				<div class="sidebar-nav navbar-collapse">
+					<ul class="nav" id="side-menu">
+						<li class="nav-home">
+							<a href="/" target="_blank"><i class="fa fa-home fa-fw"></i> HOME</a>
+						</li>
+						<li>
+							<a href="#"><i class="fa fa-comments fa-fw"></i> 게시판 관리<span class="fa arrow"></span></a>
+							<ul class="nav nav-second-level">
+								<li data-pg="bbs_01">
+									<a href="./board_list.html">게시판 01</a>
+								</li>
+								<li data-pg="bbs_02">
+									<a href="#none">게시판 02</a>
+								</li>
+								<li data-pg="bbs_03">
+									<a href="#none">게시판 03</a>
+								</li>
+							</ul>							
+						</li>
+						<li>
+							<a href="#"><i class="fa fa-user fa-fw"></i> 회원 관리<span class="fa arrow"></span></a>
+							<ul class="nav nav-second-level">								
+								<li data-pg="user_member">
+									<a href="#none">회원 정보</a>
+								</li>	
+							</ul>							
+						</li>
+						<li>
+							<a href="#"><i class="fa fa-lock fa-fw"></i> ADMIN<span class="fa arrow"></span></a>
+							<ul class="nav nav-second-level">								
+								<li data-pg="user_adm">
+									<a href="#none">관리자 정보</a>
+								</li>	
+							</ul>							
+						</li>
+					</ul>
+
+				</div>
+				<!-- /.sidebar-collapse -->
+			</div>
+			<!-- /.navbar-static-side -->
+		</nav>		
+		<!-- Navigation : end -->
+
+
+		<!-- Page Content -->
+		<div id="page-wrapper">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-lg-12">
+						<h1 class="page-header">게시판 01</h1>
+					</div>
+					<!-- /.col-lg-12 -->
+				</div>
+				<!-- /.row -->
+
+				<!-- Contents : Begin //-->
+				<div class="page-form">
+
+					<!-- tab menu: begin //-->
+					<ul id="tabArea" class="nav nav-tabs mb-10">
+						<li class="active"><a href="#">TAB 1</a></li>
+						<li><a href="#">TAB 2</a></li>
+					</ul>
+					<!-- tab menu: end //-->
+					
+					
+					<div class="panel panel-default">
+						<div class="panel-heading">게시글 등록</div>
+						<div class="panel-body">
+							
+							<table class="table tbl-form">
+								<colgroup>
+									<col style="width:200px;">
+									<col>
+								</colgroup>
+								<tbody>
+									<!-- selectbox 예시 -->	
+									<tr>
+										<th><label for="">셀렉트박스 <i class="fa fa-check-circle required"></i></label></th>
+										<td>
+											<select class="form-control">
+												<option value="">선택</option>
+												<option value=""></option>
+											</select>
+										</td>
+									</tr>	
+									
+									<!-- dl, checkbox 예시 -->	
+									<tr>
+										<th><label for="">선택 <i class="fa fa-check-circle required"></i></label></th>
+										<td>
+											<dl class="dl-horizontal">
+												<dt><label for="">내맘대로 선택 1</label></dt>
+												<dd>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Suspendisse</label>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Aliquam</label>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Molestie posuere</label>
+												</dd>
+											</dl>
+											<dl class="dl-horizontal">
+												<dt><label for="">내맘대로 선택 2</label></dt>
+												<dd>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Fermentum varius enim in</label>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Phasellus nibh</label>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Nunc scelerisque</label>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Praesent facilisis</label>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Condimentum odio</label>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Rutrum porta</label>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Morbi consectetur mauris </label>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Sed molestie</label>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Cras vehicula purus</label>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Tincidunt magna sit amet</label>
+												</dd>
+											</dl>
+											<dl class="dl-horizontal">
+												<dt><label for="">내맘대로 선택 3</label></dt>
+												<dd>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Laoreet orci</label>
+												</dd>
+											</dl>
+											<dl class="dl-horizontal">
+												<dt><label for="">내맘대로 선택 4</label></dt>
+												<dd>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Aliquam nunc quam</label>
+													<label class="checkbox-inline" for=""><input type="checkbox"> Proin quis tellus convallis</label>
+												</dd>
+											</dl>
+										</td>
+									</tr>
+
+									<!-- radio 예시 -->	
+									<tr>
+										<th><label for="">라디오박스</label></th>
+										<td>
+											<label class="radio-inline" for=""><input type="radio" checked> CHECK</label>
+											<label class="radio-inline" for=""><input type="radio"> UNCHECK</label>
+										</td>
+									</tr>
+
+									<!-- input box 예시 -->
+									<tr>
+										<th><label for="">인풋박스 (기본)</label></th>
+										<td>
+											<input class="form-control" type="text">
+										</td>
+									</tr>
+									<tr>
+										<th><label for="">인풋박스 (짧게 1)</label></th>
+										<td>
+											<div class="row">
+												<div class="col-xs-2">
+													<input class="form-control" type="text">
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th><label for="">인풋박스 (짧게 2)</label></th>
+										<td>
+											<div class="row">
+												<div class="col-xs-3">
+													<input class="form-control" type="text">
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th><label for="">인풋박스 (짧게 3)</label></th>
+										<td>
+											<div class="row">
+												<div class="col-xs-4">
+													<input class="form-control" type="text">
+												</div>
+											</div>
+											<p class=" fa fa-exclamation-circle note-file txt-small mt-5"> 인포메이션 텍스트 입니다.</p>
+										</td>
+									</tr>		
+									<tr>
+										<th><label for="">인풋박스 (기타)</label></th>
+										<td>
+											<input class="form-control form-control-short w-100" type="text">
+											<span class="left ml-10 mr-10">-</span>
+											<input class="form-control form-control-short w-100" type="text">
+											<span class="left ml-10 mr-10">-</span>
+											<input class="form-control form-control-short w-100" type="text">
+										</td>
+									</tr>
+									<tr>
+										<th><label for="">인풋박스 (버튼조합) <i class="fa fa-check-circle required"></i></label></th>
+										<td colspan="3">
+											<div class="form-group input-group">
+												<input class="form-control" type="text">
+												<span class="input-group-btn">
+													<button class="btn btn-default" type="button" id="btnChkID"><i class="fa fa-search"></i> Check</button>
+												</span>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th><label for="contents">텍스트에어리어 (1)</label></th>
+										<td>
+											<textarea class="form-control"></textarea>
+										</td>
+									</tr>	
+									<tr>
+										<th><label for="contents">텍스트에어리어 (2)</label></th>
+										<td>
+											<textarea class="form-control h-200"></textarea>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<!-- Buttons : Begin //-->
+					<p class="pull-right">
+						<button type="button" class="btn btn-default btn-lg" onclick="location.href='./board_list.html';"><i class="fa fa-th-list"></i> 목록</button>
+						<button type="button" class="btn btn-primary btn-lg"><i class="fa fa-check"></i> 등록</button>
+						<button type="button" class="btn btn-danger btn-lg"><i class="fa fa-times"></i> 삭제</button>
+					</p>
+					<!-- Buttons : End //-->
+
+				</div>
+				<!-- Contents : End //-->
+
+			</div>
+			<!-- /.container-fluid -->
+		</div>
+		<!-- /#page-wrapper -->
+
+	</div>
+	<!-- /#wrapper -->
+
+	<!-- Bootstrap Core JavaScript -->
+	<script src="../_common/vendor/bootstrap/js/bootstrap.min.js"></script>
+	<!-- Metis Menu Plugin JavaScript -->
+	<script src="../_common/vendor/metisMenu/metisMenu.min.js"></script>
+	<!-- Custom Theme JavaScript -->
+	<script src="../_common/js/sb-admin-2.js"></script></body>
+
+</body>
+</html>

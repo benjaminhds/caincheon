@@ -1,0 +1,31 @@
+// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.kpdus.com/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   NewsService.java
+
+package kr.caincheon.church.news.service;
+
+import java.util.Map;
+
+import kr.caincheon.church.common.CommonDaoDTO;
+import kr.caincheon.church.common.CommonException;
+
+public interface NewsService
+{
+
+    public abstract String getBoardCategory(Map map);
+
+    /*
+     * 교구소식
+     */
+    public abstract CommonDaoDTO newsList(Map map);
+
+    public abstract Map newsContents(Map map) throws CommonException;
+
+    /*
+     * 교구일정
+     */
+    public abstract CommonDaoDTO schList(Map map);
+
+    public abstract Map schContents(Map map);
+}

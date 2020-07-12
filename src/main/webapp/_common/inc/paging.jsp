@@ -1,0 +1,43 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<ol class="arrow">
+    <li class="fst arr">
+        <a href="javascript:goPage(${param.firstPageNo})"><img src="/img/sub/_ico/board_arr_first.png" alt="처음으로"></a>
+    </li>
+    <li class="prev arr">
+        <a href="javascript:goPage(${param.prevPageNo})"><img src="/img/sub/_ico/board_arr_prev.png" alt="이전으로"></a>
+    </li>
+    <c:forEach var="i" begin="${param.startPageNo}" end="${param.endPageNo}" step="1">
+        <c:choose>
+            <c:when test="${i eq param.pageNo}"><a href="javascript:goPage(${i})" class="choice">${i}</a></c:when>
+            <c:otherwise><a href="javascript:goPage(${i})">${i}</a></c:otherwise>
+        </c:choose>
+    </c:forEach>
+    <li class="next arr">
+        <a href="javascript:goPage(${param.nextPageNo})"><img src="/img/sub/_ico/board_arr_next.png" alt="다음으로"></a>
+    </li>
+    <li class="lst arr">
+        <a href="javascript:goPage(${param.finalPageNo})"><img src="/img/sub/_ico/board_arr_last.png" alt="마지막으로"></a>
+    </li>
+</ol>
+<%
+	{
+	java.util.Map _paramsPg = (java.util.Map)request.getAttribute("_params");
+	String queryStringXX = String.valueOf(_paramsPg.get("queryString"));
+	if(queryStringXX!=null && !"null".equals(queryStringXX) && queryStringXX.length() > 0) {
+		java.util.ArrayList<String> qa = kr.caincheon.church.common.utils.UtilString.toArray(queryStringXX, "&", true);
+		for(String element : qa) {
+	int ixx = element.indexOf("=");
+	if(ixx != -1) {
+		String keyxx = element.substring(0, ixx);
+		String valxx = element.substring(ixx+1);
+		if( !"keyxx".equalsIgnoreCase("idx") || !"keyxx".equalsIgnoreCase("bl_idx") || !"keyxx".equalsIgnoreCase("b_idx") 
+		 || !"keyxx".equalsIgnoreCase("pageNo") || !"keyxx".equalsIgnoreCase("p_idx")   || !"keyxx".equalsIgnoreCase("m_idx")  ) {
+			out.println("<input type='hidden' name='"+keyxx+"' value='"+valxx+"'>");
+		}
+	}
+		}
+	}
+}
+%>

@@ -1,0 +1,21 @@
+package kr.caincheon.church.admin.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.caincheon.church.common.base.CommonDaoDTO;
+
+public interface NBoardDao
+{
+
+	public void nboardList(CommonDaoDTO dto, Map _params, String menu, int attachedFileMaxCount) throws Exception;
+
+	public void nboardContents(CommonDaoDTO dto, Map _params, int attachedFileMaxCount) throws Exception;
+
+	public boolean nboardInsert(Map _params, List uploadedFiles) throws Exception;
+
+	public boolean nboardModify(Map _params, List uploadedFiles) throws Exception;
+
+	public boolean nboardDelete(Map _params) throws Exception;
+
+}

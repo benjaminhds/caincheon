@@ -1,0 +1,43 @@
+package kr.caincheon.church.admin.serivce;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.caincheon.church.common.CommonDaoDTO;
+import kr.caincheon.church.common.CommonException;
+
+public interface CodeService
+{
+    public int insertCode(Map params) throws CommonException, Exception;
+    
+    public int updateCode(Map params) throws CommonException, Exception;
+    
+    public int deleteCode(Map params) throws CommonException, Exception;
+
+    /** 코드를 리턴 */
+    public Map selectCode(Map params) throws CommonException, Exception;
+
+    /** 코드 목록을 리턴 */
+    public Map selectCodes(Map params) throws CommonException, Exception;
+    
+    
+
+    public int insertCodeInstance(Map params) throws CommonException, Exception;
+    
+    public int updateCodeInstance(Map params) throws CommonException, Exception;
+    
+    public int deleteCodeInstance(Map params) throws CommonException, Exception;
+
+    /** 코드인스턴스를 리턴 */
+    public int iudCodeInstance(Map params) throws CommonException, Exception;
+    
+    /** 코드인스턴스를 리턴 */
+    public Map selectCodeInstance(Map params) throws CommonException, Exception;
+
+    /** 코드인스턴스 목록을 리턴 */
+    public CommonDaoDTO selectCodeInstanceList(Map params) throws CommonException, Exception;
+
+    /** 코드인스턴스의 메모값을 조회 */
+    public List<Map> selectedAreaCodeMapPolygonPath(Map params) throws CommonException, Exception;
+    
+}

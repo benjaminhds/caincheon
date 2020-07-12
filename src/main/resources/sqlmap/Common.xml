@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="common">
+
+	<!-- mysql query -->
+	<!-- <include refid="common.pagingPre"/>
+	<sql id="pagingPre">
+		<![CDATA[	
+		SELECT CAST(@RNUM AS UNSIGNED INTEGER) as TOT_COUNT, B.*
+		FROM
+		(
+			SELECT
+				CAST(@RNUM := @RNUM + 1 AS UNSIGNED INTEGER) as RNUM
+				, A.*
+			FROM
+			(
+		]]>
+	</sql>
+	-->
+	
+	<!-- <include refid="common.pagingPost"/> --><!--
+	<sql id="pagingPost">
+		<![CDATA[
+				) A, (SELECT @RNUM := 0) TMP	
+			) B	ORDER BY RNUM ASC
+			LIMIT ${START}, ${END}
+		]]>
+	</sql>
+	-->
+	
+	<!-- mssql or oracle -->
+	<!-- <include refid="common.pagingPre"/> -->
+	<sql id="pagingPre">
+		<![CDATA[	
+		SELECT B.*
+		FROM
+		(
+			SELECT
+				A.*
+				, ROW_NUMBER() OVER( ORDER BY #{orderby} ) AS ROWNUM
+				, COUNT(*) OVER() AS TOTAL_CNT
+			FROM
+			(
+		]]>
+	</sql>
+	
+	<!-- <include refid="common.pagingPost"/> -->
+	<sql id="pagingPost">
+		<![CDATA[
+				) A	
+			) B	
+			WHERE ROWNUM BETWEEN ( (${pageNo}-1) * ${pageSize} + 1) AND (${pageNo} * ${pageSize})
+			ORDER BY ROWNUM ASC
+		]]>
+	</sql>
+	
+</mapper>
