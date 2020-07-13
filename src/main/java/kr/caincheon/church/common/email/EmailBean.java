@@ -5,7 +5,9 @@
 
 package kr.caincheon.church.common.email;
 
-
+/*
+ * 
+ */
 public class EmailBean
 {
 

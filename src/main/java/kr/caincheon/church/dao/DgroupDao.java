@@ -8,18 +8,21 @@ package kr.caincheon.church.dao;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * 
+ */
 public interface DgroupDao
 {
 
-    public abstract List dgroupList(Map map);
+    public List dgroupList(Map map);
 
-    public abstract int dgroupListCount(Map map);
+    public int dgroupListCount(Map map);
 
-    public abstract Map dgroupContents(Map map);
+    public Map dgroupContents(Map map);
 
-    public abstract boolean dgroupInsert(Map map);
+    public boolean dgroupInsert(Map map);
 
-    public abstract boolean dgroupModify(Map map);
+    public boolean dgroupModify(Map map);
 
-    public abstract boolean dgroupDelete(Map map);
+    public boolean dgroupDelete(Map map);
 }

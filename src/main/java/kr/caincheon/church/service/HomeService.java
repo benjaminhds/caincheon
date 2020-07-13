@@ -10,7 +10,7 @@ import java.util.List;
 public interface HomeService
 {
 
-    public abstract List noticeList();
+    public List noticeList();
 
-    public abstract List parishList();
+    public List parishList();
 }

@@ -7,16 +7,19 @@ package kr.caincheon.church.dao;
 
 import java.util.List;
 
+/*
+ * 
+ */
 public interface CommonUtilDao
 {
 
-    public abstract List getDepartList(String s)
+    public List getDepartList(String s)
         throws Exception;
 
-    public abstract List getDGroupCodeList(String s)
+    public List getDGroupCodeList(String s)
         throws Exception;
 
-    public abstract List getPosList(String s)
+    public List getPosList(String s)
         throws Exception;
     
     // 코드 조회

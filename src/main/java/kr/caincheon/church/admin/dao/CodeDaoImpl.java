@@ -298,7 +298,7 @@ public class CodeDaoImpl extends CommonDao implements CodeDao
 		String delyn = pnull(map, "del_yn", "");
 		String code_inst = pnull(map, "code_inst", "");
 		// sql
-		String orderby = " ORDER BY " + pnull(map, "orderby", "CODE_INST ASC");
+		String orderby = " ORDER BY ORDER_NO ASC, CODE_INST ASC ";
 		String sql = "SELECT * FROM CODE_INSTANCE";
 		String where = " WHERE 1=1 "
 				+ (code.length()==0 ? "" : " AND code='"+code+"' ")

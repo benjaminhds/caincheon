@@ -11,8 +11,10 @@ import java.util.Map;
 public class Paging
 {
 
+	/**
+	 * default construct
+	 */
 	public Paging() {
-		
 	}
 	
 	public Paging(int blockSize, int pageSize, int pageNo) {

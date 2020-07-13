@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
  */
 public class CommonLogging {
 	
+	//
     private SimpleDateFormat sdf9 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     
     

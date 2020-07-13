@@ -8,6 +8,9 @@ package kr.caincheon.church.gyogu.service;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * 
+ */
 public interface MsgService
 {
 

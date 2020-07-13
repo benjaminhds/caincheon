@@ -1,5 +1,8 @@
 package kr.caincheon.church.samok;
 
+/*
+ * 
+ */
 public interface CureControllerConst 
 {
 

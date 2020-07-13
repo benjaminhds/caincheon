@@ -11,21 +11,21 @@ import java.util.Map;
 public interface MsgDao
 {
 
-    public abstract List msgList(Map map);
+    public List msgList(Map map);
 
-    public abstract int msgListCount(Map map);
+    public int msgListCount(Map map);
 
-    public abstract Map msgContents(Map map);
+    public Map msgContents(Map map);
 
-    public abstract List admMsgList(Map map);
+    public List admMsgList(Map map);
 
-    public abstract int admMsgListCount(Map map);
+    public int admMsgListCount(Map map);
 
-    public abstract Map admMsgContents(Map map);
+    public Map admMsgContents(Map map);
 
-    public abstract boolean msgInsert(Map map);
+    public boolean msgInsert(Map map);
 
-    public abstract boolean msgModify(Map map);
+    public boolean msgModify(Map map);
 
-    public abstract boolean msgDelete(Map map);
+    public boolean msgDelete(Map map);
 }

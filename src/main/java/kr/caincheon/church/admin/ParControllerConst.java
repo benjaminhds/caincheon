@@ -1,5 +1,8 @@
 package kr.caincheon.church.admin;
 
+/*
+ * 
+ */
 public interface ParControllerConst {
 
     /*

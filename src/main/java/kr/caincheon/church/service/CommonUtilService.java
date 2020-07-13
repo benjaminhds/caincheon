@@ -7,6 +7,9 @@ package kr.caincheon.church.service;
 
 import java.util.List;
 
+/*
+ * 
+ */
 public interface CommonUtilService
 {
 

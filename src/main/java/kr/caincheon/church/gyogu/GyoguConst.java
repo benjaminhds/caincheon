@@ -1,5 +1,8 @@
 package kr.caincheon.church.gyogu;
 
+/*
+ * 
+ */
 public interface GyoguConst {
 
     /*

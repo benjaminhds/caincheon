@@ -49,7 +49,12 @@ public class MBoardController extends CommonController
         D(_logger, Thread.currentThread().getStackTrace(), "params = " + _params);
         
         // call a service component 
-        mBoardCategoryService.listBoard(_params);
+        try {
+			mBoardCategoryService.listBoard(_params);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
         
         D(_logger, Thread.currentThread().getStackTrace(), _params.toString());
         

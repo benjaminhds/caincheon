@@ -6,8 +6,6 @@
 package kr.caincheon.church.church;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -18,15 +16,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.caincheon.church.common.base.CommonController;
 import kr.caincheon.church.common.base.CommonDaoDTO;
 import kr.caincheon.church.common.base.CommonException;
-import kr.caincheon.church.common.base.Paging;
 import kr.caincheon.church.service.AdmChurchService;
 
+/**
+ * 
+ */
 @Controller
 public class MemerChurchNBoardController extends CommonController
 {

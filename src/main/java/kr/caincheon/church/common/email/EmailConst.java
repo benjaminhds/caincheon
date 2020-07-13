@@ -6,6 +6,9 @@
 package kr.caincheon.church.common.email;
 
 
+/*
+ * 
+ */
 public class EmailConst
 {
 

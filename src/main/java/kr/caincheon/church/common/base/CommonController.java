@@ -28,6 +28,7 @@ import kr.caincheon.church.admin.serivce.NBoardServiceImpl;
 import kr.caincheon.church.common.utils.ImageUtils;
 import kr.caincheon.church.common.utils.UtilDate;
 
+
 public abstract class CommonController extends CommonService {
 
 	public Map<String, Object> _params;

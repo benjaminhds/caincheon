@@ -1,5 +1,8 @@
 package kr.caincheon.church.controller;
 
+/*
+ * 
+ */
 public interface AdmGyoguMovControllerConst {
 
     /*

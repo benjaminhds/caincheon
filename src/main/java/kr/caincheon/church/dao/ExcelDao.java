@@ -8,10 +8,13 @@ package kr.caincheon.church.dao;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * 
+ */
 public interface ExcelDao
 {
 
-    public abstract List getBooks(Map map);
+    public List getBooks(Map map);
 
-    public abstract List getBooksDetail(Map map);
+    public List getBooksDetail(Map map);
 }

@@ -1,5 +1,8 @@
 package kr.caincheon.church.schedule;
 
+/*
+ * 
+ */
 public class GyoguScheduleUtil {
 
 	

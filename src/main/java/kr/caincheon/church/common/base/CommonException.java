@@ -9,7 +9,13 @@ package kr.caincheon.church.common.base;
 public class CommonException extends Exception
 {
 
-    private String errCode;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	//
+	private String errCode;
     private String errMessage;
     private Object data;
     private String lastSQL;

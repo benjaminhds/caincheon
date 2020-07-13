@@ -11,19 +11,19 @@ import java.util.Map;
 public interface MgzDao
 {
 
-    public abstract List mgzList(Map map);
+    public List mgzList(Map map);
 
-    public abstract int mgzListCount(Map map);
+    public int mgzListCount(Map map);
 
-    public abstract Map mgzContents(Map map);
+    public Map mgzContents(Map map);
 
-    public abstract String mgzMaxNo(Map map);
+    public String mgzMaxNo(Map map);
 
-    public abstract String mgzTitle(Map map);
+    public String mgzTitle(Map map);
 
-    public abstract boolean mgzInsert(Map map);
+    public boolean mgzInsert(Map map);
 
-    public abstract boolean mgzModify(Map map);
+    public boolean mgzModify(Map map);
 
-    public abstract boolean mgzDelete(Map map);
+    public boolean mgzDelete(Map map);
 }

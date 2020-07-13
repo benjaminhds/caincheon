@@ -8,8 +8,11 @@ package kr.caincheon.church.service;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * 
+ */
 public interface ExcelService
 {
 
-    public abstract List getAllObjects(String s, Map map);
+    public List getAllObjects(String s, Map map);
 }

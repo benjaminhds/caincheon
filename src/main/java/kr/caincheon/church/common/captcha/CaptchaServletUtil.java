@@ -15,7 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sound.sampled.AudioSystem;
 
 import nl.captcha.audio.Sample;
-
+/*
+ * 
+ */
 public final class CaptchaServletUtil
 {
 

@@ -5,6 +5,9 @@
 
 package kr.caincheon.church.news;
 
+/*
+ * 
+ */
 public interface NewsControllerConst {
 
     /*

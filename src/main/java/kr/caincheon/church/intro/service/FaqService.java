@@ -11,15 +11,15 @@ import java.util.Map;
 public interface FaqService
 {
 
-    public abstract List faqList(Map map);
+    public List faqList(Map map);
 
-    public abstract int faqListCount(Map map);
+    public int faqListCount(Map map);
 
-    public abstract Map faqContents(Map map);
+    public Map faqContents(Map map);
 
-    public abstract boolean faqInsert(Map map);
+    public boolean faqInsert(Map map);
 
-    public abstract boolean faqModify(Map map);
+    public boolean faqModify(Map map);
 
-    public abstract boolean faqDelete(Map map);
+    public boolean faqDelete(Map map);
 }

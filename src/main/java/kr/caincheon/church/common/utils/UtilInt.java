@@ -5,7 +5,9 @@
 
 package kr.caincheon.church.common.utils;
 
-
+/*
+ * 
+ */
 public class UtilInt
 {
 

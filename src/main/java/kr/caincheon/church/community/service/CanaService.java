@@ -7,6 +7,9 @@ package kr.caincheon.church.community.service;
 
 import java.util.Map;
 
+/*
+ * 
+ */
 public interface CanaService
 {
 

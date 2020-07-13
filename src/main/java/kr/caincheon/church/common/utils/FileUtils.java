@@ -14,6 +14,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import kr.caincheon.church.common.base.CommonParameter;
 
+/**
+ * 
+ */
 public class FileUtils 
 {
 	//

@@ -8,20 +8,23 @@ package kr.caincheon.church.dao;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * 
+ */
 public interface AdmParDao
 {
 
-    public abstract List parList(Map map);
+    public List parList(Map map);
 
-    public abstract int parListCount(Map map);
+    public int parListCount(Map map);
 
-    public abstract Map parContents(Map map);
+    public Map parContents(Map map);
 
-    public abstract boolean admParInsert(Map map, List list);
+    public boolean admParInsert(Map map, List list);
 
-    public abstract boolean admParModify(Map map, List list);
+    public boolean admParModify(Map map, List list);
 
-    public abstract boolean admParDelete(Map map);
+    public boolean admParDelete(Map map);
 
-    public abstract Map getMember(Map map);
+    public Map getMember(Map map);
 }

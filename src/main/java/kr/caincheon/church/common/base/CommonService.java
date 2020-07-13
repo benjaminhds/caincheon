@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import kr.caincheon.church.common.utils.FileUtils;
 
+/**
+ * 
+ */
 public abstract class CommonService extends CommonParameter {
 	
 	/*

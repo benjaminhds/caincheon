@@ -8,6 +8,9 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+/**
+ * 
+ */
 public class ImageUtils {
 	
 	// Thumbnail Path Build

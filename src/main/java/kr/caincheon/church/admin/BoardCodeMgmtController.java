@@ -18,7 +18,6 @@ import kr.caincheon.church.common.base.Paging;
  * 직급코드 관리 서비스를 제공하는 컨트롤러
  * @author benjamin
  */
-
 @Controller
 public class BoardCodeMgmtController extends CommonController
 {
@@ -27,14 +26,14 @@ public class BoardCodeMgmtController extends CommonController
     
     @Resource(name="boardCategoryService")
     private BoardCategoryService boardCategoryService;
-    
+    //AdmMBoardController
     /**
      * 코드관리 > 게시판코드조회
      * @param request
      * @return
      * @throws CommonException
      */
-    @RequestMapping(value = "/admin/code/board_list.dox")
+    @RequestMapping(value = "/admin/code/board_list.do")
     public ModelAndView admin_code_boardListDo(HttpServletRequest request) throws Exception
     {
     	ModelAndView mv = new ModelAndView("/admin/code/board_list");
@@ -121,7 +120,7 @@ public class BoardCodeMgmtController extends CommonController
      * @return
      * @throws CommonException
      */
-    @RequestMapping(value = "/admin/code/board_category_list.dox")
+    @RequestMapping(value = "/admin/code/board_category_list.do")
     public ModelAndView admin_code_boardCategoryListDo(HttpServletRequest request) throws Exception
     {
     	ModelAndView mv = new ModelAndView("/admin/code/board_category_list");

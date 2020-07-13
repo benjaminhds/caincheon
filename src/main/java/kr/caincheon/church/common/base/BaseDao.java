@@ -6,9 +6,11 @@
 package kr.caincheon.church.common.base;
 
 
+/*
+ * 
+ */
 public interface BaseDao
 {
 	
-
     public void free();
 }

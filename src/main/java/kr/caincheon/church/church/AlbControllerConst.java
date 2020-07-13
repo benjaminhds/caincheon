@@ -1,5 +1,8 @@
 package kr.caincheon.church.church;
 
+/*
+ * 
+ */
 public interface AlbControllerConst {
 
     /*

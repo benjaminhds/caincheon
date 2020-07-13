@@ -1,5 +1,8 @@
 package kr.caincheon.church.intro;
 
+/*
+ * 
+ */
 public interface HistoryControllerConst {
 
     /*

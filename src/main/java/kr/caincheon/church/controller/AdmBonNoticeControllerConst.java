@@ -9,4 +9,5 @@ public interface AdmBonNoticeControllerConst {
 	
 	public String ATTACHED_FILE_COUNT = "5";  // 첨부파일은 1개뿐
 	
+	
 }

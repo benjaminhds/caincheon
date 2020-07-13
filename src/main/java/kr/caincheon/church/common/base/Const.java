@@ -5,7 +5,7 @@
 
 package kr.caincheon.church.common.base;
 
-
+//
 public interface Const
 {
 

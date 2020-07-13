@@ -8,18 +8,21 @@ package kr.caincheon.church.dao;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * 
+ */
 public interface MainDao
 {
 
-    public abstract Map todayContents();
+    public Map todayContents();
 
-    public abstract List noticeList(String s);
+    public List noticeList(String s);
 
-    public abstract List parishList();
+    public List parishList();
 
-    public abstract List priestListOfThisMonth();
+    public List priestListOfThisMonth();
 
-    public abstract List parList_Main();
+    public List parList_Main();
 
-    public abstract Map<String, Object> schList_Main(Map _params);
+    public Map<String, Object> schList_Main(Map _params);
 }

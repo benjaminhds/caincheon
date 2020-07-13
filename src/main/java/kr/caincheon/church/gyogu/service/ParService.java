@@ -8,12 +8,15 @@ package kr.caincheon.church.gyogu.service;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * 
+ */
 public interface ParService
 {
 
-    public abstract List parList(Map map);
+    public List parList(Map map);
 
-    public abstract int parListCount(Map map);
+    public int parListCount(Map map);
 
-    public abstract Map parContents(Map map);
+    public Map parContents(Map map);
 }
