@@ -2,150 +2,182 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="admin.mboard">
-
-	<!-- ===============================================================
-		
-		 ============================================================ -->
-	<!-- 목록 조회 -->
-	<select id="selectMBoardPaging" parameterType="hashmap" resultType="hashmap">
-		<include refid="common.pagingPre"/>
-			SELECT * /* admin.mboard.selectListPaging */ 
-			FROM MBOARD
+	<!-- 메인 메뉴 리스트 조회 -->
+	<select id="getMenuBoardList" parameterType="hashmap" resultType="hashmap">
+		/* admin.mboard.getMenuBoardList - 메인메뉴리스트*/
+			SELECT TOP 100 PERCENT *  
+			FROM MBOARD_MNGT
 			WHERE 1=1
-			<if test='name != null and !"".equals(name)'> AND NAME LIKE CONCAT('%', #{name}, '%') </if>
-			<if test='is_use != null and !"".equals(is_use)'> AND IS_USE = #{is_use} </if>
-			<if test='b_idx != null and !"".equals(b_idx)'> AND B_IDX = #{b_idx},'%') </if>
-			<if test='c_idx != null and !"".equals(c_idx)'> AND C_IDX = #{c_idx} </if>
-			<if test='orderby != null and !"".equals(orderby)'> ORDER BY ${orderby} </if>
-		<include refid="common.pagingPost"/>
+			<if test='i_sViewFlag != null and !"".equals(i_sViewFlag)'> AND VIEW_FLAG	= #{i_sViewFlag} </if>
+			ORDER BY B_IDX ASC
 	</select>
-	
-	<!--  정보 추가 --><!--
-	<insert id="insertMBoard" parameterType="hashmap" useGeneratedKeys="true" keyProperty="AID">
-		INSERT INTO	TBL_AD
-		(
-			ANAME,
-			URL,
-			TITLE,
-			STATUS,
-			ORDERING,
-			REG_ID
-		)
+	<select id="getMBoardList" parameterType="hashmap" resultType="hashmap">
+		/* admin.mboard.getMBoardList */
+			<include refid="common.pagingPre"/>
+			SELECT TOP 100 PERCENT *  
+			FROM MBOARD_MNGT
+			WHERE 1=1
+			<if test='i_sText != null and !"".equals(i_sText)'> AND B_NM LIKE CONCAT('%', #{i_sText}, '%') </if>
+			<if test='i_sBidx != null and !"".equals(i_sBidx)'> AND B_IDX		= #{i_sBidx},'%') </if>
+			<include refid="common.pagingPost"/>
+	</select>
+	<!-- 게시판 조회 -->
+	<select id="getCodeInstance" parameterType="hashmap" resultType="hashmap">
+		/* admin.mboard.getCodeInstance 코드 조회*/
+		SELECT	* 
+		FROM	CODE_INSTANCE
+		WHERE	1=1
+		<if test='code != null and !"".equals(code)'> AND CODE = #{code} </if>	<!-- 코드 조회 -->
+	</select>
+	<!-- 게시판 조회 -->
+	<select id="getCategory" parameterType="hashmap" resultType="hashmap">
+		/* admin.mboard.getCategory 카테고리 조회*/
+		SELECT	* 
+		FROM	MBOARD_CATEGORY
+		WHERE	1=1
+		<if test='i_sBidx != null and !"".equals(i_sBidx)'> AND B_IDX = #{i_sBidx} </if>	<!-- 게시글 아이디 조회 -->
+	</select>
+	<!-- 게시판 조회 -->
+	<select id="getMboardView" parameterType="hashmap" resultType="hashmap">
+		/* admin.mboard.getMboardView 게시판 조회 */
+		SELECT	B_IDX
+				, B_NM
+				, B_KIND
+				, B_TYPE
+				, REG_DT
+				, UPD_DT
+				, USEYN_COMMENT
+				, USEYN_SECRET
+				, USEYN_COMMENT_SECRET
+				, USEYN_ATTACHEMENT
+				, USEYN_LOGIN
+				, USEYN_DOWNLOAD_PERM
+				, VIEW_FLAG
+		FROM	MBOARD_MNGT
+		WHERE	1=1
+		<if test='i_sBidx != null and !"".equals(i_sBidx)'> AND B_IDX = #{i_sBidx} </if>	<!-- 게시글 아이디 조회 -->
+	</select>
+	<insert id="insertMboardMaster" parameterType="hashmap">
+		/* admin.mboard.insertMboardMaster 게시판 등록 */
+		INSERT	INTO	MBOARD_MNGT
+			(
+				B_NM
+				, B_KIND
+				, B_TYPE
+				, REG_DT
+				, UPD_DT
+				, USEYN_COMMENT
+				, USEYN_SECRET
+				, USEYN_COMMENT_SECRET
+				, USEYN_ATTACHEMENT
+				, USEYN_LOGIN
+				, USEYN_DOWNLOAD_PERM
+				, VIEW_FLAG
+			)
 		VALUES
-        (
-			#{name},
-			#{url},
-			#{title},
-			#{subtitle},
-			#{client},
-			#{comment},
-			#{point},
-			#{sdate},
-			#{edate},
-			#{status},
-			#{ordering},
-			#{loginid}
-        )
+			(
+				#{i_sTitle}
+				, #{i_sBoardKind}
+				, #{i_sBoardType}
+				, Convert(varchar(10),Getdate(),112)
+				, Convert(varchar(10),Getdate(),112)
+				, #{i_sUseYnComment}
+				, #{i_sUseYnSecret}
+				, #{i_sUseYnCommentSecret}
+				, #{i_sUseYnAttachMent}
+				, #{i_sUseYnLogin}
+				, #{i_sUseYnDownloadPerm}
+				, #{i_sViewFlag}
+			)
+		<selectKey resultType="java.lang.Integer" keyProperty="i_sBidx">
+			SELECT	@@IDENTITY AS ID
+		</selectKey>
 	</insert>
-	-->
-	
-	<!--  정보 수정 --><!--
-	<update id="updateAd" parameterType="hashmap">
-		UPDATE TBL_AD
-			SET
-				ANAME 		= #{name},
-				URL		 	= #{url},
-				TITLE		= #{title},
-				SUBTITLE	= #{subtitle},
-				CLIENT		= #{client},
-				COMMENT		= #{comment},
-				POINT		= #{point},
-				REDIRECT	= #{redirect},
-			<if test='imgseq != null and !imgseq.equals("")'>
-				IMG_PATH	= #{imgpath},
-				IMG_SEQ		= #{imgseq},
-			</if>
-				CATEGORY	= #{category},
-				S_DATE		= #{sdate},
-				E_DATE		= #{edate},
-				STATUS 		= #{status},
-				ORDERING	= #{ordering},
-				MOD_DATE 	= NOW()
-		WHERE
-			AID = #{id}
+	<update id="updateMboardMaster" parameterType="hashmap">
+		UPDATE	MBOARD_MNGT
+		SET
+			B_NM					=	#{i_sTitle}
+			, B_KIND				=	#{i_sBoardKind}
+			, B_TYPE				=	#{i_sBoardType}
+			, UPD_DT				=	Convert(varchar(10),Getdate(),112)
+			, USEYN_COMMENT			=	#{i_sUseYnComment}
+			, USEYN_SECRET			=	#{i_sUseYnSecret}
+			, USEYN_COMMENT_SECRET	=	#{i_sUseYnCommentSecret}
+			, USEYN_ATTACHEMENT		=	#{i_sUseYnAttachMent}
+			, USEYN_LOGIN			=	#{i_sUseYnLogin}
+			, USEYN_DOWNLOAD_PERM	=	#{i_sUseYnDownloadPerm}
+			, VIEW_FLAG				=	#{i_sViewFlag}
+		WHERE	B_IDX				=	#{i_sBidx}
 	</update>
-	-->
-	
-	<!--  정보 삭제 --><!--
-	<delete id="deleteAd" parameterType="hashmap">
-		DELETE FROM TBL_AD
-		WHERE
-			AID = #{id}	
+	<delete id="deleteMbaord" parameterType="hashmap">
+		DELETE	FROM	MBOARD_MNGT
+		WHERE	1=1
+		<if test='i_sBidx != null and !"".equals(i_sBidx)'> AND B_IDX = #{i_sBidx} </if>	<!-- 게시글 아이디 조회 -->
 	</delete>
-	-->
-	
-	<!-- 선택된  배너 이미지 정보 조회 --><!-- 
-	<select id="selectAdBannerAndImg" parameterType="hashmap" resultType="Ad">
-		SELECT
-			A.BID			AS id,
-			A.REG_ID 		AS regid
-		FROM
-			TBL_AD_BANNER A LEFT JOIN TBL_AD_IMG_FILE B
-		WHERE
-			A.BID = #{id}
-	</select>
-	 -->
-	
-	<!--  배너 정보 추가 --><!-- 
-	<insert id="insertAdBanner" parameterType="hashmap" useGeneratedKeys="true" keyProperty="BID">
-		INSERT INTO	TBL_AD_BANNER
-		(
-			BNAME,
-			URL,
-			CLIENT,
-			COMMENT,
-			ORDERING,
-			REG_ID
-		)
+	<delete id="deleteMboardCategroy" parameterType="hashmap">
+		DELETE	FROM	MBOARD_CATEGORY
+		WHERE	1=1
+		<if test='i_sBidx != null and !"".equals(i_sBidx)'> AND B_IDX = #{i_sBidx} </if>	<!-- 게시글 아이디 조회 -->
+	</delete>
+	<insert id="insertMboardCategroy" parameterType="hashmap">
+		INSERT	INTO	MBOARD_CATEGORY
+			(
+				B_IDX
+				, C_IDX
+				, NAME
+				, IS_USE
+			)
 		VALUES
-        (
-			#{name},
-			#{url},
-			#{client},
-			#{comment},
-			#{point},
-			#{redirect},
-			#{status},
-			#{ordering},
-			#{loginid}
-        )
+			(
+				#{i_sBidx}
+				, #{i_sCIdx}
+				, #{i_sName}
+				, 'Y'
+			)
 	</insert>
-	 -->
-	
-	<!--  배너 정보 수정 --><!-- 
-	<update id="updateAdBanner" parameterType="hashmap">
-		UPDATE TBL_AD_BANNER
-			SET
-				BNAME 		= #{name},
-				URL		 	= #{url},
-				CLIENT		= #{client},
-				COMMENT		= #{comment},
-				POINT		= #{point},
-				REDIRECT	= #{redirect},
-				IMG_URL		= #{imgurl},
-			<if test='imgseq != null and !imgseq.equals("")'>
-				IMG_PATH	= #{imgpath},
-				IMG_SEQ		= #{imgseq},
-			</if>
-				S_DATE		= #{sdate},
-				E_DATE		= #{edate},
-				STATUS 		= #{status},
-				ORDERING	= #{ordering},
-				MOD_DATE 	= NOW()
-		WHERE
-			BID = #{id}
-	</update>
-	 -->
-	
-	
+	<select id="getNormalboardList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre"/>
+				SELECT B.NAME AS CATEGORY_NAME
+					, ISNULL(C.NAME,'') AS CHURCH_NAME
+					, ISNULL(D.NAME,'') AS DEPART_NAME
+					, ISNULL(O.NAME, '') AS ORG_NAME
+					, A.*
+					, ROW_NUMBER() OVER(ORDER BY A.REGDATE, A.BL_IDX DESC) AS R_NUM
+				FROM (
+					SELECT	BL_IDX
+							, TITLE
+							, CONTENT
+							, USER_ID
+							, WRITER
+							, PWD
+							, REGDATE
+							, UPDDATE
+							, EMAIL
+							, IS_VIEW
+							, IS_SECRET
+							, DEPART_IDX
+							, CHURCH_IDX
+							, HIT
+							, B_IDX
+							, IS_NOTICE
+							, C_IDX
+							, DISPLAY_YN
+							, EVENT_DATE
+							, DOWN_LEVEL
+							, UPDATE_ID
+					FROM MBOARD M
+					WHERE M.B_IDX	=	'9'
+				) A
+				LEFT OUTER JOIN MBOARD_CATEGORY B
+					ON B.C_IDX		= A.C_IDX
+					AND B.B_IDX		= A.B_IDX
+					AND B.IS_USE	= 'Y'
+				LEFT OUTER JOIN ORG_HIERARCHY   O
+					ON O.ORG_IDX    = A.DEPART_IDX
+				LEFT OUTER JOIN CHURCH          C
+					ON C.CHURCH_IDX = A.CHURCH_IDX
+				LEFT OUTER JOIN DEPARTMENT      D
+					ON D.DEPART_IDX = A.DEPART_IDX
+		<include refid="common.pagingPost"/> 
+	</select>
 </mapper>

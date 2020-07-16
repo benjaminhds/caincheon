@@ -1,6 +1,7 @@
 package kr.caincheon.church.admin.mboard;
 
 import java.sql.PreparedStatement;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ import kr.caincheon.church.common.base.Paging;
 
 /**
  * 
- * @author benjamin
+ * @author kyjo
  */
 @Repository("mBoardDAO")
 public class MBoardDAO extends AbstractDAO {
@@ -66,15 +67,19 @@ public class MBoardDAO extends AbstractDAO {
 	
 	
 	@SuppressWarnings("rawtypes")
-	public Map mboardContents(Map _params) throws Exception  {
+	public CommonDaoDTO mboardContents(Map _params) throws Exception  {
 		
-		Map rtmap = null;
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
 		try {
-			Object rtObj = selectOne("admin.sscard.selectToUpdatePrivatePoint", _params);
+			/*마스터 정보 가져오기*/
+			Object MBoardView = selectOne("admin.mboard.getMboardView", _params);
+			/*카테고리 리스트 가져오기*/
+			dto.otherList	= selectList("admin.mboard.getCategory", _params);
 			
 			// super admin except
-			if(rtObj!=null) {
-				rtmap = (Map)rtObj;
+			if(MBoardView!=null) {
+				dto.daoDetailContent = (Map)MBoardView;
 			}
 			
 		} catch (Exception e) {
@@ -83,9 +88,9 @@ public class MBoardDAO extends AbstractDAO {
 			
 		}
 		
-		D(L, Thread.currentThread().getStackTrace(), "DAO Result:"+rtmap );
+		D(L, Thread.currentThread().getStackTrace(), "DAO Result:"+dto.daoDetailContent );
 		
-		return rtmap;
+		return dto;
 	}
 
 	/*
@@ -236,4 +241,148 @@ public class MBoardDAO extends AbstractDAO {
 		return rn >= 1;
 	}
 
+	/**
+	 * 멀티보드를 조회하는 메서드
+	 * @param dto
+	 * @param params
+	 * @throws Exception
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public CommonDaoDTO getMBoardList(Map params) throws Exception {
+		
+		L.debug("DAO Called. params: "+params);
+
+		//DTO 만들기
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		// paging
+		int pageNo    = ipnull(params, "pageNo", 1);
+		int pageSize  = ipnull(params, "pageSize", 10);
+		int startRnum = (pageNo - 1) * pageSize + 1;
+		int endRnum   =  pageNo * pageSize;
+		
+		params.put("startRnum",  startRnum);
+		params.put("endRnum",    endRnum);
+		
+		// Query Combination
+		try {
+			Map rmap = selectPagingList("admin.mboard.getMBoardList", params);
+			dto.daoList = (List)rmap.get("List");
+			dto.paging  = (Paging)rmap.get("Paging");
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e;
+		} finally {
+		}
+		
+		L.debug("DAO Result.[DTO:"+dto+"]" );
+		
+		return dto;
+	}
+
+	/*코드 인스턴스 가져오기*/
+	public CommonDaoDTO getCodeInstance(Map<String, Object> _params) {
+		
+		//DTO 만들기
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		try {		
+			/*카테고리 리스트 가져오기*/
+			dto.otherList	= selectList("admin.mboard.getCodeInstance", _params);
+			
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e; 
+		}
+		
+		return dto;
+	}
+	
+	/**
+	 * 게시판 등록
+	 * */
+	public void insertBoard(Map params) {
+		// TODO Auto-generated method stub
+		insert("admin.mboard.insertMboardMaster",params);
+	}
+	/**
+	 * 게시판 수정
+	 * */
+	public void updateBoard(Map params) {
+		// TODO Auto-generated method stub
+		update("admin.mboard.updateMboardMaster",params);
+	}
+	/**
+	 * 게시판 삭제
+	 * */
+	public void deleteBoard(Map params) {
+		delete("admin.mboard.deleteMbaord", params);
+	}
+	/**
+	 * 게시판 별 카테고리 등록
+	 * */
+	public void insertBoardCategory(Map params) {
+		/*다수 카테고리 insert*/
+		insert("admin.mboard.insertMboardCategroy", params);
+	}
+	/**
+	 * 게시판 별 카테고리 삭제
+	 * */
+	public void deleteBoardCategory(Map params) {
+		/*게시판 다수 카테고리 delete*/
+		delete("admin.mboard.deleteMboardCategroy", params);
+	}
+	/**
+	 * 메뉴 게시판 리스트
+	 * */
+	public CommonDaoDTO getMenuBoardList(Map<String, Object> _params) {
+		
+		//DTO 만들기
+		CommonDaoDTO dto = new CommonDaoDTO();
+				
+		try {
+			List rmap = selectList("admin.mboard.getMBoardList", _params);
+			dto.daoList = rmap;
+			
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e;
+		}
+		
+		return dto;
+	}
+
+
+	public CommonDaoDTO NormalboardList(Map<String, Object> _params) {
+		L.debug("DAO Called. params: "+_params);
+
+		//DTO 만들기
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		// paging
+		int pageNo    = ipnull(_params, "pageNo", 1);
+		int pageSize  = ipnull(_params, "pageSize", 10);
+		int startRnum = (pageNo - 1) * pageSize + 1;
+		int endRnum   =  pageNo * pageSize;
+		
+		_params.put("startRnum",  startRnum);
+		_params.put("endRnum",    endRnum);
+		
+		// Query Combination
+		try {
+			Map rmap = new HashMap();
+			rmap	=	selectPagingList("admin.mboard.getNormalboardList", _params);
+			
+			dto.daoList = (List)rmap.get("List");
+			dto.paging  = (Paging)rmap.get("Paging");
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e;
+		} finally {
+		}
+		
+		L.debug("DAO Result.[DTO:"+dto+"]" );
+		
+		return dto;
+	}
 }

@@ -48,6 +48,7 @@ public interface Const
     public static final String ADM_MAPKEY_COUNT       = "ADM_RETURN_COUNT"; 
     public static final String ADM_MAPKEY_PAGING      = "ADM_RETURN_PAGING";
     public static final String ADM_MAPKEY_LIST_OTHERS = "ADM_RETURN_LIST_OTHERS"; 
+    public static final String ADM_MAPKEY_CONTENT	  = "ADM_RETURN_CONTENT"; 
     
     
     // 카나혼 발신자 메일 주소
