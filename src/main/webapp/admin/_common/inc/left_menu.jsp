@@ -28,6 +28,7 @@
                 <li>
                     <a href="#"><i class="fa fa-sitemap fa-fw"></i> 게시판관리</a>
                     <ul class="nav nav-second-level">
+                        <li data-pg="board_01"><a href="/n/admin/board/board_list.do">게시판관리</a></li>
                         <li data-pg="board_01"><a href="/admin/board/par_list.do">교구장동정</a></li>
                         <li data-pg="board_02"><a href="/admin/board/news_list.do">교회/교구/공동체</a></li>
                         <li data-pg="board_03"><a href="/admin/board/church_list.do">본당알림</a></li>
