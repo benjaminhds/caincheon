@@ -41,7 +41,7 @@ public class MemberDaoImpl extends CommonDao
         	+ ", CASE WHEN GROUPGUBUN IN ('2','4') THEN D.DEPART_IDX ELSE NULL END AS DEPART_IDX "
         	+ ", CASE WHEN GROUPGUBUN IN ('2','4') THEN D.NAME ELSE NULL END AS DEPART_NAME "
         	+ " FROM MEMBER A "
-        	+ " LEFT OUTER JOIN NEWCAINCHEON.DEPARTMENT D ON D.MAIL = A.ID "
+        	+ " LEFT OUTER JOIN DEPARTMENT D ON D.MAIL = A.ID "
         	+ " WHERE 1=1 ";
         
         if(_params.get("id") != null)

@@ -78,7 +78,7 @@ public class MemberController extends CommonController
         {
         	if(pnull(_params,"id").length() == 0) {
         		gotoURL = gotoBACK;
-        	} else if("".equalsIgnoreCase(gotoURL) || "/member/login.do".equalsIgnoreCase(gotoURL)) {
+        	} else if(pnull(_params,"id").length() > 0 || "".equalsIgnoreCase(gotoURL) || "/member/login.do".equalsIgnoreCase(gotoURL)) {
         		gotoURL = "/home.do";
         	}
         	// 세션처리

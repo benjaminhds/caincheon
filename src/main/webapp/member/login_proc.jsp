@@ -107,6 +107,9 @@
 		if (sessionURL.indexOf(".do")==-1 && sessionURL.indexOf(".jsp") == -1)
 			sessionURL += ".jsp";
 
+		//
+		System.out.println("------------- member/login_proc.jsp : " + sessionURL + "=" + sessionURL);
+		
 		//RequestDispatcher dispatcher = request.getRequestDispatcher(sessionURL);
 		request.getRequestDispatcher(sessionURL).forward(request, response);
 

@@ -25,6 +25,7 @@ public String pnullSession(HttpServletRequest request, String key, String defaul
 	response.setHeader( "cache-control", "no-store" );
 	
 	// 세션 정보를 jstl에서 쓸 수 있게 설정
+	String __uri = request.getRequestURI();
 	java.util.Enumeration _enm = request.getSession(true).getAttributeNames();
 	while(_enm.hasMoreElements()) {
 		String sk  = _enm.nextElement().toString();
@@ -33,7 +34,7 @@ public String pnullSession(HttpServletRequest request, String key, String defaul
 		
 		pageContext.setAttribute(sk, sv);
 		
-		System.out.println("-------- /_common/inc/loginHandler.jsp : "+sk+"="+sv);
+		System.out.println("-------- /_common/inc/loginHandler.jsp ("+__uri+") : "+sk+"="+sv);
 	}
 	
 	
