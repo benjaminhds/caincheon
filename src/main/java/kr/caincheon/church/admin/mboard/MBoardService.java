@@ -1,6 +1,7 @@
 package kr.caincheon.church.admin.mboard;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -13,6 +14,7 @@ import kr.caincheon.church.common.base.CommonDaoDTO;
 import kr.caincheon.church.common.base.CommonException;
 import kr.caincheon.church.common.base.CommonService;
 import kr.caincheon.church.common.base.Const;
+import kr.caincheon.church.common.utils.UtilString;
 
 
 @Service("mBoardService")
@@ -162,5 +164,112 @@ public class MBoardService extends CommonService
 		
 		L.debug(".. end. rtn: " + dto );
 		return dto;
+	}
+
+	public CommonDaoDTO postViewContent(Map<String, Object> _params) {
+		CommonDaoDTO rtDto = new CommonDaoDTO();
+		
+		try {
+			/* 1. 보드 마스터
+			 * */
+			rtDto	=	mBoardDAO.postViewContent(_params);
+			
+			_params.put(Const.ADM_MAPKEY_CONTENT, rtDto.daoDetailContent);
+			_params.put(Const.ADM_MAPKEY_LIST_OTHERS, rtDto.otherList);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return rtDto;
+	}
+	/*댓글 마스터 iud*/
+	public void iudCommentMaster(Map<String, Object> params) {
+		String mode = pnull(params, "mode");
+		
+		D(L, Thread.currentThread().getStackTrace(), mode+") ..called");
+		
+		if("i".equalsIgnoreCase(mode)) {
+			mBoardDAO.insertComment(params);
+		} else if("u".equalsIgnoreCase(mode)) {
+			mBoardDAO.updateComment(params);
+		} else if("d".equalsIgnoreCase(mode)) {
+			mBoardDAO.deleteComment(params);
+		}
+		
+		D(L, Thread.currentThread().getStackTrace(), mode);		// TODO Auto-generated method stub
+		
+	}
+	/*댓글 리스트*/
+	public CommonDaoDTO getCommentList(Map<String, Object> _params) {
+		// param
+		String pageNo = pnull(_params, "pageNo");
+		String pageSize = pnull(_params, "pageSize");
+		
+		// board list
+		CommonDaoDTO dto = mBoardDAO.commentList(_params);
+
+		// return
+		_params.put(Const.ADM_MAPKEY_LIST, dto.daoList);
+		
+		L.debug(".. end. rtn: " + dto );
+		return dto;
+	}
+	/*게시글 crud*/
+	public void iudPostsMaster(Map<String, Object> params) throws CommonException {
+		
+		String mode = pnull(params, "mode");
+		
+		D(L, Thread.currentThread().getStackTrace(), mode+") ..called");
+		
+		if("W".equalsIgnoreCase(mode)) {
+			try {
+				/*게시글 마스터 저장*/
+				mBoardDAO.insertPosts(params);
+				/*첨부파일 저장*/
+				/*List list = fileUploadProcess(params, request, getUploadBaseURI(left_menu_data_pg));*/
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new CommonException("MBoard에 등록하지 못했습니다.["+e.getMessage()+"]", "EXPT-300", e.getMessage());
+			}
+			
+		} else if("u".equalsIgnoreCase(mode)) {
+			mBoardDAO.updatePosts(params);
+		} else if("d".equalsIgnoreCase(mode)) {
+			mBoardDAO.deletePosts(params);
+		}
+		
+		D(L, Thread.currentThread().getStackTrace(), mode);		// TODO Auto-generated method stub
+		
+	}
+	/*본당 리스트*/
+	public void getOrgIdxList(Map<String, Object> params) {
+		
+		String mode = pnull(params, "mode");
+		
+		D(L, Thread.currentThread().getStackTrace(), mode+") ..called");
+		
+		// board list
+		CommonDaoDTO dto = new CommonDaoDTO();
+	
+		// return
+		if("O".equalsIgnoreCase(mode)) {
+			dto = mBoardDAO.getOrgHirarchyList(params);
+		} else if("D".equalsIgnoreCase(mode)) {
+			dto = mBoardDAO.getDeptartMentList(params);
+		} else if("E".equalsIgnoreCase(mode)) {
+			dto = mBoardDAO.getOrganizationList(params);
+		}
+		
+		params.put(Const.ADM_MAPKEY_LIST, dto.daoList);
+		
+	}
+
+	public void iudNormalBoardMaster(Map<String, Object> _params) {
+		// TODO Auto-generated method stub
+		
 	}
 }

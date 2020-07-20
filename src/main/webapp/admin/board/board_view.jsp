@@ -1,4 +1,4 @@
--<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -9,6 +9,58 @@ if(admSessionMemId==null||admSessionMemId.equals("")) {                // id가 
 }
 %>
 <script type="text/javascript">
+
+/*조직 idx List Ajax*/
+function orgIdxListAjax(md) {
+	
+	var mode	=	"";
+	
+	/*처음 시작할때*/
+	if(md == '') {
+		return false;
+		mode = 'O';
+	} else {
+		mode	=	md;
+	}
+	
+	$.ajax({		 
+		type:"POST"
+		, url:"/n/board/church_modify_ajax.do"
+		, data: {
+			mode : mode
+		}
+		, dataType: "json"
+		, cache: false
+		, success:function(data){
+			drawOrgIdxList(data);
+		}
+		, error:function(xhr, textStatus) {
+			alert("에러 입니다. 관리자에게 문의해주세요.");
+		}
+	});	
+}
+
+/*그리기*/
+function drawOrgIdxList(data) {
+	$("#i_sOrgIdx").empty();
+	
+	var selectIdx	=	"${bd_content.ORG_IDX}";
+	
+	var tempSel		=	$("<select>");
+	var orgIdxList	=	data.orgIdxList;
+	
+	for(var i =0; i < orgIdxList.length; i++) {
+		var tempOption	=	$("<option>");
+		
+		tempOption.text(orgIdxList[i].NAME);
+		tempOption.val(orgIdxList[i].ORG_IDX);
+		
+		if(orgIdxList[i].ORG_IDX == selectIdx) {
+			tempOption.attr("selected",true);
+		}
+		$("#i_sOrgIdx").append(tempOption);
+	}
+}
 
 /* 버튼 이벤트 */
 function addButtonEvent() {
@@ -74,6 +126,10 @@ function addButtonEvent() {
 	/*버튼 자르기*/
 	$(document).on("click",".btn_del_box",function(){
 		$(this).remove();
+	});
+	/*소속 구분에 따라 다르게 리스트 표현*/
+	$("input[name=i_sOrgType]").on("click", function(){
+		orgIdxListAjax($(this).val());
 	});
 }
 
@@ -261,6 +317,17 @@ function delete_contents() {
 										</td>
 									</tr>
 									<tr>
+										<th>소속</th>
+										<td>
+											<label class="radio-inline" for="i_sOrgType_O"><input type="radio"	name="i_sOrgType" id="i_sOrgType_O" value="O" <c:if test="${bd_content == null || bd_content.ORG_TYPE == 'O'}" >checked="checked"</c:if>>조직</label>
+											<label class="radio-inline" for="i_sOrgType_D"><input type="radio"	name="i_sOrgType" id="i_sOrgType_D" value="D" <c:if test="${bd_content.ORG_TYPE=='D' }" >checked="checked"</c:if>>부서</label>
+											<label class="radio-inline" for="i_sOrgType_E"><input type="radio"	name="i_sOrgType" id="i_sOrgType_E" value="E" <c:if test="${bd_content.ORG_TYPE=='E' }" >checked="checked"</c:if>>수도회 단체 및 기타 조직성당</label>
+											
+											<select class="form-control" name="i_sOrgIdx" id="i_sOrgIdx">
+											</select>
+										</td>
+									</tr>
+									<tr>
 										<th>댓글사용여부</th>
 										<td>
 											<label class="radio-inline" for="i_sUseYnComment_Y"><input type="radio" name="i_sUseYnComment" id="i_sUseYnComment_Y" value="Y" <c:if test="${bd_content == null || bd_content.USEYN_COMMENT=='Y' }" >checked="checked"</c:if>>Y</label>
@@ -361,6 +428,10 @@ window.onload = function() {
 	// 버튼이벤트
 	addButtonEvent();
 	
+	/*처음에 리스트 ajax*/
+	var md	=	"${bd_content.ORG_TYPE}";
+	orgIdxListAjax(md);
+	
 	// calendar
 	$("#event_date").datepicker();
 	$("input.event_date").datepicker().attr("maxlength", 10);
@@ -368,7 +439,7 @@ window.onload = function() {
 }
 
 </script>
-<form id="form02" name="form02" method="POST" action="/admin/board/par_list.do">
- <input type="hidden" name="bl_idx" id="bl_idx" value="${CONTENTS.BL_IDX}"/>
+<form id="form02" name="form02" method="POST" action="/admin/board/board_list.do">
+ <input type="hidden" name="bl_idx" id="bl_idx" value="${bd_content.BL_IDX}"/>
 </form>
 </html>

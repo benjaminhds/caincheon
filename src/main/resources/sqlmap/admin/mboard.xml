@@ -14,11 +14,42 @@
 	<select id="getMBoardList" parameterType="hashmap" resultType="hashmap">
 		/* admin.mboard.getMBoardList */
 			<include refid="common.pagingPre"/>
-			SELECT TOP 100 PERCENT *  
-			FROM MBOARD_MNGT
+			SELECT TOP 100 PERCENT 
+					B_IDX
+					, B_NM
+					, B_TYPE
+					, REG_DT
+					, UPD_DT
+					, USEYN_COMMENT
+					, USEYN_SECRET
+					, USEYN_COMMENT_SECRET
+					, USEYN_ATTACHEMENT
+					, USEYN_LOGIN
+					, USEYN_DOWNLOAD_PERM
+					, VIEW_FLAG
+					, B_KIND
+					, (
+						SELECT	COUNT(*)
+						FROM	MBOARD_CATEGORY	Mc
+						WHERE	Mc.B_IDX	=	Mm.B_IDX
+					) AS CATEGORY_CNT
+					, (
+						SELECT	NAME
+						FROM	CODE_INSTANCE Ci
+						WHERE	CODE		=	'000013'
+						AND		CODE_INST	=	Mm.B_KIND
+					) AS B_KIND_NM
+					, (
+						SELECT	NAME
+						FROM	CODE_INSTANCE Ci
+						WHERE	CODE		=	'000014'
+						AND		CODE_INST	=	Mm.B_TYPE
+					) AS B_TYPE_NM
+			FROM MBOARD_MNGT Mm
 			WHERE 1=1
 			<if test='i_sText != null and !"".equals(i_sText)'> AND B_NM LIKE CONCAT('%', #{i_sText}, '%') </if>
-			<if test='i_sBidx != null and !"".equals(i_sBidx)'> AND B_IDX		= #{i_sBidx},'%') </if>
+			<if test='i_sBidx != null and !"".equals(i_sBidx)'> AND B_IDX		= #{i_sBidx}</if>
+			<if test='i_sViewFlag != null and !"".equals(i_sViewFlag)'> AND VIEW_FLAG	= #{i_sViewFlag} </if>
 			<include refid="common.pagingPost"/>
 	</select>
 	<!-- 게시판 조회 -->
@@ -53,6 +84,8 @@
 				, USEYN_LOGIN
 				, USEYN_DOWNLOAD_PERM
 				, VIEW_FLAG
+				, ORG_IDX
+				, ORG_TYPE
 		FROM	MBOARD_MNGT
 		WHERE	1=1
 		<if test='i_sBidx != null and !"".equals(i_sBidx)'> AND B_IDX = #{i_sBidx} </if>	<!-- 게시글 아이디 조회 -->
@@ -73,6 +106,8 @@
 				, USEYN_LOGIN
 				, USEYN_DOWNLOAD_PERM
 				, VIEW_FLAG
+				, ORG_IDX
+				, ORG_TYPE
 			)
 		VALUES
 			(
@@ -88,6 +123,8 @@
 				, #{i_sUseYnLogin}
 				, #{i_sUseYnDownloadPerm}
 				, #{i_sViewFlag}
+				, #{i_sOrgType}
+				, #{i_sOrgIdx}
 			)
 		<selectKey resultType="java.lang.Integer" keyProperty="i_sBidx">
 			SELECT	@@IDENTITY AS ID
@@ -107,6 +144,8 @@
 			, USEYN_LOGIN			=	#{i_sUseYnLogin}
 			, USEYN_DOWNLOAD_PERM	=	#{i_sUseYnDownloadPerm}
 			, VIEW_FLAG				=	#{i_sViewFlag}
+			, ORG_TYPE				=	#{i_sOrgType}
+			, ORG_IDX				=	#{i_sOrgIdx}
 		WHERE	B_IDX				=	#{i_sBidx}
 	</update>
 	<delete id="deleteMbaord" parameterType="hashmap">
@@ -142,7 +181,7 @@
 					, ISNULL(D.NAME,'') AS DEPART_NAME
 					, ISNULL(O.NAME, '') AS ORG_NAME
 					, A.*
-					, ROW_NUMBER() OVER(ORDER BY A.REGDATE, A.BL_IDX DESC) AS R_NUM
+					, ROW_NUMBER() OVER(ORDER BY A.IS_NOTICE DESC, A.REGDATE, A.BL_IDX DESC) AS R_NUM
 				FROM (
 					SELECT	BL_IDX
 							, TITLE
@@ -166,7 +205,26 @@
 							, DOWN_LEVEL
 							, UPDATE_ID
 					FROM MBOARD M
-					WHERE M.B_IDX	=	'9'
+					WHERE M.B_IDX	=	#{i_sBidx}
+					<if test='i_sCIdx != null and !"".equals(i_sCIdx)'> AND C_IDX = #{i_sCIdx}</if><!-- 카테고리 조회 -->
+					<if test='schTextGubun != null and !"".equals(schTextGubun)'>
+						<if test='schTextGubun == "title"'>AND	TITLE LIKE CONCAT('%', #{schText}, '%') </if>
+						<if test='schTextGubun == "content"'>AND	CONTENT LIKE CONCAT('%', #{schText}, '%') </if>
+						<if test='schTextGubun == "all"'>AND	
+																(
+																	TITLE LIKE CONCAT('%', #{schText}, '%')
+																	OR
+																	CONTENT LIKE CONCAT('%', #{schText}, '%')
+																)
+											</if>
+						<if test='schTextGubun == "writer"'>
+								AND WRITER	LIKE CONCAT('%', #{schText}, '%')
+						</if>
+					</if>
+					<if test='i_sCIdx != null and !"".equals(i_sCIdx)'> AND C_IDX = #{i_sCIdx}</if><!-- 카테고리 조회 -->
+					<if test='i_sCIdx != null and !"".equals(i_sCIdx)'> AND C_IDX = #{i_sCIdx}</if><!-- 카테고리 조회 -->
+					<if test='i_sCIdx != null and !"".equals(i_sCIdx)'> AND C_IDX = #{i_sCIdx}</if><!-- 카테고리 조회 -->
+					<if test='i_sCIdx != null and !"".equals(i_sCIdx)'> AND C_IDX = #{i_sCIdx}</if><!-- 카테고리 조회 -->
 				) A
 				LEFT OUTER JOIN MBOARD_CATEGORY B
 					ON B.C_IDX		= A.C_IDX
@@ -180,4 +238,165 @@
 					ON D.DEPART_IDX = A.DEPART_IDX
 		<include refid="common.pagingPost"/> 
 	</select>
+	<select id="postViewContent" parameterType="hashmap" resultType="hashmap">
+	/* admin.mboard.postViewContent 게시판 게시글 */
+		SELECT	BL_IDX
+				, TITLE
+				, CONTENT
+				, USER_ID
+				, WRITER
+				, PWD
+				, REGDATE
+				, UPDDATE
+				, EMAIL
+				, IS_VIEW
+				, IS_SECRET
+				, DEPART_IDX
+				, CHURCH_IDX
+				, HIT
+				, B_IDX
+				, IS_NOTICE
+				, C_IDX
+				, DISPLAY_YN
+				, EVENT_DATE
+				, DOWN_LEVEL
+				, UPDATE_ID
+		FROM	MBOARD
+		WHERE	BL_IDX 	=	#{i_sBlidx}
+	</select>
+	<select id="getCommentList" parameterType="hashmap" resultType="hashmap">
+		/*admin.mboard.getCommentList - 댓글 리스트*/
+		SELECT	IDX
+				, BL_IDX
+				, COMMENT
+				, REG_DATE
+				, UPD_DATE
+				, USER_ID
+				, COMMENT_SECRET
+		FROM	MBOARD_COMMENT
+		WHERE	1=1
+		<if test='i_sBlidx != null and !"".equals(i_sBlidx)'> AND BL_IDX	= #{i_sBlidx} </if>
+	</select>
+	<insert id="insertComment" parameterType="hashmap">
+		/*admin.mboard.insertComment - 댓글 등록*/
+		INSERT	INTO	MBOARD_COMMENT
+			(
+				BL_IDX
+				, COMMENT
+				, REG_DATE
+				, UPD_DATE
+				, USER_ID
+				, COMMENT_SECRET
+			)
+		VALUES
+			(
+				#{i_sBlidx}
+				, #{i_sComment}
+				, Getdate()
+				, Getdate()
+				, #{SS_MEM_ID}
+				, #{i_sPassword}
+			)
+	</insert>
+	<update id="updateComment" parameterType="hashmap">
+		/*admin.mboard.updateComment - 댓글 수정*/
+		UPDATE	MBOARD_COMMENT
+			SET
+				COMMENT	=	#{i_sComment}
+				, UPD_DATE	=	Convert(varchar(10),Getdate(),112)
+		WHERE	IDX			=	#{i_sIdx}
+	</update>
+	<delete id="deleteComment" parameterType="hashmap">
+		/*admin.mboard.deleteComment - 댓글 삭제*/
+		DELETE
+		FROM	MBOARD_COMMENT
+		WHERE	IDX			=	#{i_sIdx}
+	</delete>
+	<select id="getMemberContent" parameterType="hashmap" resultType="hashmap">
+		${sql}
+	</select>
+	<select id="getOrgHirarchyList" parameterType="hashmap" resultType="hashmap">
+		/* admin.mboard.getOrgHirarchyList - 성당*/
+		SELECT	ORG_IDX
+				, NAME
+		FROM	CHURCH
+	</select>
+	<select id="getDeptartMentList" parameterType="hashmap" resultType="hashmap">
+		/* admin.mboard.getDeptartMentList - 부서조직*/
+		SELECT	ORG_IDX
+				, NAME
+		FROM	DEPARTMENT
+	</select>
+	<select id="getOrganizationList" parameterType="hashmap" resultType="hashmap">
+		/* admin.mboard.getOrganizationList - 기타조직*/
+		SELECT	ORG_IDX
+				, NAME
+		FROM	ORGANIZATION
+	</select>
+	<insert id="insertPostsMaster" parameterType="hashmap">
+		/*admin.mboard.insertPostsMaster - posts 저장*/
+		INSERT	INTO	MBOARD
+			(
+				BL_IDX
+				, TITLE
+				, CONTENT
+				, USER_ID
+				, WRITER
+				, PWD
+				, REGDATE
+				, UPDDATE
+				, IS_VIEW
+				, IS_SECRET
+				, DEPART_IDX
+				, CHURCH_IDX
+				, HIT
+				, B_IDX
+				, IS_NOTICE
+				, C_IDX
+				, UPDATE_ID	
+			)
+			VALUES
+			(
+				(
+					SELECT	MAX(BL_IDX) + 1
+					FROM	MBOARD
+				)
+				, #{title}
+				, #{contents}
+				, #{SS_MEM_ID}
+				, #{SS_MEM_NM}
+				, #{write_password}
+				, Getdate()
+				, Getdate()
+				, 'Y'
+				, 'N'
+				, #{SS_DEPARTIDX}
+				, #{SS_CHURCHIDX}
+				, 0
+				, #{i_sBidx}
+				, 'N'
+				, #{i_sCategory}
+				, #{SS_MEM_ID}
+			)
+	</insert>
+	<update id="updatePostsMaster" parameterType="hashmap">
+		/*admin.mboard.updatePostsMaster - posts 수정*/
+		UPDATE	MBOARD
+		SET
+				TITLE				= #{title}
+				, CONTENT			= #{contents}
+				, USER_ID			= #{SS_MEM_ID}
+				, WRITER			= #{SS_MEM_NM}
+				, PWD				= #{write_password}
+				, UPDDATE			= Getdate()
+				, IS_VIEW			= 'Y'
+				, IS_SECRET			= 'N'
+				, DEPART_IDX		= #{SS_DEPARTIDX}
+				, CHURCH_IDX		= #{SS_CHURCHIDX}
+				, B_IDX				= #{i_sBidx}
+				, IS_NOTICE			= 'N'
+				, C_IDX				= #{i_sCategory}
+				, UPDATE_ID			= #{SS_MEM_ID}
+		WHERE	BL_IDX				= #{i_sBlidx}
+	</update>
 </mapper>

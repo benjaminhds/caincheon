@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import kr.caincheon.church.common.base.AbstractDAO;
 import kr.caincheon.church.common.base.CommonDaoDTO;
+import kr.caincheon.church.common.base.CommonException;
 import kr.caincheon.church.common.base.Const;
 import kr.caincheon.church.common.base.Paging;
 
@@ -352,7 +353,7 @@ public class MBoardDAO extends AbstractDAO {
 		return dto;
 	}
 
-
+	/*일반 게시판 리스트*/
 	public CommonDaoDTO NormalboardList(Map<String, Object> _params) {
 		L.debug("DAO Called. params: "+_params);
 
@@ -382,6 +383,128 @@ public class MBoardDAO extends AbstractDAO {
 		}
 		
 		L.debug("DAO Result.[DTO:"+dto+"]" );
+		
+		return dto;
+	}
+
+
+	public CommonDaoDTO postViewContent(Map<String, Object> _params) {
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		try {
+			/*마스터 정보 가져오기*/
+			Object postViewContent = selectOne("admin.mboard.postViewContent", _params);
+			/*카테고리 리스트 가져오기*/
+			dto.otherList	= selectList("admin.mboard.getCategory", _params);
+			
+			// super admin except
+			if(postViewContent!=null) {
+				dto.daoDetailContent = (Map)postViewContent;
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			
+		}
+		
+		D(L, Thread.currentThread().getStackTrace(), "DAO Result:"+dto.daoDetailContent );
+		
+		return dto;
+	}
+
+
+	public void insertComment(Map<String, Object> params) {
+		insert("admin.mboard.insertComment", params);
+	}
+	public void updateComment(Map<String, Object> params) {
+		update("admin.mboard.updateComment", params);
+	}
+	public void deleteComment(Map<String, Object> params) {
+		delete("admin.mboard.deleteComment", params);		
+	}
+	/*댓글 리스트*/
+	public CommonDaoDTO commentList(Map<String, Object> _params) {
+		L.debug("DAO Called. params: "+_params);
+
+		//DTO 만들기
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		// Query Combination
+		try {
+			/*댓글 리스트 가져오기*/
+			dto.daoList	= selectList("admin.mboard.getCommentList", _params);
+			
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e;
+		} finally {
+		}
+		
+		L.debug("DAO Result.[DTO:"+dto+"]" );
+		
+		return dto;
+	}
+	/*게시글 insert*/
+	public void insertPosts(Map<String, Object> params) {
+		insert("admin.mboard.insertPostsMaster",params);
+	}
+
+
+	public void updatePosts(Map<String, Object> params) {
+		update("admin.mboard.updatePostsMaster",params);
+	}
+
+
+	public void deletePosts(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+	}
+
+
+	public CommonDaoDTO getOrgHirarchyList(Map<String, Object> params) {
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		try {		
+			/*조직 리스트 가져오기*/
+			dto.daoList	= selectList("admin.mboard.getOrgHirarchyList", params);
+			
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e; 
+		}
+		
+		return dto;
+	}
+
+
+	public CommonDaoDTO getDeptartMentList(Map<String, Object> params) {
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		try {		
+			/*부서 리스트 가져오기*/
+			dto.daoList	= selectList("admin.mboard.getDeptartMentList", params);
+			
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e; 
+		}
+		
+		return dto;
+	}
+
+
+	public CommonDaoDTO getOrganizationList(Map<String, Object> params) {
+		//DTO 만들기
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		try {		
+			/*기타조직 리스트 가져오기*/
+			dto.daoList	= selectList("admin.mboard.getOrganizationList", params);
+			
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e; 
+		}
 		
 		return dto;
 	}
