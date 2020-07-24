@@ -52,7 +52,7 @@ public class MBoardDAO extends AbstractDAO {
 		
 		// Query Combination
 		try {
-			Map rmap = selectPagingList("admin.mboard.selectListPaging", _params);
+			Map rmap = selectPagingList("admin.mboard.getMBoardList", _params);
 			dto.daoList = (List)rmap.get("List");
 			dto.paging  = (Paging)rmap.get("Paging");
 		} catch (Exception e) {
@@ -97,7 +97,6 @@ public class MBoardDAO extends AbstractDAO {
 	/*
 	 * mboard 등록
 	 * (non-Javadoc)
-	 * @see kr.caincheon.church.admin.dao.NBoardDao#nboardInsert(java.util.Map, java.util.List)
 	 */
 	@SuppressWarnings("rawtypes")
 	public boolean mboardInsert(Map _params, List uploadedFiles)  throws Exception {
@@ -457,7 +456,7 @@ public class MBoardDAO extends AbstractDAO {
 
 
 	public void deletePosts(Map<String, Object> params) {
-		// TODO Auto-generated method stub
+		update("admin.mboard.deletePosts",params);
 	}
 
 
@@ -507,5 +506,156 @@ public class MBoardDAO extends AbstractDAO {
 		}
 		
 		return dto;
+	}
+
+	public void insertUpload(Map params) {
+		insert("admin.mboard.insertUpload",params);
+	}
+
+	public void deleteUpload(Map params) {
+		delete("admin.mboard.deleteUpload",params);
+	}
+
+
+	public void getIdBlIdx(Map<String, Object> params) {
+		Map rmap = new HashMap();	
+		
+		rmap	= (Map)selectOne("admin.mboard.getIdBlIdx",params);
+		
+		params.put("i_sBlidx", rmap.get("CNT"));
+	}
+
+
+	public CommonDaoDTO postViewAttachContent(Map<String, Object> _params) {
+		//DTO 만들기
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		try {		
+			/*기타조직 리스트 가져오기*/
+			dto.daoList	= selectList("admin.mboard.getAttachList", _params);
+			
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e; 
+		}
+		
+		return dto;
+	}
+	
+	public CommonDaoDTO albList(Map<String, Object> _params) {
+		L.debug("DAO Called. params: "+_params);
+
+		//DTO 만들기
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		// paging
+		int pageNo    = ipnull(_params, "pageNo", 1);
+		int pageSize  = ipnull(_params, "pageSize", 10);
+		int startRnum = (pageNo - 1) * pageSize + 1;
+		int endRnum   =  pageNo * pageSize;
+		
+		_params.put("startRnum",  startRnum);
+		_params.put("endRnum",    endRnum);
+		
+		// Query Combination
+		try {
+			Map rmap = new HashMap();
+			rmap	=	selectPagingList("admin.mboard.getalbList", _params);
+			
+			dto.daoList = (List)rmap.get("List");
+			dto.paging  = (Paging)rmap.get("Paging");
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e;
+		} finally {
+		}
+
+		L.debug("DAO Result.[DTO:"+dto+"]" );
+		
+		return dto;
+
+	}
+
+	public CommonDaoDTO getAlbView(Map<String, Object> _params) {
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		try {
+			/*마스터 정보 가져오기*/
+			Object albView = selectOne("admin.mboard.getAlbView", _params);
+			
+			// super admin except
+			if(albView!=null) {
+				dto.daoDetailContent = (Map)albView;
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			
+		}
+		
+		D(L, Thread.currentThread().getStackTrace(), "DAO Result:"+dto.daoDetailContent );
+		
+		return dto;
+	}
+	
+	public void youtubeList(Map params, CommonDaoDTO dto) {
+		L.debug("DAO Called. params: "+params);
+		// paging
+		int pageNo    = ipnull(params, "pageNo", 1);
+		int pageSize  = ipnull(params, "pageSize", 10);
+		int startRnum = (pageNo - 1) * pageSize + 1;
+		int endRnum   =  pageNo * pageSize;
+		
+		params.put("startRnum",	startRnum);
+		params.put("endRnum",	endRnum);
+		
+		// Query Combination
+		try {
+			Map rmap = selectPagingList("admin.mboard.getalbList", params);
+			dto.daoList = (List)rmap.get("List");
+			dto.paging  = (Paging)rmap.get("Paging");
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e;
+		} finally {
+		}
+		
+		L.debug("DAO Result.[DTO:"+dto+"]" );
+		
+	}
+
+
+	public CommonDaoDTO getMagazineList(Map<String, Object> _params) {
+		
+		L.debug("DAO Called. params: "+_params);
+		//
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		// paging
+		int pageNo    = ipnull(_params, "pageNo", 1);
+		int pageSize  = ipnull(_params, "pageSize", 10);
+		int startRnum = (pageNo - 1) * pageSize + 1;
+		int endRnum   =  pageNo * pageSize;
+		
+		_params.put("startRnum", startRnum);
+		_params.put("endRnum",   endRnum);
+		_params.put("orderby", "PUBDATE DESC");
+		
+		// Query Combination
+		try {
+			Map rmap = selectPagingList("admin.mboard.getMagazineList", _params);
+			dto.daoList = (List)rmap.get("List");
+			dto.paging  = (Paging)rmap.get("Paging");
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e;
+		} finally {
+		}
+		
+		L.debug("DAO Result.[DTO:"+dto+"]" );
+		
+		return dto;
+		
 	}
 }

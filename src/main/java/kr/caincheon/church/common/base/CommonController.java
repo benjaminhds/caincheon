@@ -385,5 +385,81 @@ public abstract class CommonController extends CommonService {
 	protected final String JSON_STATUS_SECCESS = "success";
 	protected final String JSON_STATUS_FAILURE = "fail";
 	
-	
+	/**
+	 * 파일 업로드 처리 새로운 공통 함수- 파일 선택 즉시 업로드 하는 기능,
+	 */
+	protected void fileUploadHandleInCKEditorNew(HttpServletRequest request, HttpServletResponse response, MultipartFile upload, String i_sBidx) 
+	throws Exception {
+
+		OutputStream out = null;
+		PrintWriter printWriter = null;
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+
+		String callback = request.getParameter("CKEditorFuncNum");
+
+		try {
+			// subPathName = subPathName.replace("/", "");
+			String subPathName = "upload/"+i_sBidx;
+			String uploadBaseURI = "upload/ckeditor/" + subPathName;
+			if (!"/".equals(uploadBaseURI.substring(uploadBaseURI.length() - 1))) {
+				uploadBaseURI = uploadBaseURI + "/";
+			}
+			uploadBaseURI = uploadBaseURI + UtilDate.getDateFormat("yyyyMMdd") + "/";
+			String uploadFullPath = request.getSession().getServletContext().getRealPath("/") + uploadBaseURI;
+
+			String origineFileFullName = upload.getOriginalFilename();
+			String fileName   = origineFileFullName.substring(0, origineFileFullName.lastIndexOf("."));
+			String fileExtr   = origineFileFullName.substring(origineFileFullName.lastIndexOf(".") + 1);
+			String uploadFile = uploadFullPath + origineFileFullName;
+
+			// file move
+			if (!new File(uploadFullPath).exists()) { // make dir
+				new File(uploadFullPath).mkdirs();
+			}
+			int i = 0;
+			while (new File(uploadFile).exists()) {// check a dup
+				fileName = fileName + "_" + i++;
+				uploadFile = uploadFullPath + fileName + "." + fileExtr;
+			}
+			// move a file. 
+			byte bytes[] = upload.getBytes();
+			out = new FileOutputStream(new File(uploadFile));
+			out.write(bytes);
+
+			// thumbnaiil make :: BJM
+			if (fileExtr.equalsIgnoreCase("jpg") || fileExtr.equalsIgnoreCase("jpeg")
+					|| fileExtr.equalsIgnoreCase("gif") || fileExtr.equalsIgnoreCase("png")
+					|| fileExtr.equalsIgnoreCase("bmp")) {
+				ImageUtils.createThumbnail(uploadFile);
+			}
+
+			// response
+			String fileUrl = "/" + uploadBaseURI + fileName + "." + fileExtr;
+			printWriter = response.getWriter();
+			printWriter.println("<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction(" + callback+ ",'" + fileUrl + "','이미지를 업로드 하였습니다.')</script>");
+			printWriter.flush();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+
+			try {
+				if (printWriter == null)
+					printWriter = response.getWriter();
+				printWriter.println("<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction("+ callback + ",'','업로드 중 에러 발생[" + e.getMessage() + "]')</script>");
+				printWriter.flush();
+			} catch (IOException e1) {
+			}
+
+		} finally {
+			try {
+				if (out != null)
+					out.close();
+				if (printWriter != null)
+					printWriter.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

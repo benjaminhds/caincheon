@@ -3,14 +3,21 @@ package kr.caincheon.church.common.base;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import kr.caincheon.church.admin.mboard.MBoardDAO;
 import kr.caincheon.church.common.utils.FileUtils;
 
 /**
  * 
  */
 public abstract class CommonService extends CommonParameter {
+
+	// 멀티게시판 조회
+	@Resource(name="mBoardDAO")
+	private MBoardDAO mBoardDAO;
+
 	
 	/*
 	 * DB 조회 결과 컬럼에서 불필요한 컬럼을 제거한다.
@@ -190,7 +197,7 @@ public abstract class CommonService extends CommonParameter {
 		}
 		
     	pnullPut(_params, "CONTEXT_URI_PATH", "/"+uploadURI);// "/upload/news/");
-    	pnullPut(_params, "CONTEXT_ROOT_PATH", request.getSession().getServletContext().getRealPath("/") + uploadURI); //"upload/news/");
+    	pnullPut(_params, "CONTEXT_ROOT_PATH", request.getSession().getServletContext().getRealPath("/") + uploadURI);
     	
     	List rtList = null;
     	
@@ -203,6 +210,28 @@ public abstract class CommonService extends CommonParameter {
     	
     	return rtList; 
     }
+	protected List fileUploadProcessNew(Map _params, HttpServletRequest request, String uploadURI) throws CommonException {
+		//
+
+		if( uploadURI.indexOf("/") == 0) {
+			uploadURI = uploadURI.substring(1);
+		}
+		
+		pnullPut(_params, "CONTEXT_URI_PATH", "/"+uploadURI);
+		pnullPut(_params, "CONTEXT_ROOT_PATH", request.getSession().getServletContext().getRealPath("/") + uploadURI);
+		
+		List rtList = null;
+		
+		try {
+			rtList = FileUtils.getInstance().parseInsertFileInfoNew(_params, request);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new CommonException("File Upload Error 입니다.["+e.getMessage()+"]", e);
+		}
+		
+		return rtList; 
+	}
 	
 	
 	protected String getUploadBaseURI(String left_menu_data_pg) {
@@ -234,5 +263,4 @@ public abstract class CommonService extends CommonParameter {
 
 		return "upload/"+left_menu_data_pg+"/";
 	}
-	
 }

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -121,6 +122,18 @@ public class CKEditorFileUploadController extends CommonController implements Ad
 	public void imageUploadInCKEditorboard_08(HttpServletRequest request, HttpServletResponse response, MultipartFile upload) 
     		throws ServletException, IOException, Exception{
     	fileUploadHandleInCKEditor ( request,  response,  upload, AdmGyoguMovControllerConst.LEFT_MENU_DATA_PG ); // board_08
+    }
+	
+	/*
+	 * 게시판 관리에서 관리 하는 ckEditor 저장
+	 */
+	@RequestMapping(value = "/admin/ckeditor/fileUploadInContentNew_{i_sBidx}.do")
+	public void imageUploadInCKEditorboard_new(HttpServletRequest request
+											, HttpServletResponse response
+											, @PathVariable String i_sBidx
+											, MultipartFile upload) 
+    		throws ServletException, IOException, Exception{
+    	fileUploadHandleInCKEditorNew( request,  response,  upload, i_sBidx); // board_08
     }
 	
 	/*

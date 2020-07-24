@@ -1,9 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 		<script type="text/javascript">
-		$(document).ready(function(){ 
-			
-			addBtnEvent();
-		})
 		// 댓글 저장
 		function writeCmt(obj) {
 			
@@ -96,7 +92,7 @@
 				updateCmt($(this));
 			});
 			/*댓글 저장*/
-			$(".btn_save").on("click",function(){
+			$(document).on("click",".btn_save",function(){
 				writeCmt($(this));
 			});
 		}

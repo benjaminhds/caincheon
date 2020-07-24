@@ -7,20 +7,25 @@
 		<c:forEach var="i" begin="1" end="${HEAD_CONST__attach_file_form__MAX_FILE_COUNT}" varStatus="status">
 		
 		<c:if test="${ i % 2 == 1 }">
-			<tr style="vertical-align: top; font-size:14px">
+		<tr style="vertical-align: top; font-size:14px">
 		</c:if>
+			
+			<% /* 동적변수 할당 */ %>
+			<c:set var="XFILENAME"    value="FILENAME${i}"    scope="page" />
+			<c:set var="XFILEPATH"    value="FILEPATH${i}"    scope="page" />
+			<c:set var="XSTRFILENAME" value="STRFILENAME${i}" scope="page" />
 			
 			<% /* 동적변수로 값을 추출 :: requestScope[동적변수] 로 추출 , MAP에서는 맵[변수] 로 추출한다. */ %>
 			<td><div style="width:100%; ">
 			
-			<c:if test="${fn:length(attachList[i].STRFILENAME) > 0 }">
-				<c:choose><c:when test="${fn:indexOf(attachList[i].STRFILENAME, 'jpg')>-1 || fn:indexOf(attachList[i].STRFILENAME, 'png')>-1 || fn:indexOf(attachList[i].STRFILENAME, 'jpeg')>-1 || fn:indexOf(attachList[i].STRFILENAME, 'gif')>-1
-							|| fn:indexOf(attachList[i].STRFILENAME, 'JPG')>-1 || fn:indexOf(attachList[i].STRFILENAME, 'PNG')>-1 || fn:indexOf(attachList[i].STRFILENAME, 'JPEG')>-1 || fn:indexOf(attachList[i].STRFILENAME, 'GIF')>-1}">
-					<a href="javascript: attachedFile_Download ('${attachList[i].FILEPATH}', '${attachList[i].FILENAME}', '${attachList[i].STRFILENAME}');"><img 
-						src="${attachList[i].FILEPATH}thumbnail/${attachList[i].STRFILENAME}" id="contents_thumbnail${i}" /></a>(<a href="#contents_thumbnail_alink${i}" id="contents_thumbnail_alink${i}" onclick="chnageOriginalImg('contents_thumbnail${i}', ${i} )">원본보기</a>)
+			<c:if test="${fn:length(CONTENTS[XSTRFILENAME]) > 0 }">
+				<c:choose><c:when test="${fn:indexOf(CONTENTS[XSTRFILENAME], 'jpg')>-1 || fn:indexOf(CONTENTS[XSTRFILENAME], 'png')>-1 || fn:indexOf(CONTENTS[XSTRFILENAME], 'jpeg')>-1 || fn:indexOf(CONTENTS[XSTRFILENAME], 'gif')>-1
+							|| fn:indexOf(CONTENTS[XSTRFILENAME], 'JPG')>-1 || fn:indexOf(CONTENTS[XSTRFILENAME], 'PNG')>-1 || fn:indexOf(CONTENTS[XSTRFILENAME], 'JPEG')>-1 || fn:indexOf(CONTENTS[XSTRFILENAME], 'GIF')>-1}">
+					<a href="javascript: attachedFile_Download ('${CONTENTS[XFILEPATH]}', '${CONTENTS[XFILENAME]}', '${CONTENTS[XSTRFILENAME]}');"><img 
+						src="${CONTENTS[XFILEPATH]}thumbnail/${CONTENTS[XSTRFILENAME]}" id="contents_thumbnail${i}" /></a>(<a href="#contents_thumbnail_alink${i}" id="contents_thumbnail_alink${i}" onclick="chnageOriginalImg('contents_thumbnail${i}', ${i} )">원본보기</a>)
 				</c:when><c:otherwise><a href="#none" 
-							onClick="javascript: attachedFile_Download('${attachList[i].FILEPATH}', '${fn:replace(attachList[i].FILENAME,'\'','')}', '${attachList[i].STRFILENAME}')"
-							>${attachList[i].FILENAME}</a></c:otherwise>
+							onClick="javascript: attachedFile_Download('${CONTENTS[XFILEPATH]}', '${fn:replace(CONTENTS[XFILENAME],'\'','')}', '${CONTENTS[XSTRFILENAME]}')"
+							>${CONTENTS[XFILENAME]}</a></c:otherwise>
 				</c:choose></c:if></td>
 			
 			<c:if test="${ i == HEAD_CONST__attach_file_form__MAX_FILE_COUNT }">

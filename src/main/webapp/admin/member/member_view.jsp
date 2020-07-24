@@ -338,10 +338,10 @@ window.onload = function() {
 							  		<td><label for="inputName">그룹</label></td>
 							  		<td><select class="form-control" name="groupGubun" id="groupGubun">
 						                        <option value="">선택</option>
-						                        <option value="1" <c:if test = "${contents.GROUPGUBUN=='1' }"> selected </c:if> >일반회원</option>
-												<option value="2" <c:if test = "${contents.GROUPGUBUN=='2' }"> selected </c:if> >교구게시판관리</option><!-- 관리 권한  :: 사목자료게시판 & 교구소식 게시판 -->
-												<option value="3" <c:if test = "${contents.GROUPGUBUN=='3' }"> selected </c:if> >본당게시판관리</option><!-- 관리 권한  :: 본당소식 & 본당앨범 & 본당정보 관리 -->
-												<option value="4" <c:if test = "${contents.GROUPGUBUN=='4' }"> selected </c:if> >공동체소식관리</option><!-- 관리 권한  :: 공동체소식 관리 -->
+						                        <option value="1" <c:if test = "${contents.GROUPGUBUN=='1' }"> selected </c:if> >본당용</option>
+												<option value="2" <c:if test = "${contents.GROUPGUBUN=='2' }"> selected </c:if> >부서용</option><!-- 관리 권한  :: 사목자료게시판 & 교구소식 게시판 -->
+												<option value="3" <c:if test = "${contents.GROUPGUBUN=='3' }"> selected </c:if> >사제용</option><!-- 관리 권한  :: 본당소식 & 본당앨범 & 본당정보 관리 -->
+												<option value="4" <c:if test = "${contents.GROUPGUBUN=='4' }"> selected </c:if> >단체용</option><!-- 관리 권한  :: 공동체소식 관리 -->
 						                    </select>
 								  	</td>
 								</tr>
