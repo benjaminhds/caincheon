@@ -33,14 +33,13 @@ function viewButtonEvent() {
 			
 		}
 		
-		$("#mode").val("u");
 		doChangeUIToModifyMode();
 		changeBTN('btnA2');
 	});
 }
 
 function goList() {
-	document.form01.action = '/n/board/normal_board_list.do';
+	document.form01.action = '/n/board/alb_board_list.do';
 	document.form01.submit();
 	return false;
 }
@@ -50,7 +49,7 @@ function goContents(b_idx,bl_idx) {
 		alert('내용이 없습니다.');
 		//return false;
 	} else {
-		document.form01.action = 'n/board/normal_board_view.do';
+		document.form01.action = 'n/board/alb_board_view.do';
 		document.getElementById('i_sBidx').value=b_idx;
 		document.getElementById('i_sBlidx').value=bl_idx;
 		document.form01.submit();
@@ -65,9 +64,9 @@ function goContents(b_idx,bl_idx) {
 <input type="hidden" name="strFilePath" id="strFilePath" value="${strFilePath}"/>
 </form>
 
-<form name="form01" action="/n/board/normal_board_list.do" method="POST">
+<form name="form01" action="/n/board/alb_board_list.do" method="POST">
 <input type="hidden" name="i_sBidx" id="i_sBidx" value="${bd_content.B_IDX}"/>
-<input type="hidden" name="i_sCidx" id="i_sCidx" value="${post_content.C_IDX}"/>
+<input type="hidden" name="i_sCidx" id="i_sCidx" value="${albContents.C_IDX}"/>
 <input type="hidden" name="schTextGubun" id="schTextGubun" value="${_params.schTextGubun}"/>
 <input type="hidden" name="schText" id="schText" value="${_params.schText}"/>
 <input type="hidden" name="pageNo" id="pageNo" value="${paging.pageNo}"/>
@@ -76,10 +75,10 @@ function goContents(b_idx,bl_idx) {
 
 <c:set var="PAGENO" value="1" />
 <c:if test="${paging.pageNo ne null or paging.pageNo ne ''}"><c:set var="PAGENO" value="${paging.pageNo}" /></c:if>
-<form name="form02" id="form02" action="/n/board/normal_board_list.do" method="POST" enctype="multipart/form-data">
+<form name="form02" id="form02" action="/n/board/alb_board_list.do" method="POST" enctype="multipart/form-data">
 <input type="hidden" name="i_sBidx"		id="i_sBidx"	value="${bd_content.B_IDX}"/>
-<input type="hidden" name="i_sBlidx"	id="i_sBlidx"	value="${post_content.BL_IDX}"/>
-<input type="hidden" name="i_sCIdx"		id="i_sCIdx"	value="${post_content.C_IDX}"/>
+<input type="hidden" name="i_sBlidx"	id="i_sBlidx"	value="${albContents.BL_IDX}"/>
+<input type="hidden" name="i_sCIdx"		id="i_sCIdx"	value="${albContents.C_IDX}"/>
 <input type="hidden" name="pageNo"		id="pageNo"		value="${PAGENO}"/>
 <input type="hidden" name="mode"		id="mode"		value="${_params.mode}"/>
 
@@ -115,10 +114,11 @@ function goContents(b_idx,bl_idx) {
 				<div class="secCont">
 					<!-- tabs -->
 				   <ul class="tabs">
-						<li <c:if test="${_params.i_sCIdx == null}">class="on"</c:if>><a href="/n/board/normal_board_list.do?i_sBidx=${bd_content.B_IDX}">전체보기</a></li>
+						<li <c:if test="${empty _params.i_sCIdx}">class="on"</c:if>><a href="/n/board/alb_board_list.do?i_sBidx=${bd_content.B_IDX}">전체보기</a></li>
 						<c:forEach items="${category_list}" var="list">
-							<li <c:if test="${_params.i_sCIdx eq  list.c_idx}">class="on"</c:if>><a href="/n/board/normal_board_list.do?i_sBidx=${bd_content.B_IDX}&i_sCIdx=${list.c_idx}">${list.name}
-						</a></li>
+							<li <c:if test="${_params.i_sCIdx eq  list.c_idx}">class="on"</c:if>>
+								<a href="/n/board/alb_board_list.do?i_sBidx=${bd_content.B_IDX}&i_sCIdx=${list.c_idx}">${list.name}
+								</a></li>
 						</c:forEach>
 					</ul>
 					<!-- //tabs -->
@@ -130,27 +130,27 @@ function goContents(b_idx,bl_idx) {
 								<tr>
 									<td>
 										<span class="ttl">
-											<c:if test = "${post_content.IS_NOTICE == 'Y'}">	
+											<c:if test = "${albContents.IS_NOTICE == 'Y'}">	
 											<i class="red">[공지사항]</i>
 											</c:if>
-											<i class="blue">${post_content.DEPART_NAME}</i>
-											<i>${post_content.TITLE}</i>
+											<i class="blue">${albContents.DEPART_NAME}</i>
+											<i>${albContents.TITLE}</i>
 										</span>
-										 <span class="date">작성자 : ${post_content.WRITER} &nbsp;&nbsp; ${post_content.REGDATE}</span>
+										 <span class="date">작성자 : ${albContents.WRITER} &nbsp;&nbsp; ${albContents.REGDATE}</span>
 									</td>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									<td>
-									${post_content.CONTENT}
+									${albContents.CONTENT}
 									</td>
 								</tr>
 							</tbody>  
 							<tfoot>
 								<tr>
 									<td>
-										<c:if test="${bd_content.USEYN_ATTACHEMENT eq 'Y' and bd_content.USEYN_DOWNLOAD_PERM eq 'Y'}">
+										<c:if test="${bd_content.USEYN_ATTACHEMENT eq 'Y'}">
 											<span class="file">
 												<c:if test="${not empty attachList}">
 													<em>첨부파일 : </em>
@@ -160,9 +160,9 @@ function goContents(b_idx,bl_idx) {
 											</span>
 										</c:if>
 										<ul class="sns">
-											<li><a href="javascript:goFacebook('/n/board/normal_board_view.do?i_sBidx=${bd_content.B_IDX}&i_sBlidx=${post_content.BL_IDX}','인천교구')"><img src="/img/sub/_ico/ico_facebook.png" alt="페이스북"></a></li>
-											<li><a href="javascript:goTweeter('/n/board/normal_board_view.do?i_sBidx=${bd_content.B_IDX}&i_sBlidx=${post_content.BL_IDX}','인천교구')"><img src="/img/sub/_ico/ico_tweet.png" alt="트위터"></a></li>
-											<li><a href="javascript:goKakao('/n/board/normal_board_view.do?i_sBidx=${bd_content.B_IDX}&i_sBlidx=${post_content.BL_IDX}','인천교구')"><img src="/img/sub/_ico/ico_kakao.png" alt="카카오스토리"></a></li>
+											<li><a href="javascript:goFacebook('/n/board/alb_board_view.do?i_sBidx=${bd_content.B_IDX}&i_sBlidx=${albContents.BL_IDX}','인천교구')"><img src="/img/sub/_ico/ico_facebook.png" alt="페이스북"></a></li>
+											<li><a href="javascript:goTweeter('/n/board/alb_board_view.do?i_sBidx=${bd_content.B_IDX}&i_sBlidx=${albContents.BL_IDX}','인천교구')"><img src="/img/sub/_ico/ico_tweet.png" alt="트위터"></a></li>
+											<li><a href="javascript:goKakao('/n/board/alb_board_view.do?i_sBidx=${bd_content.B_IDX}&i_sBlidx=${albContents.BL_IDX}','인천교구')"><img src="/img/sub/_ico/ico_kakao.png" alt="카카오스토리"></a></li>
 										</ul>
 									</td>
 								</tr>
@@ -208,7 +208,7 @@ function goContents(b_idx,bl_idx) {
 										<select class="form-control" name="i_sCategory" id="i_sCategory">
 											<option value="">선택</option>
 											<c:forEach items="${category_list}" var="list">
-												<option value="${list.c_idx}" <c:if test="${list.c_idx eq post_content.C_IDX}">selected</c:if>>${list.name}</option>
+												<option value="${list.c_idx}">${list.name}</option>
 											</c:forEach>
 										</select>
 									</td>
@@ -217,16 +217,16 @@ function goContents(b_idx,bl_idx) {
 									<th scope="row">제목</th>
 									<td>
 										<span class="form">
-											<input class="form-control" type="text" name="title" id="title" value="${post_content.TITLE }">
+											<input class="form-control" type="text" name="title" id="title" value="${albContents.TITLE }">
 										</span>
-										<span class="date">${post_content.REGDATE}</span>
+										<span class="date">${albContents.REGDATE}</span>
 									</td>
 								</tr>
 								<tr>
 									<th scope="row">내용</th>
 									<td>
 										<div>
-											<textarea class="form-control h-400" name="contents" id="contents">${post_content.CONTENT }</textarea>
+											<textarea class="form-control h-400" name="contents" id="contents">${albContents.CONTENT }</textarea>
 										</div>
 									</td>
 								</tr>
@@ -236,7 +236,7 @@ function goContents(b_idx,bl_idx) {
 									<td>
 										<div class="form-group input-group">
 										 <% pageContext.setAttribute("HEAD_CONST__attach_file_form__MAX_FILE_COUNT", 5); %>
-											<%@ include file="/admin/_common/inc/attach_file_form_loop_new.jsp" %>
+											<%@ include file="/admin/_common/inc/attach_file_form_loop.jsp" %>
 										</div>
 									</td>
 								</tr>
@@ -248,8 +248,8 @@ function goContents(b_idx,bl_idx) {
 					<!-- //17-11-23 -->
 					<!-- btnLeft -->
 					<ul class="btn btnLeft">
-						<li class="gray"><a href="javascript:goContents('${post_content.B_IDX}','${post_content.PRE_BL_IDX}')">이전</a></li>
-						<li class="gray"><a href="javascript:goContents('${post_content.B_IDX}','${post_content.NEXT_BL_IDX}')">다음</a></li>
+						<li class="gray"><a href="javascript:goContents('${albContents.B_IDX}','${albContents.PRE_BL_IDX}')">이전</a></li>
+						<li class="gray"><a href="javascript:goContents('${albContents.B_IDX}','${albContents.NEXT_BL_IDX}')">다음</a></li>
 					</ul>
 					<!-- //btnLeft -->
 					<!-- btn -->
@@ -270,11 +270,11 @@ function goContents(b_idx,bl_idx) {
 							추가 권한 필요 시 추가해야됨.
 						 -->
 						<c:if test="${SS_WRITEYN eq 'Y' and SS_GROUPGUBUN eq bd_content.B_TYPE and SS_ORGIDX eq bd_content.ORG_IDX}">
-							<c:if test="${mode ne 'W' and SS_MEM_ID eq post_content.USER_ID}">
+							<c:if test="${mode ne 'W' and SS_MEM_ID eq albContents.USER_ID}">
 								<c:if test="${bd_content.USEYN_SECRET eq 'Y'}">
 									<li style="width:180px;">
 											<input style="margin-right: 30px;" class="form-control" type="text" name="post_password_write" id="post_password_write">
-											<input type="hidden" name="post_password" id="post_password" value="${post_content.PWD}">
+											<input type="hidden" name="post_password" id="post_password" value="${albContents.PWD}">
 									</li>
 								</c:if>
 								<li>
@@ -363,6 +363,7 @@ function goContents(b_idx,bl_idx) {
 			$("input[name=post_password_write]").show();
 		}
 	}
+	
 	/*crud*/
 	function goUpsertNBoard() {
 		var vfm = document.form02;
@@ -373,37 +374,17 @@ function goContents(b_idx,bl_idx) {
 		
 		/*비밀번호 길이 체크*/
 		var passWrite	=	$("input[name=post_password_write]").val();
-		
 		if(passWrite != null) {
 			if(passWrite.length > 10) {
 				alert("비밀번호는 10글자 이내로 입력해주세요.");
 				return false;
 			}
 		}
-		
-		document.form02.action="/n/board/normal_board_iudboard.do";
+		document.form02.action="/n/board/alb_board_iudboard.do";
 		document.form02.submit();
-		/* 
-		$.ajax({		 
-			type:"POST"
-			, url:"/n/board/normal_board_iudboard.do"
-			, data:	$("#form02").serialize()
-			, enctype: "multipart/form-data"
-			, contentType: false
-			, processData: false
-			, dataType: "json"
-			, success:function(){
-				return false;
-			}
-			, error:function(xhr, textStatus) {
-				alert("에러 입니다. 관리자에게 문의해주세요.");
-			}
-		});	 */
+	
 	}
 	
-	/* document.form02.action="/news/news_view_gyogu_${upsertMode}.do";
-	isHide=true;
-	 */
 </script>
 </body>
 

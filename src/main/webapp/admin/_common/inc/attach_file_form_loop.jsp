@@ -17,7 +17,10 @@
 			<c:set var="XSTRFILENAME" value="STRFILENAME${i}" scope="page" />
 			
 			<% /* 동적변수로 값을 추출 :: requestScope[동적변수] 로 추출 , MAP에서는 맵[변수] 로 추출한다. */ %>
-			<td><span style="width:100%; "><input class="form-control" type="file" name="thumbFile${i}" id="thumbFile${i}"></span>
+			<td>
+			<span style="width:100%; ">
+				<input class="form-control" type="file" name="thumbFile${i}" id="thumbFile${i}">
+			</span>
 			<div id="imagePreview${i}_Wrap" ><p id="imagePreview${i}_tt">신규 이미지</p><p><img id="imagePreview${i}" /></p><p id="imagePreview${i}_info"></p></div>
 			<c:if test="${fn:length(CONTENTS[XSTRFILENAME]) > 0 }">
 				<span><p>(<label class="checkbox-inline" for=""><input type="checkbox" name="delFile${i}" id="delFile${i}" value="${CONTENTS[XSTRFILENAME]}">이전파일 삭제</label>)</p></span>

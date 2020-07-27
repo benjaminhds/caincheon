@@ -123,8 +123,8 @@
 				, #{i_sUseYnLogin}
 				, #{i_sUseYnDownloadPerm}
 				, #{i_sViewFlag}
-				, #{i_sOrgType}
 				, #{i_sOrgIdx}
+				, #{i_sOrgType}
 			)
 		<selectKey resultType="java.lang.Integer" keyProperty="i_sBidx">
 			SELECT	@@IDENTITY AS ID
@@ -204,6 +204,48 @@
 							, EVENT_DATE
 							, DOWN_LEVEL
 							, UPDATE_ID
+							, (
+								SELECT FILENAME
+								FROM MBOARD_UPLOAD  A3
+								WHERE A3.BU_IDX IN (SELECT MAX(BU_IDX) FROM MBOARD_UPLOAD A4 WHERE M.BL_IDX=A4.BL_IDX AND A4.FILETYPE is null) ) FILENAME1
+							, (SELECT FILEPATH	FROM MBOARD_UPLOAD  A3 WHERE A3.BU_IDX IN (SELECT MAX(BU_IDX) FROM MBOARD_UPLOAD A4 WHERE M.BL_IDX=A4.BL_IDX AND A4.FILETYPE is null) ) FILEPATH1
+							, (SELECT STRFILENAME FROM MBOARD_UPLOAD  A3 WHERE A3.BU_IDX IN (SELECT MAX(BU_IDX) FROM MBOARD_UPLOAD A4 WHERE M.BL_IDX=A4.BL_IDX AND A4.FILETYPE is null) ) STRFILENAME1
+							, (
+								SELECT FILENAME
+								FROM MBOARD_UPLOAD  A3
+								WHERE A3.BU_IDX IN (SELECT MAX(BU_IDX) FROM MBOARD_UPLOAD A4 WHERE M.BL_IDX=A4.BL_IDX AND A4.FILETYPE IN
+																																		(
+																																			'jpg'
+																																			,'png'
+																																			,'jpeg'
+																																			,'gif'
+																																			,'JPG'
+																																			,'PNG'
+																																			,'JPEG'
+																																			,'GIF'
+																																		)) ) FILENAME
+							, (SELECT FILEPATH	FROM MBOARD_UPLOAD  A3 WHERE A3.BU_IDX IN (SELECT MAX(BU_IDX) FROM MBOARD_UPLOAD A4 WHERE M.BL_IDX=A4.BL_IDX AND A4.FILETYPE IN
+																																		(
+																																			'jpg'
+																																			,'png'
+																																			,'jpeg'
+																																			,'gif'
+																																			,'JPG'
+																																			,'PNG'
+																																			,'JPEG'
+																																			,'GIF'
+																																		)) ) FILEPATH
+							, (SELECT STRFILENAME FROM MBOARD_UPLOAD  A3 WHERE A3.BU_IDX IN (SELECT MAX(BU_IDX) FROM MBOARD_UPLOAD A4 WHERE M.BL_IDX=A4.BL_IDX AND A4.FILETYPE IN
+																																		(
+																																			'jpg'
+																																			,'png'
+																																			,'jpeg'
+																																			,'gif'
+																																			,'JPG'
+																																			,'PNG'
+																																			,'JPEG'
+																																			,'GIF'
+																																		)) ) STRFILENAME
 					FROM MBOARD M
 					WHERE M.B_IDX	=	#{i_sBidx}
 					<if test='i_sCIdx != null and !"".equals(i_sCIdx)'> AND C_IDX = #{i_sCIdx}</if><!-- 카테고리 조회 -->
@@ -231,10 +273,10 @@
 					AND B.B_IDX		= A.B_IDX
 					AND B.IS_USE	= 'Y'
 				LEFT OUTER JOIN ORG_HIERARCHY   O
-					ON O.ORG_IDX    = A.DEPART_IDX
-				LEFT OUTER JOIN CHURCH          C
+					ON O.ORG_IDX	= A.DEPART_IDX
+				LEFT OUTER JOIN CHURCH		  C
 					ON C.CHURCH_IDX = A.CHURCH_IDX
-				LEFT OUTER JOIN DEPARTMENT      D
+				LEFT OUTER JOIN DEPARTMENT	  D
 					ON D.DEPART_IDX = A.DEPART_IDX
 		<include refid="common.pagingPost"/> 
 	</select>
@@ -261,6 +303,8 @@
 				, EVENT_DATE
 				, DOWN_LEVEL
 				, UPDATE_ID
+				, (SELECT TOP 1 BL_IDX FROM MBOARD WHERE BL_IDX=(SELECT MAX(BL_IDX) FROM MBOARD X WHERE X.B_IDX = #{i_sBidx} AND X.BL_IDX <![CDATA[<]]> #{i_sBlidx} )) AS BEFORE_P_IDX
+				, (SELECT TOP 1 BL_IDX FROM MBOARD WHERE BL_IDX=(SELECT MIN(BL_IDX) FROM MBOARD X WHERE X.B_IDX = #{i_sBidx} AND X.BL_IDX <![CDATA[>]]> #{i_sBlidx} )) AS NEXT_P_IDX
 		FROM	MBOARD
 		WHERE	BL_IDX 	=	#{i_sBlidx}
 	</select>
@@ -333,7 +377,11 @@
 				, NAME
 		FROM	ORGANIZATION
 	</select>
-	<insert id="insertPostsMaster" parameterType="hashmap">
+	<select id="getIdBlIdx" parameterType="hashmap" resultType="hashmap">
+		SELECT	MAX(BL_IDX) + 1 AS CNT
+		FROM	MBOARD
+	</select>
+	<insert id="insertPostsMaster" parameterType="hashmap" useGeneratedKeys="false">
 		/*admin.mboard.insertPostsMaster - posts 저장*/
 		INSERT	INTO	MBOARD
 			(
@@ -357,10 +405,7 @@
 			)
 			VALUES
 			(
-				(
-					SELECT	MAX(BL_IDX) + 1
-					FROM	MBOARD
-				)
+				#{i_sBlidx}
 				, #{title}
 				, #{contents}
 				, #{SS_MEM_ID}
@@ -399,4 +444,116 @@
 				, UPDATE_ID			= #{SS_MEM_ID}
 		WHERE	BL_IDX				= #{i_sBlidx}
 	</update>
+	<update id="deletePosts" parameterType="hashmap">
+		UPDATE	MBOARD
+		SET		IS_VIEW	=	'N'
+		WHERE	BL_IDX				= #{i_sBlidx}
+	</update>
+	<insert id="insertUpload" parameterType="hashmap">
+		/*admin.mboard.insertUpload - 파일 업로드 저장*/
+		INSERT	MBOARD_UPLOAD
+				(
+					BL_IDX
+					, FILENAME
+					, FILEPATH
+					, STRFILENAME
+					, FILETYPE
+					, FILESIZE
+					, IS_USE
+					, USER_ID
+				)
+		VALUES (
+					#{BL_IDX}
+					, #{ORIGINAL_FILE_NAME}
+					, #{UPLOAD_PATH}
+					, #{STORED_FILE_NAME}
+					, #{FILE_TYPE}
+					, #{FILE_SIZE}
+					, #{IS_USE}
+					, #{USER_ID}
+				)
+	</insert>
+	<delete id="deleteUpload" parameterType="hashmap">
+		DELETE
+		FROM	MBOARD_UPLOAD
+		WHERE	BL_IDX	=	#{BL_IDX}
+	</delete>
+	
+	<select id="getAttachList" parameterType="hashmap" resultType="hashmap">
+		SELECT	*
+		FROM	MBOARD_UPLOAD
+		WHERE	1=1
+		<if test='i_sBuidx != null and !"".equals(i_sBuidx)'> AND BU_IDX	= #{i_sBuidx} </if>
+		<if test='i_sBlidx != null and !"".equals(i_sBlidx)'> AND BL_IDX	= #{i_sBlidx} </if>
+	</select>
+	<select id="getalbList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre"/>
+		SELECT	ROW_NUMBER() OVER(ORDER BY REGDATE DESC, IDX DESC) RNUM
+				, M.CONTENT
+				, M.TITLE
+				, MU.FILEPATH
+				, MU.FILENAME
+				, MU.STRFILENAME
+				, convert(char(10),  M.REGDATE, 120) REGDATE
+				, M.HIT
+				, M.BL_IDX
+				, M.B_IDX
+				, M.IDX
+		FROM	MBOARD			M
+				, MBOARD_UPLOAD MU
+		WHERE	1=1
+		AND		M.BL_IDX	=	MU.BL_IDX
+		<if test='i_sBidx != null and !"".equals(i_sBidx)'> AND M.B_IDX	= #{i_sBidx} </if> 
+		<if test='i_sCIdx != null and !"".equals(i_sCIdx)'> AND M.C_IDX	= #{i_sCIdx} </if>
+		<if test='i_sIsView != null and !"".equals(i_sIsView)'> AND M.IS_VIEW	= #{i_sIsView} </if>
+		<include refid="common.pagingPost"/>
+	</select>
+	<select id="getAlbView" parameterType="hashmap" resultType="hashmap">
+		SELECT	ROW_NUMBER() OVER(ORDER BY REGDATE DESC, IDX DESC) RNUM
+				, M.BL_IDX
+				, M.TITLE
+				, M.CONTENT
+				, MU.FILEPATH
+				, MU.FILENAME
+				, MU.STRFILENAME
+				, convert(char(10),  M.REGDATE, 120) REGDATE
+				, M.HIT
+				, M.IDX
+				, M.B_IDX
+				, M.C_IDX
+				, M.USER_ID
+				, M.WRITER
+				, M.IS_NOTICE
+				, (
+					SELECT	NAME
+					FROM	DEPARTMENT DT
+					WHERE	DT.DEPART_IDX = M.DEPART_IDX
+					) AS DEPART_NAME
+				, (SELECT TOP 1 BL_IDX FROM MBOARD WHERE BL_IDX=(SELECT MAX(BL_IDX) FROM MBOARD X WHERE X.B_IDX = #{i_sBidx} AND X.BL_IDX <![CDATA[<]]> #{i_sBlidx} )) AS PRE_BL_IDX
+				, (SELECT TOP 1 BL_IDX FROM MBOARD WHERE BL_IDX=(SELECT MIN(BL_IDX) FROM MBOARD X WHERE X.B_IDX = #{i_sBidx} AND X.BL_IDX <![CDATA[>]]> #{i_sBlidx} )) AS NEXT_BL_IDX
+		FROM	MBOARD			M
+				, MBOARD_UPLOAD MU
+		WHERE	1=1
+		AND		M.BL_IDX	=	MU.BL_IDX
+		AND		M.BL_IDX	=	#{i_sBlidx}
+	</select>
+	<select id="getMagazineList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre"/>
+					SELECT	M_IDX
+							, NO
+							, CONVERT(char(10), PUBDATE, 102) AS PUBDATE
+							, CONVERT(char(8), PUBDATE, 112) + '_' + NO AS MP3FILE
+							, ISNULL(MP3, '') AS MP3
+							, PDF
+							, ISNULL(COVER_IMAGE, '') AS COVER_IMAGE
+							, ISNULL(WEEK_COMMENT, '') AS WEEK_COMMENT
+							, ISNULL(COVER_COMMENT, '') AS COVER_COMMENT
+							, ISNULL(B.DESCRIPTION, '') AS DESCRIPTION
+					FROM	MAGAZINE	A
+					LEFT	OUTER JOIN HOLIDAY B
+					ON A.PUBDATE	=	B.H_DATE
+					WHERE	PUB_IDX		=	'3'
+					AND		IS_PUBLISH	=	'1'
+		<include refid="common.pagingPost"/>
+	</select>
 </mapper>

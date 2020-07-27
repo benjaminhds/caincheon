@@ -476,5 +476,5 @@ public abstract class CommonDao extends CommonParameter { // implements CommonSQ
     	paging.setTotalCount(totalCount);
     	return paging;
     }
-    
+
 }

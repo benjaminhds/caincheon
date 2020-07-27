@@ -88,7 +88,7 @@ function goView(b_idx, bl_idx) {
 				<div class="secCont">
 					<!-- tabs -->
 					<ul class="tabs">
-						<li <c:if test="${_params.i_sCIdx == null}">class="on"</c:if>><a href="/n/board/normal_board_list.do?i_sBidx=${bd_content.B_IDX}">전체보기</a></li>
+						<li <c:if test="${empty _params.i_sCIdx}">class="on"</c:if>><a href="/n/board/normal_board_list.do?i_sBidx=${bd_content.B_IDX}">전체보기</a></li>
 						<c:forEach items="${category_list}" var="list">
 					
 							<li <c:if test="${_params.i_sCIdx eq  list.c_idx}">class="on"</c:if>><a href="/n/board/normal_board_list.do?i_sBidx=${bd_content.B_IDX}&i_sCIdx=${list.c_idx}">${list.name}
@@ -158,6 +158,7 @@ function goView(b_idx, bl_idx) {
 							<thead>
 								<tr>
 									<th scope="col">No.</th>
+									<th scope="col">사진</th>
 									<th scope="col">분류</th>
 									<th scope="col">제목</th>
 									<th scope="col">작성자</th>
@@ -180,6 +181,14 @@ function goView(b_idx, bl_idx) {
 											</c:otherwise>
 										</c:choose>
 										</th>
+										<td>
+											<c:choose>
+												<c:when test="${fn:indexOf(list.STRFILENAME, 'JPG') > -1}">
+													<img src="${list.FILEPATH}${list.STRFILENAME}" />
+												</c:when>
+												<c:otherwise><img src="" width=200 border=0/></c:otherwise>
+										</c:choose>
+										</td>
 										<td><strong>
 										${list.DEPART_NAME}<c:if test="${list.DEPART_NAME eq ''}">${list.ORG_NAME }</c:if>
 										</strong></td>
