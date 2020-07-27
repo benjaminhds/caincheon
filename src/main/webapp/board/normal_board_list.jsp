@@ -186,7 +186,7 @@ function goView(b_idx, bl_idx) {
 												<c:when test="${fn:indexOf(list.STRFILENAME, 'JPG') > -1}">
 													<img src="${list.FILEPATH}${list.STRFILENAME}" />
 												</c:when>
-												<c:otherwise><img src="" width=200 border=0/></c:otherwise>
+												<c:otherwise><img src="/_common3/img/No-Image.gif" width=200 border=0/></c:otherwise>
 										</c:choose>
 										</td>
 										<td><strong>
