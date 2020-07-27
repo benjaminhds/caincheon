@@ -7,7 +7,7 @@
 		
 		 ============================================================ -->
 	<!-- 지구코드별 성당 조회 -->
-	<select id="selectChurchListInGigu" parameterType="hashmap" resultType="hashmap">
+	<select id="get_gigu_codes_in_church" parameterType="hashmap" resultType="hashmap">
 		<!-- <include refid="common.pagingPre"/> -->
 			SELECT /* church.church.selectChurchListInGigu */ C.GIGU_CODE, D.NAME GIGU_NAME, C.CHURCH_IDX, C.NAME
 			FROM CHURCH C, CODE_INSTANCE D

@@ -86,13 +86,13 @@ public class MainController extends CommonController
         
         
     
-        
+        //-----
         
         // service call
         _params.put("pageNo", "1");
         _params.put("is_view", "Y");
         java.util.Map todayContents    = mainService.todayContents();   // 오늘의 소식
-        java.util.List totalNewsList   = new java.util.ArrayList();mainService.noticeList("ALL");  // 전체소식 : b_idx {9,10,11,12} top 6 (최신글만)
+        java.util.List totalNewsList   = new java.util.ArrayList();//mainService.noticeList("ALL");  // 전체소식 : b_idx {9,10,11,12} top 6 (최신글만)
         java.util.List chuchNewsList   = new java.util.ArrayList();//mainService.noticeList("9");    // 교회소식 : b_idx = 9 top 6(상단고정 포함 top 2+최신 4)
         java.util.List bondangNewsList = new java.util.ArrayList();//mainService.noticeList("11");   // 본당소식 : b_idx in(본당 11) top 6(상단고정 포함 top 2+최신 4) - 제목앞에 조직정보가 붙어야 함.
         java.util.List unitList        = new java.util.ArrayList();//mainService.noticeList("10");   // 공동체소식 : b_idx in(공동체 10) top 6(상단고정 포함 top 2+최신 4) - 제목앞에 조직정보가 붙어야 함.
