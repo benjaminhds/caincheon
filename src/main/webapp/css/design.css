@@ -1,0 +1,145 @@
+.box{
+  background: #FFF;
+  border: 1px solid #FFF;
+  margin:1rem;
+  padding-top:1rem;
+  padding-bottom:1rem;
+}
+.centering{
+  margin-top:1rem;
+  margin-bottom:1rem;
+  margin-left:1.5rem;
+  margin-right:1.5rem;
+}
+.content{
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    margin-right: 1rem;
+    margin-left: 0px;
+    white-space: wrap;
+}
+.contentbox{
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  margin-right: 1rem;
+  margin-left: 0rem;
+  white-space: wrap;
+}
+
+.maincontent{
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    margin-right: 0px;
+    margin-left: 0px;
+    white-space: nowrap;
+    color:#707070;
+}
+
+.title{
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: bold;
+  color: #0068B7;
+}
+
+.faw{
+  color: #707070;
+}
+
+
+hr.dash{
+  border:1px dashed #707070;
+  margin-top:0;
+}
+
+a.link{
+  color:#707070;
+  decoration:none;
+}
+
+.left{
+  float:left;
+}
+
+.right{
+  text-align: right;
+  float:right;
+}
+
+.newsbox{
+  background: #FFF;
+  border: 1px solid #FFF;
+  margin:1rem;
+}
+
+.infoleft{
+  background: #FFF;
+  border: 1px solid #FFF;
+  margin-right:0.5rem;
+}
+
+.inforight{
+  background: #FFF;
+  border: 1px solid #FFF;
+  margin-left:0.5rem;
+}
+
+
+.newsline{
+  font-size:23px;
+  font-family: 'Noto Sans KR', sans-serif;
+  color:#707070;
+  text-align:left;
+  margin:1rem;
+  display:inline-block;
+  decoration:none;
+}
+
+.newssection{
+  margin-top:1rem;
+  margin-bottom:1rem;
+  margin-left:1rem;
+  margin-right:2rem;
+}
+.gyogu{
+  margin:1rem;
+}
+.scroll {
+    max-height: 100%;
+    overflow-y: auto;
+}
+.full{
+  display:block;
+  width:100%;
+  height:auto;
+}
+.newstitle{
+  font-size:23px;
+  font-family: 'Noto Sans KR', sans-serif;
+  color:#707070;
+  text-align:left;
+  margin:0.5rem;
+  display:inline-block;
+  decoration:none;
+}
+
+.news{
+  font-size:21px;
+  font-family: 'Noto Sans KR', sans-serif;
+  color:#707070;
+  text-align:left;
+  display:inline-block;
+  decoration:none;
+  word-break: break-all;
+  white-space: wrap;
+  margin:0.5rem;
+}
+.bondangbox{
+  background-image:url(img/holy5.png);
+  border: 1px solid #FFF;
+}

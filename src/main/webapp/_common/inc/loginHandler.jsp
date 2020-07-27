@@ -6,6 +6,10 @@ public String pnull(HttpServletRequest request, String key) {
 	return o==null ? "":o.toString();
 }
 
+public String pnull(Object o) {
+	return o==null ? "":o.toString();
+}
+
 public String pnullSession(HttpServletRequest request, String key, String defaultVal) {
 	HttpSession session = request.getSession(true);
 	if(session==null) {
