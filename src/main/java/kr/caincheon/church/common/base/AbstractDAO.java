@@ -50,10 +50,19 @@ public abstract class AbstractDAO extends CommonParameter {
         printQueryId(queryId);
         return sqlSession.delete(queryId, params);
     }
-     
+
     public Object selectOne(String queryId) {
         printQueryId(queryId);
         return sqlSession.selectOne(queryId);
+    }
+
+    public Map selectOneRow(String queryId) {
+        printQueryId(queryId);
+        Object row = sqlSession.selectOne(queryId);
+        if(row == null) {
+        	row = new HashMap();
+        }
+        return (Map)row;
     }
     
     public Object selectOne(String queryId, Object params) {
