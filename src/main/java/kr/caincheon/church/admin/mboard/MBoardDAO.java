@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import kr.caincheon.church.common.base.AbstractDAO;
 import kr.caincheon.church.common.base.CommonDaoDTO;
-import kr.caincheon.church.common.base.CommonException;
 import kr.caincheon.church.common.base.Const;
 import kr.caincheon.church.common.base.Paging;
 
@@ -269,6 +268,7 @@ public class MBoardDAO extends AbstractDAO {
 			Map rmap = selectPagingList("admin.mboard.getMBoardList", params);
 			dto.daoList = (List)rmap.get("List");
 			dto.paging  = (Paging)rmap.get("Paging");
+
 		} catch (Exception e) {
 			L.error("SQL ERROR:"+e.getMessage()+"]");
 			throw e;
@@ -279,7 +279,7 @@ public class MBoardDAO extends AbstractDAO {
 		
 		return dto;
 	}
-
+	
 	/*코드 인스턴스 가져오기*/
 	public CommonDaoDTO getCodeInstance(Map<String, Object> _params) {
 		
@@ -341,7 +341,7 @@ public class MBoardDAO extends AbstractDAO {
 		CommonDaoDTO dto = new CommonDaoDTO();
 				
 		try {
-			List rmap = selectList("admin.mboard.getMBoardList", _params);
+			List rmap = selectList("admin.mboard.getMenuBoardList", _params);
 			dto.daoList = rmap;
 			
 		} catch (Exception e) {
@@ -658,4 +658,48 @@ public class MBoardDAO extends AbstractDAO {
 		return dto;
 		
 	}
+
+	@SuppressWarnings("unchecked")
+	public CommonDaoDTO getUploadVo(Map params) {
+		
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		/*마스터 정보 가져오기*/
+		Object albView = selectOne("admin.mboard.getUploadVo",params);
+		
+		// super admin except
+		if(albView!=null) {
+			dto.daoDetailContent = (Map)albView;
+		}
+		
+		return dto;
+	}
+	/**
+	 * 멀티보드를 조회하는 메서드
+	 * @param dto
+	 * @param params
+	 * @throws Exception
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List getCategoryLIst(Map params) throws Exception {
+		
+		L.debug("DAO Called. params: "+params);
+
+		//DTO 만들기
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		// Query Combination
+		try {
+			dto.otherList =	selectList("admin.mboard.getCategory", params);
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e;
+		} finally {
+		}
+		
+		L.debug("DAO Result.[DTO:"+dto+"]" );
+		
+		return dto.otherList;
+	}
+	
 }

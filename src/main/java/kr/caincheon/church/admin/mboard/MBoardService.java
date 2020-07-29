@@ -49,13 +49,29 @@ public class MBoardService extends CommonService
 		CommonDaoDTO dto = mBoardDAO.getMBoardList(params);
 
 		// return
-		params.put(Const.ADM_MAPKEY_LIST, dto.daoList);
+		
 		params.put(Const.ADM_MAPKEY_COUNT, dto.daoTotalCount);
 		
 		setPaging(params, pageNo, pageSize, dto.daoTotalCount);
 		
 		L.debug(".. end. rtn: " + dto );
 		
+		List<Map<String,Object>> list	=	dto.daoList;
+		
+		Map rmap = new HashMap();
+		
+		for(int i = 0; i < list.size(); i++) {
+			
+			rmap.put("i_sBidx",(list.get(i).get("B_IDX")));
+			
+			List temp	=	mBoardDAO.getCategoryLIst(rmap);
+			
+			if(temp != null) {
+				list.get(i).put("CATEGORY_LIST", temp);
+			}
+		}
+		
+		params.put(Const.ADM_MAPKEY_LIST, list);
 	}
 	
 	/** 보드 관리 Content */
@@ -256,11 +272,16 @@ public class MBoardService extends CommonService
 		} else if("u".equalsIgnoreCase(mode)) {
 			mBoardDAO.updatePosts(params);
 			
+			// delete old files
+			try {
+				deleteAttachedFilesMboardUpload(params);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new CommonException("파일 업로드가 제대로 동작하지 못했습니다.["+e.getMessage()+"]", "EXPT-300", e.getMessage());
+			}
+			
 			/*첨부파일 저장*/
 			List list = fileUploadProcessNew(params, request, "upload/"+params.get("i_sBidx"));
-			
-			// delete old files
-			/*mBoardDAO.deleteAttachedFilesNboardUpload(this, _params);*/
 				
 			/*파일 업로드 저장*/
 			for(int a = 0; a < list.size(); a++) {
@@ -390,68 +411,72 @@ public class MBoardService extends CommonService
 		
 		L.debug(".. end. rtn: " + dto );
 	}
-	
 	/**
 	 * 등록된 첨부 자료를 삭제한다.
-	 *//*
-	public static int deleteAttachedFilesMboardUpload(CommonDao parent, Map _params)  throws Exception {
+	 */
+	public void deleteAttachedFilesMboardUpload(Map _params)  throws Exception {
+		
 		int rn5 = 0;
-		//String uploadedFileURI  = pnull(_params, "CONTEXT_URI_PATH"); // "/upload/news/"
-		String uploadedFileRootPath = parent.pnull(_params, "CONTEXT_ROOT_PATH", parent.getSession(_params, "CONTEXT_ROOT"));// "d:/newcaincheon/webapps/upload/news/"
-
+		
 		// files delete
 		try {
-			String bl_idx = parent.pnull(_params, "bl_idx");
+			/*게시판 코드*/
+			String bl_idx = (String)_params.get("i_sBlidx");
+			
+			/*고정 된 5개 파일 돌리기*/
 			for(int i=1; i<6; i++) {
-				String strfilename = parent.pnull(_params, "delFile"+i);
-				if (strfilename.length() > 0) {
-					String bu_idx = deleteUploadedFile(parent, bl_idx, strfilename, uploadedFileRootPath);
-					rn5 += deleteUploadedFileDbRecord(parent, bu_idx);
-					//rn5 = deleteUploadedFileDbRecord(bl_idx, strfilename);
-					parent.D(_logger, Thread.currentThread().getStackTrace(), "delete file ["+ i +"]. is del a file : "+(bu_idx==null ? "not exists":bu_idx) );
-					parent.D(_logger, Thread.currentThread().getStackTrace(), "delete db ["+ i +"]. result count rn : "+rn5 );
+				
+				/*삭제 파일 명*/
+				String strfilename = (String)_params.get("delFile"+i);
+				
+				if(strfilename != null) {
+				/*삭제할 파일이 있으면*/
+					if (strfilename.length() > 0) {
+						
+						String bu_idx = deleteUploadedFileNew(_params);
+						deleteUploadedFileDbRecordNew(_params);
+					}
 				}
 			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
+			
 		}
-		return rn5;
 	}
-	
-	*//**
-	 * if return value is a false, then file not exist or path information is wrong.
-	 * @param _params
-	 * @return String - bu_idx
-	 * @throws SQLException
-	 *//*
-	public static String deleteUploadedFile(CommonDao parent, String bl_idx, String strfilename, String CONTEXT_ROOT_PATH) throws SQLException {
-		
-		 * 아래와 같이 2개 함수를 동시에 호출하게 된다.
-		 * 
-		 * deleteUploadedFile(bl_idx, CONTEXT_ROOT_PATH);
-		 * deleteUploadedFileDbRecord(bl_idx, strfilename, delFileName);
-		 
+	public String deleteUploadedFileNew(Map params) throws SQLException {
+		/*
+		 * 썸네일 삭제
+		 */
 		String bu_idx = null;
-		parent.D(_logger, Thread.currentThread().getStackTrace(), "EXE Query(1) old file delete option is on.");
+		String uploadedFileRootPath = (String)params.get("CONTEXT_ROOT_PATH");
 		
-        // file del
-        Map<String, Object> delMap = parent.executeQueryMap(
-        			"SELECT BU_IDX, FILEPATH, STRFILENAME FROM NBOARD_UPLOAD"
-        			+ "WHERE BL_IDX=" + bl_idx + ""
-        			+ "AND STRFILENAME='" + strfilename +"'" ) ;
-        
-        if(delMap!=null && delMap.size() > 1 ) {
-        	bu_idx = parent.pnull(delMap, "BU_IDX");
-        	String dFilepath = parent.pnull(delMap, "STRFILENAME");
-        	boolean isDel = ImageUtils.deleteFileWithThumbnail(CONTEXT_ROOT_PATH, dFilepath);
-        	if(isDel) {
-        		parent.D(_logger, Thread.currentThread().getStackTrace(), "EXE Query(1) File is deleted.[" + dFilepath +"]");
-        	} else {
-        		parent.D(_logger, Thread.currentThread().getStackTrace(), "EXE Query(1) File is not exits.[" + dFilepath +"]");
-        	}
-        }
-        return bu_idx;
-	}*/
+		// file del
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		dto	=	mBoardDAO.getUploadVo(params);
+		
+		Map<String, Object> delMap = dto.daoDetailContent;
+		
+		if(delMap!=null && delMap.size() > 1 ) {
+			
+			bu_idx	=	(String)delMap.get("BU_IDX");
+			
+			String dFilepath = (String)delMap.get("STRFILENAME");
+			
+			boolean isDel = ImageUtils.deleteFileWithThumbnail(uploadedFileRootPath, dFilepath);
+			
+			if(isDel) {
+				L.debug("EXE Query(1) File is deleted.[" + dFilepath +"]");
+			} else {
+				L.debug("EXE Query(1) File is not exits.[" + dFilepath +"]");
+			}
+		}
+		
+		return bu_idx;
+	}
+	private void deleteUploadedFileDbRecordNew(Map _params) {
+		mBoardDAO.deleteUpload(_params);
+	}
 }

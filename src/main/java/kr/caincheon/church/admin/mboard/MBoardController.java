@@ -79,15 +79,15 @@ public class MBoardController extends CommonController
 		D(_logger, Thread.currentThread().getStackTrace(), _params.toString());
 		
 		// response handling
-		java.util.List list	= (java.util.List)_params.remove(Const.ADM_MAPKEY_LIST);
-		java.util.List b_types = (java.util.List)_params.remove(Const.ADM_MAPKEY_LIST_OTHERS);
+		java.util.List list			= (java.util.List)_params.remove(Const.ADM_MAPKEY_LIST);
+		java.util.List categoryList = (java.util.List)_params.remove(Const.ADM_MAPKEY_LIST_OTHERS);
 		Integer total  = (Integer)_params.remove(Const.ADM_MAPKEY_COUNT);
 		Paging  paging = (Paging)_params.remove(Const.ADM_MAPKEY_PAGING);
 		
 		mv.addObject("rtn_list",   list);
 		mv.addObject("rtn_total",  total);
 		mv.addObject("rtn_paging", paging);
-		mv.addObject("rtn_b_type", b_types);
+		mv.addObject("categoryList", categoryList);
 		mv.addObject("_params", _params);
 
 		D(_logger, Thread.currentThread().getStackTrace(), mv.toString());
@@ -489,12 +489,18 @@ public class MBoardController extends CommonController
 		Map 			bdContent	= (Map)_params.remove(Const.ADM_MAPKEY_CONTENT);
 		java.util.List	list		= (java.util.List)_params.remove(Const.ADM_MAPKEY_LIST_OTHERS);
 		
-		mBoardService.getalbView(_params);
+		/*게시글에 대한 내용*/
+		mBoardService.postViewContent(_params);
+		
+		/*comment List*/
+		CommonDaoDTO dto = mBoardService.getCommentList(_params);
+		mv.addObject("comment_list", dto.daoList);
 		
 		mv.addObject("_params", _params);
 		
 		Map 			movContents	= (Map)_params.remove(Const.ADM_MAPKEY_CONTENT);
 		mv.addObject("movContents",  movContents);
+		mv.addObject("attachList", _params.get("attachList"));
 		
 		mv.addObject("bd_content",  bdContent);
 		/*카테고리 리스트*/

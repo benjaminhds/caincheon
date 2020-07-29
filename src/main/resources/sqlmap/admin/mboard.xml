@@ -476,7 +476,9 @@
 	<delete id="deleteUpload" parameterType="hashmap">
 		DELETE
 		FROM	MBOARD_UPLOAD
-		WHERE	BL_IDX	=	#{BL_IDX}
+		WHERE	1=1
+		<if test='i_sBlidx != null and !"".equals(i_sBlidx)'> AND BL_IDX	= #{i_sBlidx} </if>
+		<if test='i_sStrFileName != null and !"".equals(i_sStrFileName)'> AND		STRFILENAME	=	#{i_sStrFileName} </if>
 	</delete>
 	
 	<select id="getAttachList" parameterType="hashmap" resultType="hashmap">
@@ -556,4 +558,18 @@
 					AND		IS_PUBLISH	=	'1'
 		<include refid="common.pagingPost"/>
 	</select>
+	<select id="getUploadVo" parameterType="hashmap" resultType="hashmap">
+		SELECT	BU_IDX
+				, FILEPATH
+				, STRFILENAME
+		FROM	MBOARD_UPLOAD
+		WHERE	BL_IDX		=	#{i_sBlidx}
+		AND		STRFILENAME	=	#{i_sStrFileName}
+	</select>
+	<delete id="deleteMboardUpload" parameterType="hashmap">
+		DELETE
+		FROM	MBOARD_UPLOAD
+		WHERE	BL_IDX		=	#{i_sBlidx}
+		AND		STRFILENAME	=	#{i_sStrFileName}
+	</delete>
 </mapper>
