@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package kr.caincheon.church.service;
 
 import java.util.List;
@@ -43,3 +44,50 @@ public class HomeServiceImpl
     }
 
 }
+=======
+package kr.caincheon.church.service;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import kr.caincheon.church.main.HomeDAO;
+
+/**
+ * 
+ * @author benjamin
+ */
+@Service("homeServiceImpl")
+public class HomeServiceImpl
+    implements HomeService
+{
+
+    private final Logger _logger = Logger.getLogger(getClass());
+    
+    @Resource(name="mainDao")
+    private HomeDAO mainDao;
+    
+    @Override
+    public List noticeList()
+    {
+        _logger.fatal((new StringBuilder(" .... fatal::This is a Service .... [homeDao=")).append(mainDao).append("]").toString());
+        _logger.error((new StringBuilder(" .... error::This is a Service .... [homeDao=")).append(mainDao).append("]").toString());
+        _logger.warn((new StringBuilder(" .... warn ::This is a Service .... [homeDao=")).append(mainDao).append("]").toString());
+        _logger.info((new StringBuilder(" .... info ::This is a Service .... [homeDao=")).append(mainDao).append("]").toString());
+        _logger.debug((new StringBuilder(" .... debug::This is a Service .... [homeDao=")).append(mainDao).append("]").toString());
+        _logger.trace((new StringBuilder(" .... trace::This is a Service .... [homeDao=")).append(mainDao).append("]").toString());
+        System.out.println((new StringBuilder(" .... This is a Service .... [homeDao=")).append(mainDao).append("] _logger=").append(_logger.getName()).toString());
+        return mainDao.noticeList();
+    }
+
+    @Override
+    public List parishList()
+    {
+        return mainDao.parishList();
+    }
+
+}
+>>>>>>> branch 'master' of https://github.com/benjaminhds/caincheon
