@@ -183,22 +183,22 @@ public class MovDaoImpl extends CommonDao implements MovDao
         try
         {
         	// new code style 
-	        query = "SELECT A.*, B.NAME AS CATEGORY_NAME, C.NAME AS CHURCH_NAME, D.NAME AS DEPART_NAME FROM   "
-		    		+ "("
-		    		+ "  SELECT ROW_NUMBER() OVER(ORDER BY REGDATE DESC) RNUM"
-		    		+ ", B_IDX, A2.BL_IDX, TITLE, USER_ID, WRITER, HIT, C_IDX, CHURCH_IDX, DEPART_IDX, CONTENT"
-		    		+ ", CONVERT(CHAR(10),  REGDATE, 120) REGDATE"
-//		    		+ ", (SELECT FILENAME FROM NBOARD_UPLOAD A3 WHERE A3.BU_IDX IN (SELECT MAX(BU_IDX) FROM MBOARD_UPLOAD A4 WHERE A1.BL_IDX=A4.BL_IDX AND A4.FILETYPE is null) ) FILENAME"
-//		    		+ ", (SELECT FILEPATH FROM NBOARD_UPLOAD A3 WHERE A3.BU_IDX IN (SELECT MAX(BU_IDX) FROM MBOARD_UPLOAD A4 WHERE A1.BL_IDX=A4.BL_IDX AND A4.FILETYPE is null) ) FILEPATH"
-		    		+ " FROM newcaincheon.NBOARD A1 "
-		    		+ " left outer join (SELECT FILENAME, FILEPATH, BL_IDX FROM newcaincheon.NBOARD_UPLOAD "  
-		    		+ "                  WHERE BL_IDX IN (SELECT MAX(BL_IDX) FROM newcaincheon.NBOARD WHERE B_IDX='23' AND FILETYPE is null "+whereStr+" ) "  
-		    		+ "                 ) A2 ON A2.BL_IDX = A1.BL_IDX"
-		    		+ " WHERE B_IDX = '23' "+whereStr+" "
-		    		+ ") A "
-		    		+ "LEFT JOIN MBOARD_CATEGORY B ON A.C_IDX=B.C_IDX  "
-		    		+ "LEFT JOIN CHURCH          C ON A.CHURCH_IDX=C.CHURCH_IDX  "
-		    		+ "LEFT JOIN DEPARTMENT      D ON A.DEPART_IDX=D.DEPART_IDX  ";
+		        query = "SELECT A.*, B.NAME AS CATEGORY_NAME, C.NAME AS CHURCH_NAME, D.NAME AS DEPART_NAME FROM   "
+			    		+ "("
+			    		+ "  SELECT ROW_NUMBER() OVER(ORDER BY REGDATE DESC) RNUM"
+			    		+ ", B_IDX, A2.BL_IDX, TITLE, USER_ID, WRITER, HIT, C_IDX, CHURCH_IDX, DEPART_IDX, CONTENT"
+			    		+ ", CONVERT(CHAR(10),  REGDATE, 120) REGDATE"
+	//		    		+ ", (SELECT FILENAME FROM NBOARD_UPLOAD A3 WHERE A3.BU_IDX IN (SELECT MAX(BU_IDX) FROM MBOARD_UPLOAD A4 WHERE A1.BL_IDX=A4.BL_IDX AND A4.FILETYPE is null) ) FILENAME"
+	//		    		+ ", (SELECT FILEPATH FROM NBOARD_UPLOAD A3 WHERE A3.BU_IDX IN (SELECT MAX(BU_IDX) FROM MBOARD_UPLOAD A4 WHERE A1.BL_IDX=A4.BL_IDX AND A4.FILETYPE is null) ) FILEPATH"
+			    		+ " FROM newcaincheon.NBOARD A1 "
+			    		+ " left outer join (SELECT FILENAME, FILEPATH, BL_IDX FROM newcaincheon.NBOARD_UPLOAD "  
+			    		+ "                  WHERE BL_IDX IN (SELECT MAX(BL_IDX) FROM newcaincheon.NBOARD WHERE B_IDX='23' AND FILETYPE is null "+whereStr+" ) "  
+			    		+ "                 ) A2 ON A2.BL_IDX = A1.BL_IDX"
+			    		+ " WHERE B_IDX = '23' "+whereStr+" "
+			    		+ ") A "
+			    		+ "LEFT JOIN MBOARD_CATEGORY B ON A.C_IDX=B.C_IDX  "
+			    		+ "LEFT JOIN CHURCH          C ON A.CHURCH_IDX=C.CHURCH_IDX  "
+			    		+ "LEFT JOIN DEPARTMENT      D ON A.DEPART_IDX=D.DEPART_IDX  ";
 	        dto.daoTotalCount = executeCount(query);
 	        
 	        setPaging(_params);

@@ -148,8 +148,9 @@ function goView(b_idx, bl_idx) {
 						<table>
 							<caption> 전체보기</caption>
 							<colgroup>
+								<col style="width:7%">
 								<col style="width:10%">
-								<col style="width:12%">
+								<col style="width:10%">
 								<col>
 								<col style="width:8%">
 								<col style="width:8%">

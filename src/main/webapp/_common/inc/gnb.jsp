@@ -1,6 +1,7 @@
 ﻿<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@page import="java.util.*"%>
 <script type="text/javascript">
 var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ? true : false; 
 function goUnifySearch(srchTextVal) {
@@ -100,19 +101,39 @@ function goUnifySearch(srchTextVal) {
                     <dt>본당</dt>
                     <dd><a href="/church/temp_01.do?qk=">본당현황</a></dd>
                     <dd><a href="/church/church.do?qk=">지구별</a></dd>
-                    <dd><a href="/church/vacancy.do?qk=">공소</a></dd>                    
+                    <dd><a href="/church/vacancy.do?qk=">공소</a></dd>
                 </dl>
             </li>
             <li>
-                <a href="/news/news_list.do?b_idx=ALL">소식</a>
-                <dl>
-                    <dt>소식</dt>
-                    <dd><a href="/news/news_list.do?b_idx=ALL">교구소식</a></dd>
-                    <dd><a href="/news/sch_list.do?gubuncd=1">교구일정</a></dd>
-                    <dd><a href="/news/alb_list.do?b_idx=ALL&c_idx=ALL">교구앨범</a></dd>
-                    <dd><a href="/news/mov_list.do?b_idx=23&searchGubun=all">교구영상</a></dd>
-                    <dd><a href="/news/mgz_list.do?pub_idx=3">인천주보</a></dd>
-                </dl>
+	               <a href="javascript:;">소식</a>
+	                <dl>
+	                    <dt>소식</dt>
+	                    <%
+			            	
+			            	List<Map<String,Object>> list	=	(List)request.getAttribute("menu_list");
+	                    
+	                    	String url	=	"";
+	                    	String name	=	"";
+	                    	
+	                    	
+			            	for(int i = 0; i < list.size(); i++) {
+			            		
+				            	if("1".equals(list.get(i).get("B_KIND"))) {
+				            		url	=	"/n/board/normal_board_list.do?i_sBidx="+list.get(i).get("B_IDX");
+				            	} else if("2".equals(list.get(i).get("B_KIND"))) {
+				            		url	=	"/n/board/alb_board_list.do?i_sBidx="+list.get(i).get("B_IDX");
+				            	} else if("3".equals(list.get(i).get("B_KIND"))) {
+				            		url	=	"/n/board/mgz_board_list.do?i_sBidx="+list.get(i).get("B_IDX");
+				            	} else if("4".equals(list.get(i).get("B_KIND"))) {
+				            		url	=	"/n/board/mov_board_list.do?i_sBidx="+list.get(i).get("B_IDX");
+				            	}
+			            	
+			            		name	=	(String)list.get(i).get("B_NM");
+			            	
+		            	%>
+	                  	  <dd><a href="<%=url%>"><%=name%></a></dd>
+		                <% } %>
+	                </dl>
             </li>
             <li>
                 <a href="/samok/cure_list.do?b_idx=ALL">자료실</a>

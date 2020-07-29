@@ -46,6 +46,15 @@ public class MainServiceImpl extends CommonService
     @Resource(name="nBoardService")
     private NBoardServiceImpl nBoardService;
 
+    
+    //
+    public List homeMultiboardLists() {
+    	List multiList = null;
+    	
+    	
+    	
+    	return multiList;
+    }
 
     /*
      * 교구앨범 메인홈페에 서비스되는 OP :: 오늘의 소식

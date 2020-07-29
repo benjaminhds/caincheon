@@ -6,18 +6,26 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
+import kr.caincheon.church.admin.mboard.MBoardDAO;
 import kr.caincheon.church.common.utils.ImageUtils;
 
 /**
  * DAO를 위한 공통 OP를 제공한다.  
  * @author benjamin
  */
+@Component
 public class CommonExecuteQuery {
 	
 	//
 	private final static Logger _logger = Logger.getLogger(CommonExecuteQuery.class);
 	
+	private static MBoardDAO mboardDao;
+	
+	static {
+		mboardDao	=	new MBoardDAO();
+	}
 	/**
 	 *  
 	 */
@@ -59,26 +67,64 @@ public class CommonExecuteQuery {
 		String bu_idx = null;
 		parent.D(_logger, Thread.currentThread().getStackTrace(), "EXE Query(1) old file delete option is on.");
 		
-        // file del
-        Map<String, Object> delMap = parent.executeQueryMap( "SELECT BU_IDX, FILEPATH, STRFILENAME FROM NBOARD_UPLOAD WHERE BL_IDX=" + bl_idx + " AND STRFILENAME='" + strfilename +"'" ) ;
-        if(delMap!=null && delMap.size() > 1 ) {
-        	bu_idx = parent.pnull(delMap, "BU_IDX");
-        	String dFilepath = parent.pnull(delMap, "STRFILENAME");
-        	boolean isDel = ImageUtils.deleteFileWithThumbnail(CONTEXT_ROOT_PATH, dFilepath);
-        	if(isDel) {
-        		parent.D(_logger, Thread.currentThread().getStackTrace(), "EXE Query(1) File is deleted.[" + dFilepath +"]");
-        	} else {
-        		parent.D(_logger, Thread.currentThread().getStackTrace(), "EXE Query(1) File is not exits.[" + dFilepath +"]");
-        	}
-        }
-        return bu_idx;
+		// file del
+		Map<String, Object> delMap = parent.executeQueryMap( "SELECT BU_IDX, FILEPATH, STRFILENAME FROM NBOARD_UPLOAD WHERE BL_IDX=" + bl_idx + " AND STRFILENAME='" + strfilename +"'" ) ;
+		if(delMap!=null && delMap.size() > 1 ) {
+			bu_idx = parent.pnull(delMap, "BU_IDX");
+			String dFilepath = parent.pnull(delMap, "STRFILENAME");
+			boolean isDel = ImageUtils.deleteFileWithThumbnail(CONTEXT_ROOT_PATH, dFilepath);
+			if(isDel) {
+				parent.D(_logger, Thread.currentThread().getStackTrace(), "EXE Query(1) File is deleted.[" + dFilepath +"]");
+			} else {
+				parent.D(_logger, Thread.currentThread().getStackTrace(), "EXE Query(1) File is not exits.[" + dFilepath +"]");
+			}
+		}
+		return bu_idx;
 	}
 	
+	/**
+	 * if return value is a false, then file not exist or path information is wrong.
+	 * @param _params
+	 * @return String - bu_idx
+	 * @throws SQLException
+	 */
+	public static String deleteUploadedFileNew(Map params) throws SQLException {
+		/*
+		 * 썸네일 삭제
+		 */
+		String bu_idx = null;
+		String uploadedFileRootPath = (String)params.get("CONTEXT_ROOT_PATH");
+		
+		// file del
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		dto	=	mboardDao.getUploadVo(params);
+		
+		Map<String, Object> delMap = dto.daoDetailContent;
+		
+		if(delMap!=null && delMap.size() > 1 ) {
+			
+			bu_idx	=	(String)delMap.get("BU_IDX");
+			
+			String dFilepath = (String)delMap.get("STRFILENAME");
+			
+			boolean isDel = ImageUtils.deleteFileWithThumbnail(uploadedFileRootPath, dFilepath);
+			
+			if(isDel) {
+				_logger.debug("EXE Query(1) File is deleted.[" + dFilepath +"]");
+			} else {
+				_logger.debug("EXE Query(1) File is not exits.[" + dFilepath +"]");
+			}
+		}
+		
+		return bu_idx;
+	}
 	/**
 	 * 
 	 */
 	public static int deleteUploadedFileDbRecord(CommonDao parent, String bl_idx, String strfilename) throws SQLException {
-		String query = "DELETE FROM NBOARD_UPLOAD WHERE BL_IDX="+bl_idx+" AND STRFILENAME='"+strfilename+"'";
+		String query = "DELETE FROM NBOARD_UPLOAD"
+				+ "	WHERE BL_IDX="+bl_idx+" AND STRFILENAME='"+strfilename+"'";
 		return parent.executeUpdate(query);
 	}
 
@@ -119,6 +165,43 @@ public class CommonExecuteQuery {
 		return rn5;
 	}
 	
+	/**
+	 * 등록된 첨부 자료를 삭제한다.
+	 */
+	public static void deleteAttachedFilesMboardUpload(Map _params)  throws Exception {
+		
+		int rn5 = 0;
+		
+		// files delete
+		try {
+			/*게시판 코드*/
+			String bl_idx = (String)_params.get("i_sBlidx");
+			
+			/*고정 된 5개 파일 돌리기*/
+			for(int i=1; i<6; i++) {
+				
+				/*삭제 파일 명*/
+				String strfilename = (String)_params.get("delFile"+i);
+				
+				/*삭제할 파일이 있으면*/
+				if (strfilename.length() > 0) {
+					
+					String bu_idx = deleteUploadedFileNew(_params);
+					deleteUploadedFileDbRecordNew(_params);
+				}
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			
+		}
+	}
+	
+	private static void deleteUploadedFileDbRecordNew(Map _params) {
+		mboardDao.deleteUpload(_params);
+	}
 	/**
 	 * 첨부 파일을 등록한다.
 	 */

@@ -35,7 +35,15 @@
 	<mvc:resources mapping="/**" location="/" />
 	<mvc:resources mapping="/_common/**" location="/_common/**"  />
 	<mvc:resources mapping="/img/**"  location="/img/**"  />	
-
+	
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<bean class="kr.caincheon.church.common.GnbInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
@@ -163,7 +171,6 @@
     
     <!-- Excel Viewer -->
     <bean name="excelView" class="kr.caincheon.church.common.poi.ExcelView"/>
-    
     
 	<!-- MultipartResolver -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

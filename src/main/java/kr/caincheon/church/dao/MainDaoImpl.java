@@ -21,7 +21,7 @@ import kr.caincheon.church.common.base.CommonDao;
 
 @Repository("mainDao")
 public class MainDaoImpl extends CommonDao
-    implements MainDao
+	implements MainDao
 {
 
 	private final Logger _logger = Logger.getLogger(getClass());
@@ -57,7 +57,7 @@ public class MainDaoImpl extends CommonDao
         return result;
     }
 
-    @Override
+	@Override
     public List noticeList(String b_idx)
     {
         List result = new ArrayList();
@@ -112,7 +112,7 @@ public class MainDaoImpl extends CommonDao
         return result;
     }
 
-    @Override
+	@Override
     public List parishList()
     {
         List result = new ArrayList();
@@ -137,45 +137,6 @@ public class MainDaoImpl extends CommonDao
         			+ " LEFT JOIN NBOARD_CATEGORY B ON A.C_IDX=B.C_IDX "
         			+ " LEFT JOIN CHURCH C ON A.CHURCH_IDX=C.CHURCH_IDX "
         			+ " LEFT JOIN DEPARTMENT D ON A.DEPART_IDX=D.DEPART_IDX";
-        	// 신규 쿼리
-        	query = "SELECT B.*  , M.B_NM, M.C_NM, M.C_IDX, O.NAME AS ORG_NM\r\n" + 
-        			"FROM (\r\n" + 
-        			"  SELECT TOP  2 ROW_NUMBER() OVER(ORDER BY B.REGDATE DESC) R$NUM, B.B_IDX, B.C_IDX, B.BL_IDX, B.TITLE, B.ORG_IDX, B.CHURCH_IDX, B.DEPART_IDX, B.REGDATE\r\n" + 
-        			"  FROM MBOARD B, (SELECT B_IDX, B_NM, B_TYPE FROM MBOARD_MNGT WHERE B_NM='교구소식') M\r\n" + 
-        			"  WHERE B.B_IDX = M.B_IDX AND B.IS_NOTICE='Y' AND B.IS_VIEW='Y'\r\n" + 
-        			"  UNION ALL\r\n" + 
-        			"  SELECT TOP  4 ROW_NUMBER() OVER(ORDER BY B.REGDATE DESC) R$NUM, B.B_IDX, B.C_IDX, B.BL_IDX, B.TITLE, B.ORG_IDX, B.CHURCH_IDX, B.DEPART_IDX, B.REGDATE\r\n" + 
-        			"  FROM MBOARD B, (SELECT B_IDX, B_NM, B_TYPE FROM MBOARD_MNGT WHERE B_NM='교구소식') M\r\n" + 
-        			"  WHERE B.B_IDX = M.B_IDX AND B.IS_NOTICE='N' AND B.IS_VIEW='Y'\r\n" + 
-        			"  UNION ALL\r\n" + 
-        			"  SELECT TOP 10 ROW_NUMBER() OVER(ORDER BY B.REGDATE DESC) R$NUM, B.B_IDX, B.C_IDX, B.BL_IDX, B.TITLE, B.ORG_IDX, B.CHURCH_IDX, B.DEPART_IDX, B.REGDATE\r\n" + 
-        			"  FROM MBOARD B, (SELECT B_IDX, B_NM, B_TYPE FROM MBOARD_MNGT WHERE B_NM='교구앨범') M\r\n" + 
-        			"  WHERE B.B_IDX = M.B_IDX AND B.IS_NOTICE='N' AND B.IS_VIEW='Y'\r\n" + 
-        			"  UNION ALL\r\n" + 
-        			"  SELECT TOP  5 ROW_NUMBER() OVER(ORDER BY B.REGDATE DESC) R$NUM, B.B_IDX, B.C_IDX, B.BL_IDX, B.TITLE, B.ORG_IDX, B.CHURCH_IDX, B.DEPART_IDX, B.REGDATE\r\n" + 
-        			"  FROM MBOARD B, (SELECT B_IDX, B_NM, B_TYPE FROM MBOARD_MNGT WHERE B_NM='교구영상') M\r\n" + 
-        			"  WHERE B.B_IDX = M.B_IDX AND B.IS_NOTICE='N' AND B.IS_VIEW='Y'\r\n" + 
-        			"  UNION ALL\r\n" + 
-        			"  SELECT TOP  5 ROW_NUMBER() OVER(ORDER BY B.REGDATE DESC) R$NUM, B.B_IDX, B.C_IDX, B.BL_IDX, B.TITLE, B.ORG_IDX, B.CHURCH_IDX, B.DEPART_IDX, B.REGDATE\r\n" + 
-        			"  FROM MBOARD B, (SELECT B_IDX, B_NM, B_TYPE FROM MBOARD_MNGT WHERE B_NM='교회소식') M\r\n" + 
-        			"  WHERE B.B_IDX = M.B_IDX AND B.IS_NOTICE='N' AND B.IS_VIEW='Y'\r\n" + 
-        			"  UNION ALL\r\n" + 
-        			"  SELECT TOP  5 ROW_NUMBER() OVER(ORDER BY B.REGDATE DESC) R$NUM, B.B_IDX, B.C_IDX, B.BL_IDX, B.TITLE, B.ORG_IDX, B.CHURCH_IDX, B.DEPART_IDX, B.REGDATE\r\n" + 
-        			"  FROM MBOARD B, (SELECT B_IDX, B_NM, B_TYPE FROM MBOARD_MNGT WHERE B_NM='교구일정') M\r\n" + 
-        			"  WHERE B.B_IDX = M.B_IDX AND B.IS_NOTICE='N' AND B.IS_VIEW='Y'\r\n" + 
-        			"  UNION ALL\r\n" + 
-        			"  SELECT TOP  5 ROW_NUMBER() OVER(ORDER BY B.REGDATE DESC) R$NUM, B.B_IDX, B.C_IDX, B.BL_IDX, B.TITLE, B.ORG_IDX, B.CHURCH_IDX, B.DEPART_IDX, B.REGDATE\r\n" + 
-        			"  FROM MBOARD B, (SELECT B_IDX, B_NM, B_TYPE FROM MBOARD_MNGT WHERE B_NM='교구정동정') M\r\n" + 
-        			"  WHERE B.B_IDX = M.B_IDX AND B.IS_NOTICE='N' AND B.IS_VIEW='Y'\r\n" + 
-        			"  UNION ALL\r\n" + 
-        			"  SELECT TOP  5 ROW_NUMBER() OVER(ORDER BY B.REGDATE DESC) R$NUM, B.B_IDX, B.C_IDX, B.BL_IDX, B.TITLE, B.ORG_IDX, B.CHURCH_IDX, B.DEPART_IDX, B.REGDATE\r\n" + 
-        			"  FROM MBOARD B, (SELECT B_IDX, B_NM, B_TYPE FROM MBOARD_MNGT WHERE B_NM='인천주보') M\r\n" + 
-        			"  WHERE B.B_IDX = M.B_IDX AND B.IS_NOTICE='N' AND B.IS_VIEW='Y'\r\n" + 
-        			") B LEFT OUTER JOIN \r\n" + 
-        			"  (SELECT M.B_IDX, M.B_NM, M.B_TYPE, C.C_IDX, C.NAME AS C_NM\r\n" + 
-        			"   FROM MBOARD_MNGT M LEFT OUTER JOIN MBOARD_CATEGORY C ON M.B_IDX = C.B_IDX ) M ON B.B_IDX = M.B_IDX AND B.C_IDX = M.C_IDX\r\n" + 
-        			"  LEFT OUTER JOIN ORG_HIERARCHY O  ON O.ORG_IDX = B.ORG_IDX"
-        			;
         	result = super.executeQueryList(query);
         } catch(Exception e) {
         	_E(_logger, Thread.currentThread().getStackTrace(), "ERROR SQL:"+query, e);
@@ -191,7 +152,7 @@ public class MainDaoImpl extends CommonDao
      * (non-Javadoc)
      * @see kr.caincheon.church.dao.MainDao#priestListOfThisMonth()
      */
-    @Override
+	@Override
     public List priestListOfThisMonth()
     {
         List result = null;
@@ -219,7 +180,7 @@ public class MainDaoImpl extends CommonDao
         return result;
     }
 
-    @Override
+	@Override
     public List parList_Main()
     {
         String query = "";
@@ -259,7 +220,7 @@ public class MainDaoImpl extends CommonDao
      * (non-Javadoc)
      * @see kr.caincheon.church.dao.MainDao#schList_Main(java.util.Map)
      */
-    @Override
+	@Override
     public Map<String , Object> schList_Main(Map _params)
     {
     	Map<String , Object> result = new HashMap<String, Object>();

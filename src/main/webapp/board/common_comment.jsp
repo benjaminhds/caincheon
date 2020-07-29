@@ -191,7 +191,7 @@
 							<tr>
 								<td width="250px" class="td_cmt">
 									<div>
-										${SS_MEM_ID}
+										${SS_MEM_NM}
 									</div>
 								</td>
 								<td width="500px" class="td_cmt">

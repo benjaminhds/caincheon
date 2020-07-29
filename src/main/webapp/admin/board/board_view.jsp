@@ -319,7 +319,7 @@ function delete_contents() {
 									<tr>
 										<th>소속</th>
 										<td>
-											<label class="radio-inline" for="i_sOrgType_O"><input type="radio"	name="i_sOrgType" id="i_sOrgType_O" value="O" <c:if test="${bd_content == null || bd_content.ORG_TYPE == 'O'}" >checked="checked"</c:if>>조직</label>
+											<label class="radio-inline" for="i_sOrgType_O"><input type="radio"	name="i_sOrgType" id="i_sOrgType_O" value="O" <c:if test="${bd_content == null || bd_content.ORG_TYPE == 'O'}" >checked="checked"</c:if>>본당</label>
 											<label class="radio-inline" for="i_sOrgType_D"><input type="radio"	name="i_sOrgType" id="i_sOrgType_D" value="D" <c:if test="${bd_content.ORG_TYPE=='D' }" >checked="checked"</c:if>>부서</label>
 											<label class="radio-inline" for="i_sOrgType_E"><input type="radio"	name="i_sOrgType" id="i_sOrgType_E" value="E" <c:if test="${bd_content.ORG_TYPE=='E' }" >checked="checked"</c:if>>수도회 단체 및 기타 조직성당</label>
 											

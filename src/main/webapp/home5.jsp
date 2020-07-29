@@ -45,9 +45,23 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/js/swiper.min.js"></script>
   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/Swiper/4.4.6/css/swiper.min.css">
   <script type="text/javascript">
+  /*
+  일반게시판
+http://localhost:8080/n/board/normal_board_list.do?i_sBidx=5
+
+앨범게시판
+http://localhost:8080/n/board/alb_board_list.do?i_sBidx=5
+
+영상게시판
+http://localhost:8080/n/board/mov_board_list.do?i_sBidx=6
+
+매거진
+http://localhost:8080/n/board/mgz_board_list.do?i_sBidx=7
+  */
   function viewAlb(idx) {
-  	document.form01.action = '/news/alb_view.do';
+  	document.form01.action = '/n/board/alb_board_view.do';
   	document.getElementById('idx').value = idx;
+  	document.getElementById('i_sBidx').value = idx;
   	document.form01.submit();
   	return false;
   }
@@ -285,7 +299,8 @@
 
 
 	<form name="form01" action="/news/alb_view.do" method="POST">
-		<input type="hidden" name="idx" id="idx" value="${idx}" /> <input
+		<input type="hidden" name="idx" id="idx" value="${idx}" />
+		<input type="hidden" name="idx" id="i_sBidx" value="${b_idx}" /> <input
 			type="hidden" name="gubuncd" id="gubuncd" value="${gubuncd}" /> <input
 			type="hidden" name="b_idx" id="b_idx" value="${b_idx}" /> <input
 			type="hidden" name="bl_idx" id="bl_idx" value="" /> <input
@@ -374,33 +389,44 @@
                     <a href="#">11/20</a>
                   </li>
                   -->
-				<c:choose>
-					<c:when test="${fn:length(parishList) > 0}">
-						<c:forEach items="${parishList}" var="list">
-							<c:set var="gongji" value="" />
-							<c:set var="none_gongji" value="" />
-							
-							<c:if test="${list.GUBUN eq '1' }">
+				
+                <c:choose>
+				<c:when test="${fn:length(mboardList) > 0}">
+					<c:set var="EXIST_BOARD" value="N" />
+					<c:forEach items="${mboardList}" var="list" varStatus="status">
+						<c:set var="gongji" value="" />
+						<c:set var="none_gongji" value="" />
+						<c:if test="${status.index > -1 and list.B_NM eq '교구소식'}">
+							<c:set var="EXIST_BOARD" value="Y" />
+							<c:if test="${list.IS_NOTICE eq 'Y' }">
 								<c:set var="gongji" value="class='gongji'" />
 							</c:if>
-							<c:if test="${list.GUBUN eq '2' }">
+							<c:if test="${list.IS_NOTICE eq 'N' }">
 								<c:set var="gongji" value="" />
-								<c:if test="${list.DEPART_NAME ne ''}">
-									<c:set var="none_gongji" value="[${list.DEPART_NAME }]" />
+								<c:if test="${list.ORG_NM ne ''}">
+									<c:set var="none_gongji" value="[${list.ORG_NM }]" />
 								</c:if>
 							</c:if>
 							
-							<li><a href="javascript:viewNews(${list.B_IDX},${list.BL_IDX})">
-		                        <em ${gongji}>${list.TITLE}</em> ${list.REGDATE}</a>
+							<li onClick="javascript:viewNews(${list.B_IDX},${list.BL_IDX})">
+		                        <em ${gongji}>${list.TITLE}</em>
+		                        <a hre="javascript:viewNews(${list.B_IDX},${list.BL_IDX})">${fn:substring(list.REGDATE,5,10)}</a>
 		                    </li>
-						</c:forEach>
-					</c:when>
-					<c:otherwise>
+		                </c:if>
+					</c:forEach>
+					<c:if test="${EXIST_BOARD eq 'N' }">
 					  <li>
 	                    <em class="gongji">등록된 데이터가 없습니다.</em>
 	                    <a href="#">${NOW_MMDD}</a>
 	                  </li>
-					</c:otherwise>
+					</c:if>
+				</c:when>
+				<c:otherwise>
+				  <li>
+                    <em class="gongji">등록된 데이터가 없습니다.</em>
+                    <a href="#">${NOW_MMDD}</a>
+                  </li>
+				</c:otherwise>
 				</c:choose>
 
                 </ul>
@@ -430,34 +456,44 @@
                     <a href="#">11/20</a>
                   </li>
                   -->
-                  
-				<c:choose>
-					<c:when test="${fn:length(chuchNewsList) > 0}">
-						<c:forEach items="${chuchNewsList}" var="list">
-							<c:set var="gongji" value="" />
-							<c:set var="none_gongji" value="" />
-							
-							<c:if test="${list.GUBUN eq '1' }">
+                
+                <c:choose>
+				<c:when test="${fn:length(mboardList) > 0}">
+					<c:set var="EXIST_BOARD" value="N" />
+					<c:forEach items="${mboardList}" var="list" varStatus="status">
+						<c:set var="gongji" value="" />
+						<c:set var="none_gongji" value="" />
+						<c:if test="${status.index > -1 and list.B_NM eq '교회소식'}">
+							<c:set var="EXIST_BOARD" value="Y" />
+							<c:if test="${list.IS_NOTICE eq 'Y' }">
 								<c:set var="gongji" value="class='gongji'" />
 							</c:if>
-							<c:if test="${list.GUBUN eq '2' }">
+							<c:if test="${list.IS_NOTICE eq 'N' }">
 								<c:set var="gongji" value="" />
-								<c:if test="${list.DEPART_NAME ne ''}">
-									<c:set var="none_gongji" value="[${list.DEPART_NAME }]" />
+								<c:if test="${list.ORG_NM ne ''}">
+									<c:set var="none_gongji" value="[${list.ORG_NM }]" />
 								</c:if>
 							</c:if>
 							
-							<li><a href="javascript:viewNews(${list.B_IDX},${list.BL_IDX})">
-		                        <em ${gongji}>${list.TITLE}</em> ${list.REGDATE}</a>
+							<li onClick="javascript:viewNews(${list.B_IDX},${list.BL_IDX})">
+		                        <em ${gongji}>${list.TITLE}</em>
+		                        <a hre="javascript:viewNews(${list.B_IDX},${list.BL_IDX})">${fn:substring(list.REGDATE,5,10)}</a>
 		                    </li>
-						</c:forEach>
-					</c:when>
-					<c:otherwise>
+		                </c:if>
+					</c:forEach>
+					<c:if test="${EXIST_BOARD eq 'N' }">
 					  <li>
 	                    <em class="gongji">등록된 데이터가 없습니다.</em>
 	                    <a href="#">${NOW_MMDD}</a>
 	                  </li>
-					</c:otherwise>
+					</c:if>
+				</c:when>
+				<c:otherwise>
+				  <li>
+                    <em class="gongji">등록된 데이터가 없습니다.</em>
+                    <a href="#">${NOW_MMDD}</a>
+                  </li>
+				</c:otherwise>
 				</c:choose>
 				
                 </ul>
@@ -493,34 +529,45 @@
                     <a href="#">11/20</a>
                   </li>
                   -->
-				<c:choose>
-					<c:when test="${fn:length(bondangNewsList) > 0}">
-						<c:forEach items="${bondangNewsList}" var="list">
-							<c:set var="gongji" value="" />
-							<c:set var="none_gongji" value="" />
-							
-							<c:if test="${list.GUBUN eq '1' }">
+                
+                <c:choose>
+				<c:when test="${fn:length(mboardList) > 0}">
+					<c:set var="EXIST_BOARD" value="N" />
+					<c:forEach items="${mboardList}" var="list" varStatus="status">
+						<c:set var="gongji" value="" />
+						<c:set var="none_gongji" value="" />
+						<c:if test="${status.index > -1 and list.B_NM eq '본당소식'}">
+							<c:set var="EXIST_BOARD" value="Y" />
+							<c:if test="${list.IS_NOTICE eq 'Y' }">
 								<c:set var="gongji" value="class='gongji'" />
 							</c:if>
-							<c:if test="${list.GUBUN eq '2' }">
+							<c:if test="${list.IS_NOTICE eq 'N' }">
 								<c:set var="gongji" value="" />
-								<c:if test="${list.DEPART_NAME ne ''}">
-									<c:set var="none_gongji" value="[${list.DEPART_NAME }]" />
+								<c:if test="${list.ORG_NM ne ''}">
+									<c:set var="none_gongji" value="[${list.ORG_NM }]" />
 								</c:if>
 							</c:if>
 							
 							<li><a href="javascript:viewNews(${list.B_IDX},${list.BL_IDX})">
 		                        <em ${gongji}>${list.TITLE}</em> ${list.REGDATE}</a>
 		                    </li>
-						</c:forEach>
-					</c:when>
-					<c:otherwise>
+		                </c:if>
+					</c:forEach>
+					<c:if test="${EXIST_BOARD eq 'N' }">
 					  <li>
 	                    <em class="gongji">등록된 데이터가 없습니다.</em>
 	                    <a href="#">${NOW_MMDD}</a>
 	                  </li>
-					</c:otherwise>
+					</c:if>
+				</c:when>
+				<c:otherwise>
+				  <li>
+                    <em class="gongji">등록된 데이터가 없습니다.</em>
+                    <a href="#">${NOW_MMDD}</a>
+                  </li>
+				</c:otherwise>
 				</c:choose>
+				
 				
                 </ul>
             </div>
@@ -547,34 +594,37 @@
                     <a href="#">11/20</a>
                   </li>
                   -->
-                  
-				<c:choose>
-					<c:when test="${fn:length(unitList) > 0}">
-						<c:forEach items="${unitList}" var="list">
-							<c:set var="gongji" value="" />
-							<c:set var="none_gongji" value="" />
-							
-							<c:if test="${list.GUBUN eq '1' }">
+                
+                <c:choose>
+				<c:when test="${fn:length(mboardList) > 0}">
+					<c:set var="EXIST_BOARD" value="N" />
+					<c:forEach items="${mboardList}" var="list" varStatus="status">
+						<c:set var="gongji"   value="" />
+						<c:set var="none_gongji" value="" />
+						<c:if test="${status.index > -1 and list.B_NM eq '공동체소식'}">
+							<c:set var="EXIST_BOARD" value="Y" />
+							<c:if test="${list.IS_NOTICE eq 'Y' }">
 								<c:set var="gongji" value="class='gongji'" />
 							</c:if>
-							<c:if test="${list.GUBUN eq '2' }">
+							<c:if test="${list.IS_NOTICE eq 'N' }">
 								<c:set var="gongji" value="" />
-								<c:if test="${list.DEPART_NAME ne ''}">
-									<c:set var="none_gongji" value="[${list.DEPART_NAME }]" />
+								<c:if test="${list.ORG_NM ne ''}">
+									<c:set var="none_gongji" value="[${list.ORG_NM }]" />
 								</c:if>
 							</c:if>
-							
-							<li><a href="javascript:viewNews(${list.B_IDX},${list.BL_IDX})">
-		                        <em ${gongji}>${list.TITLE}</em> ${list.REGDATE}</a>
+							<li onClick="javascript:viewNews(${list.B_IDX},${list.BL_IDX})">
+		                        <em ${gongji}>${list.TITLE}</em>
+		                        <a hre="javascript:viewNews(${list.B_IDX},${list.BL_IDX})">${fn:substring(list.REGDATE,5,10)}</a>
 		                    </li>
-						</c:forEach>
-					</c:when>
-					<c:otherwise>
+		                </c:if>
+					</c:forEach>
+					<c:if test="${EXIST_BOARD eq 'N' }">
 					  <li>
 	                    <em class="gongji">등록된 데이터가 없습니다.</em>
 	                    <a href="#">${NOW_MMDD}</a>
 	                  </li>
-					</c:otherwise>
+					</c:if>
+				</c:when>
 				</c:choose>
 					
 					
@@ -724,7 +774,20 @@
                     <img src="img/holy3.png" class="d-block light" alt="...">
                 </li>
                 -->
-                
+                <c:choose>
+				<c:when test="${fn:length(mboardList) > 0}">
+					<c:forEach items="${mboardList}" var="list" varStatus="status">
+						<c:if test="${status.index > -1 and list.B_NM eq '교구영상'}">
+						<li onClick="javascript:viewAlb(${list.IDX})">
+			              <img src="${list.FILEPATH}${list.STRFILENAME}" class="albumimg">
+			              <p class="albumtxt">${list.TITLE}</p>
+			              <p class="albumdate">${list.REGDATE}</p>
+			            </li>
+			            </c:if>
+					</c:forEach>
+				</c:when>
+				</c:choose>
+				
                 <c:choose>
 					<c:when test="${fn:length(movList) > 0}">
 						<c:forEach items="${movList}" var="list" varStatus="status">
@@ -837,6 +900,19 @@
 
           <div class="video">
             <ul id="gyogualbum">
+            	<c:choose>
+				<c:when test="${fn:length(mboardList) > 0}">
+					<c:forEach items="${mboardList}" var="list" varStatus="status">
+						<c:if test="${status.index > -1 and list.B_NM eq '교구앨범'}">
+						<li onClick="javascript:viewAlb(${list.IDX})">
+			              <img src="${list.FILEPATH}${list.STRFILENAME}" class="albumimg">
+			              <p class="albumtxt">${list.TITLE}</p>
+			              <p class="albumdate">${list.REGDATE}</p>
+			            </li>
+			            </c:if>
+					</c:forEach>
+				</c:when>
+				</c:choose><!--
                 <li>
                   <img src="img/holy4.png" class="albumimg">
                   <p class="albumtxt">18기 선교사학교 수료 미사</p>
@@ -851,7 +927,7 @@
                   <img src="img/holy4.png" class="albumimg">
                   <p class="albumtxt">18기 선교사학교 수료 미사</p>
                   <p class="albumdate">19-12-10</p>
-                </li>
+                </li> -->
             </ul>
           </div>
         </div>
@@ -873,6 +949,19 @@
 
           <div class="video">
             <ul id="bondangalbum">
+            	<c:choose>
+				<c:when test="${fn:length(mboardList) > 0}">
+					<c:forEach items="${mboardList}" var="list" varStatus="status">
+						<c:if test="${status.index > -1 and list.B_NM eq '본당앨범'}">
+						<li onClick="javascript:viewAlb(${list.IDX})">
+			              <img src="${list.FILEPATH}${list.STRFILENAME}" class="albumimg">
+			              <p class="albumtxt">${list.TITLE}</p>
+			              <p class="albumdate">${list.REGDATE}</p>
+			            </li>
+			            </c:if>
+					</c:forEach>
+				</c:when>
+				</c:choose><!-- 
                 <li>
                   <img src="img/holy4.png" class="albumimg">
                   <p class="albumtxt">18기 선교사학교 수료 미사</p>
@@ -887,7 +976,7 @@
                   <img src="img/holy4.png" class="albumimg">
                   <p class="albumtxt">18기 선교사학교 수료 미사</p>
                   <p class="albumdate">19-12-10</p>
-                </li>
+                </li> -->
             </ul>
           </div>
         </div>
@@ -925,6 +1014,13 @@
                     부천2지구
                   </a>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  <c:choose>
+					<c:when test="${fn:length(giguList) > 0}">
+						<c:forEach items="${giguList}" var="row" varStatus="status">
+							<c:if test="${row.GIGU_CODE eq '09'}"><a class="dropdown-item" href="/church/church.do?churchIdx=${row.CHURCH_IDX}&step1=01">${row.NAME}</a></c:if>
+						</c:forEach>
+					</c:when>
+					</c:choose><!-- 
                     <a class="dropdown-item" href="#">고강동</a>
                     <a class="dropdown-item" href="#">삼정동</a>
                     <a class="dropdown-item" href="#">상1동</a>
@@ -935,7 +1031,7 @@
                     <a class="dropdown-item" href="#">원종2동</a>
                     <a class="dropdown-item" href="#">중1동</a>
                     <a class="dropdown-item" href="#">중1동</a>
-                    <a class="dropdown-item" href="#">중1동</a>
+                    <a class="dropdown-item" href="#">중1동</a> -->
                   </div>
                 </div>
                 <div class="dropdown show div-inline">

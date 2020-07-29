@@ -21,19 +21,16 @@ function viewMov(b_idx, bl_idx) {
 		//return false;
 	} else {
 		var vfm = document.form01;
-		vfm.action = '/news/mov_view.do';
-		vfm.b_idx.value=b_idx;
-		vfm.bl_idx.value=bl_idx;
+		vfm.action = '/n/board/mov_board_view.do';
+		vfm.i_sBidx.value=b_idx;
+		vfm.i_sBlidx.value=bl_idx;
 		vfm.submit();
 	    return false;
 	}
 }
 function goList() {
 	var vfm = document.form01;
-	vfm.action = '/news/mov_list.do';
-	vfm.b_idx.value="23";
-	vfm.bl_idx.value="";
-	//document.getElementById('b_idx').value="23";
+	vfm.action = '/n/board/mov_board_list.do';
 	vfm.submit();
 	return false;
 }

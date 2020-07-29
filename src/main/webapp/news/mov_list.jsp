@@ -44,7 +44,7 @@ function selectChange() {
 		vfm.srchText.value="";
 		vfm.srchYearS.value="";
 		vfm.srchYearE.value="";
-
+ㅕ
 	}else if(vfm.srchGubun.value == 'date') {
 		document.getElementById('srchText').style.display = "none";
 		document.getElementById('srchYearS').style.display = "block";

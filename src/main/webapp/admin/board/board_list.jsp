@@ -93,20 +93,22 @@ window.onload = function () {
 						<div class="panel-body">
 							<table class="table table-striped table-bordered table-hover">
 								<colgroup>
-									<col style="width:200px;">
-									<col style="width:70px;">	
+									<col style="width:50px;">
+									<col style="width:150px;">
 									<col style="width:70px;">
 									<col style="width:70px;">
-									<col style="width:70px;">
-									<col style="width:70px;">
+									<col style="width:50px;">
+									<col style="width:150px;">
+									<col style="width:50px;">
 									<%-- <col style="width:70px;"> --%>
 								</colgroup>
   							<thead>
 							  <tr>
+								<th>명칭(IDX)</th>
 								<th>명칭</th>
 								<th>게시판종류</th>
 								<th>게시판유형</th>
-								<th>댓글암호여부</th>
+								<th>암호사용여부</th>
 								<th>카테고리사용여부</th>
 								<th>설정</th>
 								<!-- <th>삭제</th> -->
@@ -117,18 +119,23 @@ window.onload = function () {
 									<c:when test="${fn:length(rtn_list) > 0}">
 									<c:forEach items="${rtn_list}" var="list">
 										  <tr  <c:if test="${list.IS_VIEW eq 'N'}">style="color: darkgray;"</c:if> >
+											<td>${list.B_IDX} </td>
 											<td>${list.B_NM} </td>
 											<td>${list.B_KIND_NM} </td>
 											<td>${list.B_TYPE_NM} </td>
 											<td>${list.USEYN_SECRET} </td>
 											<td>
 												<c:choose>
-													<c:when test="${list.CATEGORY_CNT > 0}">
-														Y
-													</c:when>
-													<c:otherwise>
-														N
-													</c:otherwise>
+												<c:when test="${not empty list.CATEGORY_LIST}">
+													<c:forEach items="${list.CATEGORY_LIST}" var="category" varStatus="status">
+														${category.name}
+														<c:if test="${!status.last}">
+															,
+														</c:if>
+													</c:forEach>
+												</c:when>
+												<c:otherwise>
+												</c:otherwise>
 												</c:choose>
 											</td>
 											<td class="center"><button name="btnEdit" type="button" class="btn40 btn-success btn-circle" title="Edit" onClick="javascript:modifyContents('${list.B_IDX}')"><i class="fa fa-pencil"></i></button>

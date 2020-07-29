@@ -13,7 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import kr.caincheon.church.church.ChurchService;
 import kr.caincheon.church.common.base.CommonController;
-import kr.caincheon.church.common.base.CommonDaoDTO;
+import kr.caincheon.church.common.base.CommonDaoMultiDTO;
+import kr.caincheon.church.main.HomeService;
 import kr.caincheon.church.news.service.AlbService;
 import kr.caincheon.church.news.service.MgzService;
 import kr.caincheon.church.news.service.MovService;
@@ -49,6 +50,10 @@ public class MainController extends CommonController
 	@Resource(name="mainService")
     private MainServiceImpl mainService;
 	
+	// new 
+	@Resource(name="homeService")
+    private HomeService homeService;
+	
 	// 교구앨범
 	@Resource(name="albService")
     private AlbService albService;
@@ -56,18 +61,18 @@ public class MainController extends CommonController
 	// 교구 영상
 	@Resource(name="movService")
     private MovService movService;
-	
-	// 팝업서비스
-	@Resource(name="popupService")
-    private PopupService popupService;
-
-	// 배너서비스
-	@Resource(name="bannerService")
-    private BannerService bannerService;
-	
-	// 주보서비스
-	@Resource(name="mgzService")
-	private MgzService mgzService;	
+//	
+//	// 팝업서비스
+//	@Resource(name="popupService")
+//    private PopupService popupService;
+//
+//	// 배너서비스
+//	@Resource(name="bannerService")
+//    private BannerService bannerService;
+////	
+//	// 주보서비스
+//	@Resource(name="mgzService")
+//	private MgzService mgzService;	
 	
 	// 본당서비스
 	@Resource(name="churchService")
@@ -89,56 +94,66 @@ public class MainController extends CommonController
         //-----
         
         // service call
-        _params.put("pageNo", "1");
-        _params.put("is_view", "Y");
-        java.util.Map todayContents    = mainService.todayContents();   // 오늘의 소식
-        java.util.List totalNewsList   = new java.util.ArrayList();//mainService.noticeList("ALL");  // 전체소식 : b_idx {9,10,11,12} top 6 (최신글만)
-        java.util.List chuchNewsList   = new java.util.ArrayList();//mainService.noticeList("9");    // 교회소식 : b_idx = 9 top 6(상단고정 포함 top 2+최신 4)
-        java.util.List bondangNewsList = new java.util.ArrayList();//mainService.noticeList("11");   // 본당소식 : b_idx in(본당 11) top 6(상단고정 포함 top 2+최신 4) - 제목앞에 조직정보가 붙어야 함.
-        java.util.List unitList        = new java.util.ArrayList();//mainService.noticeList("10");   // 공동체소식 : b_idx in(공동체 10) top 6(상단고정 포함 top 2+최신 4) - 제목앞에 조직정보가 붙어야 함.
-        java.util.List parishList      = new java.util.ArrayList();//mainService.noticeList("12");   // 교구소식 : b_idx = 12 top 6(상단고정 포함 top 2+최신 4)
+//        _params.put("pageNo", "1");
+//        _params.put("is_view", "Y");
+//        java.util.Map todayContents    = mainService.todayContents();   // 오늘의 소식
+//        java.util.List totalNewsList   = new java.util.ArrayList();//mainService.noticeList("ALL");  // 전체소식 : b_idx {9,10,11,12} top 6 (최신글만)
+//        java.util.List chuchNewsList   = new java.util.ArrayList();//mainService.noticeList("9");    // 교회소식 : b_idx = 9 top 6(상단고정 포함 top 2+최신 4)
+//        java.util.List bondangNewsList = new java.util.ArrayList();//mainService.noticeList("11");   // 본당소식 : b_idx in(본당 11) top 6(상단고정 포함 top 2+최신 4) - 제목앞에 조직정보가 붙어야 함.
+//        java.util.List unitList        = new java.util.ArrayList();//mainService.noticeList("10");   // 공동체소식 : b_idx in(공동체 10) top 6(상단고정 포함 top 2+최신 4) - 제목앞에 조직정보가 붙어야 함.
+//        java.util.List parishList      = new java.util.ArrayList();//mainService.noticeList("12");   // 교구소식 : b_idx = 12 top 6(상단고정 포함 top 2+최신 4)
         
-        Map<String, Object> ggScheduls = mainService.schList_Main(_params); // 월간교구일정 : 최신 top 4, Gubun=1 or 2 로 표시, 1 or 2가 아니면, 교구/해당부서명 타이틀로 출력, 명칭이 5자 넘으면 절삭
+        //Map<String, Object> ggScheduls = mainService.schList_Main(_params); // 월간교구일정 : 최신 top 4, Gubun=1 or 2 로 표시, 1 or 2가 아니면, 교구/해당부서명 타이틀로 출력, 명칭이 5자 넘으면 절삭
         
-        java.util.List albGgList       = new java.util.ArrayList();//albService.albList_Main(_params); // 교구앨범  10개
-        java.util.List albBdList       = new java.util.ArrayList();//mainService.albList_Bondang(_params); // 본당앨범 
+//        java.util.List albGgList       = new java.util.ArrayList();//albService.albList_Main(_params); // 교구앨범  10개
+//        java.util.List albBdList       = new java.util.ArrayList();//mainService.albList_Bondang(_params); // 본당앨범 
         
-        CommonDaoDTO   movDto       = movService.movList_Main(_params); // 교구영상   5개
+//        CommonDaoDTO   movDto       = movService.movList_Main(_params); // 교구영상   5개
         
-        java.util.List fatherList   = mainService.priestListOfThisMonth(); // 이달의 사제
-        java.util.List parList      = new java.util.ArrayList();//mainService.parList_Main(_params); // 교구장동정 : 중앙 carousel
+//        java.util.List fatherList   = mainService.priestListOfThisMonth(); // 이달의 사제
+//        java.util.List parList      = new java.util.ArrayList();//mainService.parList_Main(_params); // 교구장동정 : 중앙 carousel
         
-        java.util.List popupList    = popupService.mainPopupList(_params); // 팝업 조회
-        java.util.List bannerList   = bannerService.mainBannerList(_params); // 배너 조회
+//        java.util.List popupList    = popupService.mainPopupList(_params); // 팝업 조회
+//        java.util.List bannerList   = bannerService.mainBannerList(_params); // 배너 조회
         
-        _params.put("pageNo", "1");
-        _params.put("pageSize", "5");
-        java.util.List jooboList    = mgzService.mgzList(_params); // 주소  조회
+//        _params.put("pageNo", "1");
+//        _params.put("pageSize", "5");
+//        java.util.List jooboList    = mgzService.mgzList(_params); // 주소  조회
         
-        java.util.List churchList   = churchService.listChurchListInGigu(_params); // 지구별 본당목록
+        
+        // new home logic
+        CommonDaoMultiDTO dto = homeService.homeMultiboardLists(_params);
+        
         
         // response
         ModelAndView mv = new ModelAndView("home"+homeId);
         mv.addObject("homeId",          homeId);
-        mv.addObject("todayContents",   todayContents); // 오늘의 소식
-        mv.addObject("totalNewsList",   totalNewsList); // 교회소식 
-        mv.addObject("chuchNewsList",   chuchNewsList); // 교구소식 
-        mv.addObject("bondangNewsList", bondangNewsList); // 본당소식
-        mv.addObject("unitList",        unitList);      // 공동체소식
         
-        mv.addObject("parishList",      parishList);    // 교구장동정
-        mv.addObject("ggSchedulsList",  ggScheduls.get("LIST")); // 월간교구일정
-        mv.addObject("ggSchedulsWeek",  ggScheduls.get("WEEK")); // 주간교구일정
-        mv.addObject("albGgList",       albGgList); // 교구앨범
-        mv.addObject("albBdList",       albBdList); // 본당앨범
-        mv.addObject("movList",         movDto.daoList); // 교구영상
-        mv.addObject("fatherList",    fatherList);
-        mv.addObject("parList",       parList);
-        mv.addObject("popupList",     popupList);
-        mv.addObject("bannerList",    bannerList);
-        mv.addObject("jooboList",     jooboList); // 주보리스트
+//        mv.addObject("totalNewsList",   totalNewsList); // 교회소식 
+//        mv.addObject("chuchNewsList",   chuchNewsList); // 교구소식 
+//        mv.addObject("bondangNewsList", bondangNewsList); // 본당소식
+//        mv.addObject("unitList",        unitList);      // 공동체소식
+//        
+//        mv.addObject("parishList",      parishList);    // 교구장동정
         
-        mv.addObject("giguList",      churchList);// 지구별본당목록, TempleUtil.getInstance().getRegionList(false));
+//        mv.addObject("albGgList",       albGgList); // 교구앨범
+//        mv.addObject("albBdList",       albBdList); // 본당앨범
+//        mv.addObject("movList",         movDto.daoList); // 교구영상
+//        mv.addObject("fatherList",    fatherList); // 이달의 사제
+//        mv.addObject("parList",       parList);
+         
+        
+        
+        // new 
+        mv.addObject("todayContents",   dto.daoResult1); // 오늘의 소식 -> home	applied
+        mv.addObject("mboardList",      dto.daoResult2); // 멀티보드 멀티 게시판에서 조회 
+        mv.addObject("giguList",        dto.daoResult3); // 지구별 본당코드 목록 -> home	applied 
+        mv.addObject("ggSchedulsList",  ((Map)dto.daoResult4).get("LIST")); // 월간교구일정
+        mv.addObject("ggSchedulsWeek",  ((Map)dto.daoResult4).get("WEEK")); // 주간교구일정
+        mv.addObject("fatherList",      dto.daoResult5); // 이달의 사제
+        mv.addObject("popupList",       dto.daoResult6); // 팝업 리스트 
+        mv.addObject("bannerList",      dto.daoResult7); // 배너 리스트
+        mv.addObject("jooboList",       dto.daoResult);  // 주보리스트
         
         
         D(_logger, Thread.currentThread().getStackTrace(), "Response ModelMap >> \n\t\t"+mv  );
