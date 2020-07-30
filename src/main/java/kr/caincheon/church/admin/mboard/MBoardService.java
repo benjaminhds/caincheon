@@ -1,7 +1,9 @@
 package kr.caincheon.church.admin.mboard;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,18 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import kr.caincheon.church.admin.dao.CodeDao;
-import kr.caincheon.church.common.base.CommonDao;
 import kr.caincheon.church.common.base.CommonDaoDTO;
 import kr.caincheon.church.common.base.CommonException;
-import kr.caincheon.church.common.base.CommonExecuteQuery;
 import kr.caincheon.church.common.base.CommonService;
 import kr.caincheon.church.common.base.Const;
 import kr.caincheon.church.common.utils.ImageUtils;
-import kr.caincheon.church.common.utils.UtilString;
 
 
 @Service("mBoardService")
@@ -323,6 +320,11 @@ public class MBoardService extends CommonService
 		String pageSize = pnull(_params, "pageSize");
 		
 		// board list
+		if(_params.get("i_sChurchidx") != null) {
+			String[] churchIdxList	=	((String)_params.get("i_sChurchidx")).split(",");
+			
+			_params.put("i_arrChurchidxList", churchIdxList);
+		}
 		CommonDaoDTO dto = mBoardDAO.albList(_params);
 
 		// return
@@ -479,4 +481,107 @@ public class MBoardService extends CommonService
 	private void deleteUploadedFileDbRecordNew(Map _params) {
 		mBoardDAO.deleteUpload(_params);
 	}
+
+	public Map getCodeJiguInstance(boolean isMixedKeyVal) {
+		CommonDaoDTO rtDto = new CommonDaoDTO();
+
+		LinkedHashMap giguCodeMap = null;
+	    ArrayList giguCodeList = null;
+	    ArrayList giguNameList = null;
+		
+		try {
+			Map<String, Object> _params	=	new HashMap<String, Object>();
+			/*code 정보 조회*/
+			_params.put("code","000004");
+			rtDto	=	mBoardDAO.getCodeInstance(_params);
+			
+			giguCodeMap  = new LinkedHashMap();
+        	giguCodeList = new ArrayList();
+        	giguNameList = new ArrayList();
+        	
+			for(int i = 0, i2 = rtDto.otherList.size() ; i < i2 ; i++) {
+        		Map row = (Map)rtDto.otherList.get(i);
+        		
+        		String isUse = String.valueOf(row.get("USE_YN"));
+        		String isDel = String.valueOf(row.get("DEL_YN"));
+        		
+        		L.debug(" >>> getRegionList() :: " + isUse +","+isDel + " -> {" + row.get("CODE_INST") + "," + row.get("NAME") + "}");
+        		
+        		if( "Y".equals(isUse.toUpperCase()) && "N".equals(isDel.toUpperCase()) ) {
+        			String cd = String.valueOf(row.get("CODE_INST"));
+            		String nm = String.valueOf(row.get("NAME"));
+        			
+	        		giguCodeMap.put(cd, nm);
+	        		giguCodeMap.put(nm, cd);
+	        		
+	        		giguCodeList.add(cd);
+	        		giguNameList.add(nm);
+        		}
+        	}
+			
+			if(!isMixedKeyVal) {
+	        	LinkedHashMap rtMap = new LinkedHashMap();
+	        	for (int i = 0, i2 = giguCodeList.size(); i < i2; i++) {
+	        		rtMap.put(giguCodeList.get(i), giguNameList.get(i));
+				}
+	        	
+	        	return rtMap;
+	        }
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return giguCodeMap;
+	}
+	
+	
+    public Map groupbyMailhallInRegion(Map _params) throws Exception
+    {
+	
+		List<Map<String,Object>> gList1 = null, gList2 = null;
+		
+		try {
+			_params.put("code","000004");
+			gList1 = mBoardDAO.getCodeInstance3(_params).otherList;
+			
+			gList2 = mBoardDAO.getCodeInstance2(_params).otherList;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		LinkedHashMap rtList = new LinkedHashMap();
+		
+		if(gList1 != null) {
+			int total=0;
+			for(Map row : gList1) {
+				String giguName = pnull(row.get("GIGU_NAME"));
+				
+				String church_idsx="";
+				LinkedHashMap churchs = new LinkedHashMap();
+				int cnt = 0;
+				for(Map row2 : gList2) {
+					String giguName2 = pnull(row2.get("GIGU_NAME"));
+					if(giguName.equals(giguName2)) {
+						cnt++;
+						total++;
+						String cName = pnull(row2.get("NAME"));
+						String cIdx  = pnull(row2.get("CHURCH_IDX"));
+						churchs.put(cName, cIdx);
+						churchs.put(cIdx, cName);
+						church_idsx += ( church_idsx.length() > 0 ? ",":"") + cIdx;
+					}
+				}
+				rtList.put(giguName+"_CNT", cnt);
+				rtList.put(giguName+"_MAP", churchs);
+				rtList.put(giguName       , church_idsx);
+			}
+			rtList.put("전체_CNT", total);
+		}
+		
+	    D(L, Thread.currentThread().getStackTrace(), "Query Result:"+rtList );
+	    
+	    return rtList;
+    }
 }

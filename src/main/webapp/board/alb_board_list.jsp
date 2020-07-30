@@ -117,6 +117,9 @@ window.onload = function () {
 			<section class="sec01 fin">
 				<!-- secCont -->
 				<div class="secCont">
+					<c:if test="${bd_content.USEYN_JIGU eq 'Y'}">
+						<%@ include file="/church/temp_tab.jsp" %>
+					</c:if>
 					<!-- tabs -->
 					<ul class="tabs">
 						<li <c:if test="${empty _params.i_sCIdx}">class="on"</c:if>><a href="/n/board/alb_board_list.do?i_sBidx=${bd_content.B_IDX}">전체보기</a></li>
@@ -124,6 +127,7 @@ window.onload = function () {
 							<li <c:if test="${_params.i_sCIdx eq  list.c_idx}">class="on"</c:if>><a href="/n/board/alb_board_list.do?i_sBidx=${bd_content.B_IDX}&i_sCIdx=${list.c_idx}">${list.name}
 						</a></li>
 						</c:forEach>
+						
 					</ul>
 					<!-- //tabs -->
 					<h3 class="ttl tb fl">${strCategoryName}</h3>

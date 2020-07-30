@@ -370,6 +370,13 @@ function delete_contents() {
 										</td>
 									</tr>
 									<tr>
+										<th>앨범게시판 지구메뉴 VIEW여부</th>
+										<td>
+											<label class="radio-inline" for="i_sAlbviewFlag_Y"><input type="radio" name="i_sAlbviewFlag" id="i_sAlbviewFlag_Y" value="Y" <c:if test="${bd_content == null || bd_content.USEYN_JIGU=='Y' }" >checked="checked"</c:if>>Y</label>
+											<label class="radio-inline" for="i_sAlbviewFlag_N"><input type="radio" name="i_sAlbviewFlag" id="i_sAlbviewFlag_N" value="N" <c:if test="${bd_content.USEYN_JIGU=='N' }" >checked="checked"</c:if>>N</label>
+										</td>
+									</tr>
+									<tr>
 										<th>소식메뉴 VIEW 여부</th>
 										<td>
 											<label class="radio-inline" for="i_sViewFlag_Y"><input type="radio" name="i_sViewFlag" id="i_sViewFlag_Y" value="Y" <c:if test="${bd_content == null || bd_content.VIEW_FLAG=='Y' }" >checked="checked"</c:if>>Y</label>

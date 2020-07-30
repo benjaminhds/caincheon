@@ -378,26 +378,31 @@ public class MBoardController extends CommonController
 		build(request, true);
 		D(_logger, Thread.currentThread().getStackTrace(), "[params:"+_params+"]" );
 		
-		mBoardService.boardViewContent(_params);
-		Map 			bdContent	= (Map)_params.remove(Const.ADM_MAPKEY_CONTENT);
-		java.util.List	list		= (java.util.List)_params.remove(Const.ADM_MAPKEY_LIST_OTHERS);
-		
-		CommonDaoDTO dto = mBoardService.albList(_params);
-		
-		mv.addObject("_params",  _params);
-		mv.addObject("albList", dto.daoList);
-		mv.addObject("paging",   dto.paging);
-		
-		mv.addObject("bd_content",  bdContent);
-		/*카테고리 리스트*/
-		mv.addObject("category_list",   list);
-		
-		mv.addObject("giguList", CAGiguInfoUtil.getInstance().getRegionList(false));//지구코드목록
-		
-		_params.put("code","00004");
-		mBoardService.getCodeInstance(_params);
-		_params.put("mainHallByGigu", _params.remove("code_list"));
-		
+		try {
+			mBoardService.boardViewContent(_params);
+			Map 			bdContent	= (Map)_params.remove(Const.ADM_MAPKEY_CONTENT);
+			java.util.List	list		= (java.util.List)_params.remove(Const.ADM_MAPKEY_LIST_OTHERS);
+			
+			_params.put("code","000004");
+			mBoardService.getCodeInstance(_params);
+			_params.put("jigu_list", _params.remove("code_list"));
+			
+			CommonDaoDTO dto = mBoardService.albList(_params);
+			
+			mv.addObject("_params",  _params);
+			mv.addObject("albList", dto.daoList);
+			mv.addObject("paging",   dto.paging);
+			
+			mv.addObject("bd_content",  bdContent);
+			/*카테고리 리스트*/
+			mv.addObject("category_list",   list);
+			
+			mv.addObject("giguList", mBoardService.getCodeJiguInstance(false));//지구코드목록
+			mv.addObject("mainHallByGigu", mBoardService.groupbyMailhallInRegion(_params));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 		D(_logger, Thread.currentThread().getStackTrace(), "Response ModelMap >> \n\t\t"+mv  );
 		
 		return mv;

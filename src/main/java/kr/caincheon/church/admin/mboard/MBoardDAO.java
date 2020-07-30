@@ -298,6 +298,24 @@ public class MBoardDAO extends AbstractDAO {
 		return dto;
 	}
 	
+	/*코드 인스턴스 가져오기*/
+	public CommonDaoDTO getCodeInstance2(Map<String, Object> _params) {
+		
+		//DTO 만들기
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		try {		
+			/*카테고리 리스트 가져오기*/
+			dto.otherList	= selectList("admin.mboard.getCodeInstance2", _params);
+			
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e; 
+		}
+		
+		return dto;
+	}
+	
 	/**
 	 * 게시판 등록
 	 * */
@@ -700,6 +718,25 @@ public class MBoardDAO extends AbstractDAO {
 		L.debug("DAO Result.[DTO:"+dto+"]" );
 		
 		return dto.otherList;
+	}
+
+
+	/*코드 인스턴스 가져오기*/
+	public CommonDaoDTO getCodeInstance3(Map<String, Object> _params) {
+		
+		//DTO 만들기
+		CommonDaoDTO dto = new CommonDaoDTO();
+		
+		try {		
+			/*카테고리 리스트 가져오기*/
+			dto.otherList	= selectList("admin.mboard.getCodeInstance3", _params);
+			
+		} catch (Exception e) {
+			L.error("SQL ERROR:"+e.getMessage()+"]");
+			throw e; 
+		}
+		
+		return dto;
 	}
 	
 }

@@ -61,6 +61,27 @@
 		<if test='code != null and !"".equals(code)'> AND CODE = #{code} </if>	<!-- 코드 조회 -->
 	</select>
 	<!-- 게시판 조회 -->
+	<select id="getCodeInstance2" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			G.CODE_INST,
+			G.NAME GIGU_NAME,
+			C.CHURCH_IDX ,
+			C.NAME
+		FROM
+			CODE_INSTANCE G
+		LEFT OUTER JOIN CHURCH C ON
+			C.GIGU_CODE = G.CODE_INST
+		WHERE
+			G.CODE = '000004'
+		ORDER BY
+			G.NAME,
+			C.NAME
+	</select>
+	<select id="getCodeInstance3" parameterType="hashmap" resultType="hashmap">
+		SELECT CODE_INST AS GIGU_CODE, NAME AS GIGU_NAME FROM CODE_INSTANCE
+		WHERE CODE='000004'
+	</select>
+	<!-- 게시판 조회 -->
 	<select id="getCategory" parameterType="hashmap" resultType="hashmap">
 		/* admin.mboard.getCategory 카테고리 조회*/
 		SELECT	* 
@@ -86,6 +107,7 @@
 				, VIEW_FLAG
 				, ORG_IDX
 				, ORG_TYPE
+				, USEYN_JIGU
 		FROM	MBOARD_MNGT
 		WHERE	1=1
 		<if test='i_sBidx != null and !"".equals(i_sBidx)'> AND B_IDX = #{i_sBidx} </if>	<!-- 게시글 아이디 조회 -->
@@ -108,6 +130,7 @@
 				, VIEW_FLAG
 				, ORG_IDX
 				, ORG_TYPE
+				, USEYN_JIGU
 			)
 		VALUES
 			(
@@ -125,6 +148,7 @@
 				, #{i_sViewFlag}
 				, #{i_sOrgIdx}
 				, #{i_sOrgType}
+				, #{i_sAlbviewFlag}
 			)
 		<selectKey resultType="java.lang.Integer" keyProperty="i_sBidx">
 			SELECT	@@IDENTITY AS ID
@@ -146,6 +170,7 @@
 			, VIEW_FLAG				=	#{i_sViewFlag}
 			, ORG_TYPE				=	#{i_sOrgType}
 			, ORG_IDX				=	#{i_sOrgIdx}
+			, USEYN_JIGU			=	#{i_sAlbviewFlag}
 		WHERE	B_IDX				=	#{i_sBidx}
 	</update>
 	<delete id="deleteMbaord" parameterType="hashmap">
@@ -508,6 +533,12 @@
 		<if test='i_sBidx != null and !"".equals(i_sBidx)'> AND M.B_IDX	= #{i_sBidx} </if> 
 		<if test='i_sCIdx != null and !"".equals(i_sCIdx)'> AND M.C_IDX	= #{i_sCIdx} </if>
 		<if test='i_sIsView != null and !"".equals(i_sIsView)'> AND M.IS_VIEW	= #{i_sIsView} </if>
+		<if test='i_arrChurchidxList != null and !"".equals(i_arrChurchidxList)'>
+			AND M.CHURCH_IDX IN
+			<foreach item="item" index="index" collection="i_arrChurchidxList" open="(" close=")" separator=",">
+        	    #{item}
+    		</foreach>
+		</if>
 		<include refid="common.pagingPost"/>
 	</select>
 	<select id="getAlbView" parameterType="hashmap" resultType="hashmap">

@@ -34,14 +34,29 @@ function modifyContents(b_idx) {
 	return false;
 }
 
-function deleteContents(b_idx, bl_idx) {
+function deleteContents(b_idx) {
 	if (confirm("정말 삭제하시겠습니까??") == true){	//확인
-		document.getElementById('mode').value = "i";
 		
-		var vfm = document.form01;
-		vfm.action = '/n/admin/board/board_delete.do';
-		vfm.submit();
-		return false;
+		$.ajax({		 
+			type:"POST"
+			, url:"/n/admin/board/board_cud.do"
+			, data : {
+				mode : "d"
+				, i_sBidx : b_idx
+			}
+			, dataType: "json"
+			, cache: false
+			, success:function(){
+				alert("삭제되었습니다.");
+				
+				var vfm = document.form01;
+				vfm.submit();
+				return false;
+			}
+			, error:function(xhr, textStatus) {
+				alert("에러 입니다. 관리자에게 문의해주세요.");
+			}
+		});	
 	}
 	return false;
 }
@@ -93,14 +108,14 @@ window.onload = function () {
 						<div class="panel-body">
 							<table class="table table-striped table-bordered table-hover">
 								<colgroup>
-									<col style="width:50px;">
-									<col style="width:150px;">
+									<col style="width:30px;">
+									<col style="width:160px;">
 									<col style="width:70px;">
 									<col style="width:70px;">
 									<col style="width:50px;">
-									<col style="width:150px;">
+									<col style="width:160px;">
 									<col style="width:50px;">
-									<%-- <col style="width:70px;"> --%>
+									<col style="width:50px;">
 								</colgroup>
   							<thead>
 							  <tr>
@@ -108,10 +123,10 @@ window.onload = function () {
 								<th>명칭</th>
 								<th>게시판종류</th>
 								<th>게시판유형</th>
-								<th>암호사용여부</th>
+								<th>암호<br>사용여부</th>
 								<th>카테고리사용여부</th>
 								<th>설정</th>
-								<!-- <th>삭제</th> -->
+								<th>삭제</th>
 							  </tr>
 							</thead>
 							<tbody>
@@ -140,8 +155,8 @@ window.onload = function () {
 											</td>
 											<td class="center"><button name="btnEdit" type="button" class="btn40 btn-success btn-circle" title="Edit" onClick="javascript:modifyContents('${list.B_IDX}')"><i class="fa fa-pencil"></i></button>
 												</td>
-											<%-- <td class="center"><button name="btnDel" type="button" class="btn40 btn-danger btn-circle" title="Delete" onClick="javascript:deleteContents('${list.B_IDX}')"><i class="fa fa-times"></i></button>
-												</td> --%>
+											<td class="center"><button name="btnDel" type="button" class="btn40 btn-danger btn-circle" title="Delete" onClick="javascript:deleteContents('${list.B_IDX}')"><i class="fa fa-times"></i></button>
+												</td>
 										  </tr>
 										  </c:forEach>
 									</c:when>
